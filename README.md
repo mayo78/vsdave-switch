@@ -15,3 +15,12 @@ VVVV some of this stuff is not relevent lol
 
 
 hi
+
+TODOS:
+- finish porting extra songs
+- add playable characters
+- fix interdimensional lag
+- add greetings cutscene
+- add credits and end credits
+- figure out a way to unlock 7 stuff
+- fix any bugs that come in
