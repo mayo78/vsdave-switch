@@ -12,3 +12,6 @@ VVVV some of this stuff is not relevent lol
 * Davidobot for developing [love.js](https://github.com/Davidobot/love.js), used for the Web version of the game
 * TurtleP for developing [LÖVE Potion](https://github.com/lovebrew/LovePotion), originally used for the Nintendo Switch version of the game
 * Funkin' Crew (ninjamuffin99, PhantomArcade, kawaisprite, and evilsk8er), for making such an awesome game!
+
+
+hi
