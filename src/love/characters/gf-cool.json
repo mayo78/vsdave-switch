@@ -1,0 +1,56 @@
+{
+	"animations": [
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "danceLeft",
+			"indices": [],
+			"name": "left"
+		},
+		{
+			"offsets": [
+				-28,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "danceRight",
+			"indices": [],
+			"name": "right"
+		},
+		{
+			"offsets": [
+				-80,
+				-70
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "cry",
+			"indices": [],
+			"name": "f"
+		}
+	],
+	"no_antialiasing": false,
+	"image": "dave/characters/Cool_GF",
+	"position": [
+		0,
+		-170
+	],
+	"healthicon": "dave",
+	"flip_x": false,
+	"healthbar_colors": [
+		15,
+		95,
+		255
+	],
+	"camera_position": [
+		50,
+		25
+	],
+	"sing_duration": 4,
+	"scale": 1
+}

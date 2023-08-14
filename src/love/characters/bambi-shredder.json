@@ -1,0 +1,99 @@
+{
+	"animations": [
+		{
+			"offsets": [
+				39,
+				7
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singLEFT",
+			"indices": [],
+			"name": "left"
+		},
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "idle",
+			"indices": [],
+			"name": "idle"
+		},
+		{
+			"offsets": [
+				3,
+				25
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singUP",
+			"indices": [],
+			"name": "up"
+		},
+		{
+			"offsets": [
+				-65,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singRIGHT",
+			"indices": [],
+			"name": "right"
+		},
+		{
+			"offsets": [
+				27,
+				-30
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singDOWN",
+			"indices": [],
+			"name": "down"
+		},
+		{
+			"offsets": [
+				32,
+				36
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singMIDDLE",
+			"loop": false,
+			"name": "for"
+		},
+		{
+			"offsets": [
+				39,
+				18
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "takeOut",
+			"loop": false,
+			"name": "take"
+		}
+	],
+	"no_antialiasing": false,
+	"image": "dave/festival/bambi_shredder",
+	"position": [
+		37, 90
+	],
+	"healthicon": "bambi",
+	"flip_x": false,
+	"healthbar_colors": [
+		37,
+		191,
+		55
+	],
+	"camera_position": [
+		20,
+		90
+	],
+	"sing_duration": 4,
+	"scale": 1
+}

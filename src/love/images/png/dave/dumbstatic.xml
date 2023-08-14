@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="dumbstatic.png">
+	<!-- Created with Adobe Animate version 22.0.1.105 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="cool0000" x="8" y="8" width="1281" height="721"/>
+	<SubTexture name="cool0001" x="1293" y="8" width="1281" height="721"/>
+	<SubTexture name="cool0002" x="2578" y="8" width="1281" height="721"/>
+	<SubTexture name="cool0003" x="8" y="733" width="1281" height="721"/>
+	<SubTexture name="cool0004" x="1293" y="733" width="1281" height="721"/>
+	<SubTexture name="cool0005" x="2578" y="733" width="1281" height="721"/>
+	<SubTexture name="cool0006" x="8" y="1458" width="1281" height="721"/>
+	<SubTexture name="cool0007" x="1293" y="1458" width="1281" height="721"/>
+	<SubTexture name="cool0008" x="2578" y="1458" width="1281" height="721"/>
+	<SubTexture name="cool0009" x="8" y="2183" width="1281" height="721"/>
+	<SubTexture name="cool0010" x="1293" y="2183" width="1281" height="721"/>
+	<SubTexture name="cool0011" x="2578" y="2183" width="1281" height="721"/>
+	<SubTexture name="cool0012" x="8" y="2908" width="1281" height="721"/>
+	<SubTexture name="cool0013" x="1293" y="2908" width="1281" height="721"/>
+</TextureAtlas>

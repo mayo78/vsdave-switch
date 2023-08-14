@@ -1,0 +1,100 @@
+{
+	"animations": [
+		{
+			"loop": false,
+			"offsets": [
+				20,
+				0
+			],
+			"anim": "singLEFT",
+			"fps": 24,
+			"name": "left",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				0,
+				0
+			],
+			"anim": "idle",
+			"fps": 24,
+			"name": "idle",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				20,
+				100
+			],
+			"anim": "singUP",
+			"fps": 24,
+			"name": "up",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				-47,
+				-6
+			],
+			"anim": "singRIGHT",
+			"fps": 24,
+			"name": "right",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				30,
+				-27
+			],
+			"anim": "singDOWN",
+			"fps": 24,
+			"name": "down",
+			"indices": []
+		},
+		{
+			"offsets": [
+				53,
+				73
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "helpMe",
+			"loop": false,
+			"name": "stuck"
+		},
+		{
+			"offsets": [
+				40,
+				90
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "waa",
+			"loop": false,
+			"name": "cry"
+		}
+	],
+	"no_antialiasing": false,
+	"image": "dave/california/moldygh",
+	"position": [
+		0,
+		0
+	],
+	"healthicon": "moldy",
+	"flip_x": false,
+	"healthbar_colors": [
+		39,
+		21,
+		130
+	],
+	"camera_position": [
+		20,
+		90
+	],
+	"sing_duration": 4,
+	"scale": 1
+}

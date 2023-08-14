@@ -1,0 +1,20 @@
+Warmup, MoldyGH, daveHeading, dave, true
+House, MoldyGH, daveHeading, dave, true
+Insanity, MoldyGH, daveHeading, dave, true
+Polygonized, MoldyGH, 3D-daveHeading, dave, false
+Blocked, MoldyGH, bambiHeading, bambi, false
+Corn-Theft, MoldyGH, bambiHeading, bambi, false
+Maze, MoldyGH, bambiHeading, bambi, false
+Splitathon, MoldyGH, splitathonHeading, 
+Shredder, MoldyGH, bambiHeading, bambi, false
+Greetings, MoldyGH, tristanHeading, 
+Interdimensional, MoldyGH, 3D-daveHeading, dave, false
+Rano, MoldyGH, daveHeading, dave, true
+Supernovae, ArchWK, bevelHeading, bambi, false
+Glitch, glitch, bevelHeading, bambi, false
+Master, MoldyGH, bevelHeading, bambi, false
+Exploitation, Oxygen, expungedHeading, dave, false
+Cheating, MoldyGH, cheatingHeading, dave, false
+Unfairness, MoldyGH, unfairHeading, dave, false
+Test, MoldyGH, tristanHeading, bambi
+Kabunga, MoldyGH, kabungaHeading, 

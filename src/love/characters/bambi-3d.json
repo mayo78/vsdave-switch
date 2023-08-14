@@ -1,0 +1,78 @@
+{
+	"animations": [
+		{
+			"loop": false,
+			"offsets": [
+				-10,
+				20
+			],
+			"anim": "singUP",
+			"fps": 24,
+			"name": "U",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				0,
+				-10
+			],
+			"anim": "singLEFT",
+			"fps": 24,
+			"name": "L",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				0,
+				0
+			],
+			"anim": "idle",
+			"fps": 24,
+			"name": "I",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				80,
+				0
+			],
+			"anim": "singRIGHT",
+			"fps": 24,
+			"name": "R",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				0,
+				10
+			],
+			"anim": "singDOWN",
+			"fps": 24,
+			"name": "D",
+			"indices": []
+		}
+	],
+	"no_antialiasing": true,
+	"image": "dave/expunged/cheating",
+	"position": [
+		0,
+		0
+	],
+	"healthicon": "bambi-3d-pixel",
+	"flip_x": false,
+	"healthbar_colors": [
+		13,
+		179,
+		27
+	],
+	"camera_position": [
+		20,
+		90
+	],
+	"sing_duration": 4,
+	"scale": 1.4
+}

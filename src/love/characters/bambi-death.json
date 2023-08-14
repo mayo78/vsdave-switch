@@ -1,0 +1,56 @@
+{
+	"animations": [
+		{
+			"offsets": [
+				-8,
+				29
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "deathConfirm",
+			"loop": false,
+			"name": "die end"
+		},
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "firstDeath",
+			"loop": false,
+			"name": "bambi"
+		},
+		{
+			"offsets": [
+				-8,
+				-33
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "deathLoop",
+			"loop": false,
+			"name": "die loop"
+		}
+	],
+	"no_antialiasing": false,
+	"image": "dave/bambi/Bambi_Death",
+	"position": [
+		0,
+		0
+	],
+	"healthicon": "bambi",
+	"flip_x": false,
+	"healthbar_colors": [
+		37,
+		191,
+		55
+	],
+	"camera_position": [
+		20,
+		90
+	],
+	"sing_duration": 4,
+	"scale": 1
+}

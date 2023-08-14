@@ -1,0 +1,110 @@
+{
+	"animations": [
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "idle",
+			"indices": [],
+			"name": "idle"
+		},
+		{
+			"loop": false,
+			"offsets": [
+				25,
+				2
+			],
+			"anim": "singLEFT",
+			"fps": 24,
+			"name": "left0",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				-15,
+				12
+			],
+			"anim": "singUP",
+			"fps": 24,
+			"name": "up0",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				-4,
+				-6
+			],
+			"anim": "singRIGHT",
+			"fps": 24,
+			"name": "right0",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				-39,
+				-12
+			],
+			"anim": "singDOWN",
+			"fps": 24,
+			"name": "down0",
+			"indices": []
+		},
+		{
+			"offsets": [
+				-18,
+				1
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "sleeping",
+			"loop": false,
+			"name": "sleepy"
+		},
+		{
+			"offsets": [
+				-65,
+				-5
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "sleepIdle",
+			"loop": true,
+			"name": "sleeping"
+		},
+		{
+			"offsets": [
+				-18,
+				0
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "ohNo",
+			"loop": true,
+			"name": "bruh"
+		}
+	],
+	"no_antialiasing": false,
+	"image": "dave/festival/dave_festival",
+	"position": [
+		0, 0
+	],
+	"healthicon": "dave-festival",
+	"flip_x": false,
+	"healthbar_colors": [
+		25,
+		130,
+		0
+	],
+	"camera_position": [
+		0,
+		0
+	],
+	"sing_duration": 4,
+	"scale": 1
+}
