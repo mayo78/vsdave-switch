@@ -101,15 +101,16 @@ switch: lovefile
 	@rm -f build/release/dnb-switch-switch.zip
 	@cd build/switch; zip -9 -r ../release/dnb-switch-switch.zip .
 
-3ds: lovefile
-	@rm -rf build/3ds
-	@mkdir -p build/3ds/3ds/dnb-switch
+#someone askedc me to try but i have no idea what im doing lol
+#3ds: lovefile
+#	@rm -rf build/3ds
+#	@mkdir -p build/3ds/3ds/dnb-switch
 
-	@3dsxtool resources/switch/love.elf build/3ds/3ds/dnb-switch/dnb-switch.3dsx --icon=resources/switch/icon.jpg
+#	@3dsxtool resources/switch/love.elf build/3ds/3ds/dnb-switch/dnb-switch.3dsx --icon=resources/switch/icon.jpg
 
-	@mkdir -p build/release
-	@rm -f build/release/dnb-switch-3ds.zip
-	@cd build/3ds; zip -9 -r ../release/dnb-switch-3ds.zip .
+#	@mkdir -p build/release
+#	@rm -f build/release/dnb-switch-3ds.zip
+#	@cd build/3ds; zip -9 -r ../release/dnb-switch-3ds.zip .
 
 
 clean:
