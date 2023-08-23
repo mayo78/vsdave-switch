@@ -22,9 +22,6 @@ RADIAN_TO_DEGREE = 180/math.pi
 DEGREE_TO_RADIAN = math.pi/180
 --debugMode = true
 function love.load()
-	
-end
-function actuallyLoad()
 	--extra useful functions
 	love.graphics.dontdumpplz = true
 	function table.copy(t,st,copyMeta,x)
@@ -97,6 +94,11 @@ function actuallyLoad()
 		else return 'nearest', 'nearest'
 		end
 	end
+
+	versionTable = require 'version'
+	version = versionTable:new(0, 1, 0)
+	http = require 'socket.http'
+	onlineVersion = versionTable:fromString(http.request 'https://raw.githubusercontent.com/mayo78/vsdave-switch/main/version.txt')
 
 	printf = love.graphics.printf
 	function printfOutline(text, x, y, limit, extra)
@@ -233,6 +235,7 @@ function actuallyLoad()
 	clickStart = require "states.click-start"
 	debugMenu = require "states.debug-menu"
 	titleMenu = require "states.menu.titleMenu"
+	versionState = require 'states.versionState'
 	menuWeek = require "states.menu.menuWeek"
 	menuSelect = require "states.menu.menuSelect"
 	menuSettings = require 'states.menu.menuSettings'
@@ -306,10 +309,10 @@ function actuallyLoad()
 	musicTime = 0
 	health = 0
 
-	if curOS == "Web" then
-		switchState(clickStart)
+	if onlineVersion and onlineVersion > version then
+		switchState(versionState)
 	else
-		switchState(titleMenu)
+		switchState(save.seenWarning and meuTitle or flashingState)
 	end
 	 
 	character = require 'objects.character'
@@ -413,12 +416,6 @@ local function drawWhatever()
 	
 end
 function love.draw()
-	if not finishedLoading then 
-		love.graphics.printf('Loading....', 0, 0, 9999) --i dont think this actually shows up oops
-		if not startedLoading then actuallyLoad() end
-		startedLoading = true
-		return
-	end
 	love.graphics.setCanvas(shaderCanvas)
 	love.graphics.clear()
 	if status.getNoResize() then

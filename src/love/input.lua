@@ -53,9 +53,13 @@ return function()
 				down = {"key:down", "axis:lefty+", "button:dpdown"},
 				up = {"key:up", "axis:lefty-", "button:dpup"},
 				right = {"key:right", "axis:leftx+", "button:dpright"},
-				confirm = {"key:return", "button:a"},
-				back = {"key:escape", "button:b"},
+				confirm = {"key:return", "button:b"},
+				back = {"key:escape", "button:a"},
 				pause = {"key:return", "button:start"},
+
+				a = {"button:b"}, --lol!
+				b = {"button:a"},
+
 
 				gameLeft = gameLeft,
 				gameDown = gameDown,
