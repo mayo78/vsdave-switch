@@ -46,7 +46,7 @@ local purpleColor, blueColor
 
 local listText
 
-local selectSound, confirmSound, stupidstupidstupidstupid
+local selectSound, confirmSound, leaving
 
 local function change(how)
 	weekIndex = weekIndex + how
@@ -84,7 +84,7 @@ end
 
 return {
 	enter = function(self, previous)
-		stupidstupidstupidstupid = true
+		leaving = false
         selectSound = paths.sound('menu/select')
         confirmSound = paths.sound('menu/confirm')
 		confirmed = false
@@ -128,7 +128,7 @@ return {
 			funkin.curSong = funkin.songList[1]
 			completeScore = 0
 			if curWeek == '_WEEK1' then
-				switchState(videoState, 'daveCutscene')
+				switchState(videoState, 'daveCutscene', 30)
 			else
 				switchState(stage)
 			end
@@ -140,6 +140,9 @@ return {
 			butt.x = lerp(butt.x, targetButt[i], dt * 20)
 		end
 		curScore = math.floor(lerp(curScore, targetScore, 0.4))
+	elseif controls.pressed.back and not leaving then
+		leaving = true
+		switchState(menuSelect)
 	end,
 
 	draw = function(self)

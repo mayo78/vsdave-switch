@@ -167,8 +167,8 @@ return {
 		blockedShader = shaders:BLOCKED()
 		blockedShaderOn = false
 		origZoom = camZoom
-		enemyNotesToDraw = 0
-		boyfriendNotesToDraw = 0
+		enemyNotesToDraw = {0, 0, 0, 0, 0}
+		boyfriendNotesToDraw = {0, 0, 0, 0}
 		sounds = {
 			countdown = {},
 			miss = {
@@ -424,20 +424,17 @@ return {
 		local data = getData(curSong:lower())
 		if data then
 			if data.composer == 'glitch' then data.composer = 'DeadShadow & PixelGH' end
+			local animatedNameGuys = {
+				expungedHeading = 'Expunged',
+				unfairHeading = 'Unfairness',
+				botHeading = 'Bot trot',
+				cheatingHeading = 'Cheating',
+				somethingHeading = 'Scramble',
+				californiaHeading = 'California'
+			}
 			local me
-			--its fineeeeeeeee its not doing it like every frame or something
-			if data.header == 'expungedHeading' then
-				me = graphics:newAnimatedSprite('dave/songHeadings/expungedHeading', {{anim = 'idle', name = 'Expunged', loops = true}}, 'idle')
-			elseif data.header == 'unfairHeading' then
-				me = graphics:newAnimatedSprite('dave/songHeadings/unfairHeading', {{anim = 'idle', name = 'Unfairness', loops = true}}, 'idle')
-			elseif data.header == 'botHeading' then
-				me = graphics:newAnimatedSprite('dave/songHeadings/botHeading', {{anim = 'idle', name = 'Bot trot', loops = true}}, 'idle')
-			elseif data.header == 'cheatingHeading' then
-				me = graphics:newAnimatedSprite('dave/songHeadings/cheatingHeading', {{anim = 'idle', name = 'Cheating', loops = true}}, 'idle')
-			elseif data.header == 'somethingHeading' then
-				me = graphics:newAnimatedSprite('dave/songHeadings/somethingHeading', {{anim = 'idle', name = 'Scramble', loops = true}}, 'idle')
-			elseif data.header == 'californiaHeading' then
-				me = graphics:newAnimatedSprite('dave/songHeadings/californiaHeading', {{anim = 'idle', name = 'California', loops = true}}, 'idle')
+			if animatedNameGuys[data.header] then
+				me = graphics:newAnimatedSprite('dave/songHeadings/'..data.header, {{anim = 'idle', name = animatedNameGuys[data.header], loops = true}}, 'idle')
 			else
 				me = graphics.newImage(paths.image('dave/songHeadings/'..data.header))
 			end
@@ -565,6 +562,7 @@ return {
 					if curSong:lower() == 'cheating' and settings.modcharts then strum = strumTable[scramble[id]] end
 					if ghNote then strum = ghStrums[note[2]+1] end
 					--print('my strum is', strum, id)
+					noteREAL.strumTime = note[1] --i should really just rewrite this whole system
 					table.insert(noteTable[id], noteREAL)
 					table.insert(noteDataTable[id], {
 						id = id,
@@ -591,6 +589,7 @@ return {
 							sus.x = strumTable[id].x
 							sus.dontdraw = true
 							--sus.offsetY = -10
+							sus.strumTime = note[1] + susNote
 							table.insert(noteTable[id], sus)
 							table.insert(noteDataTable[id], {
 								id = id,
@@ -691,18 +690,13 @@ return {
 		--		end
 		--	end
 		--end
-
-		--if settings.downscroll then
-		--	for i = 1, 4 do
-		--		table.sort(enemyNotes[i], function(a, b) return a.y > b.y end)
-		--		table.sort(boyfriendNotes[i], function(a, b) return a.y > b.y end)
-		--	end
-		--else
-		--	for i = 1, 4 do
-		--		table.sort(enemyNotes[i], function(a, b) return a.y < b.y end)
-		--		table.sort(boyfriendNotes[i], function(a, b) return a.y < b.y end)
-		--	end
-		--end
+		local function sort(a, b) return a.strumTime < b.strumTime end
+		for i = 1, 4 do
+			table.sort(enemyNotes[i], sort)
+			table.sort(boyfriendNotes[i], sort)
+			table.sort(enemyNoteData[i], sort) 
+			table.sort(boyfriendNoteData[i], sort)
+		end
 
 		-- Workarounds for bad charts that have multiple notes around the same place
 		--for i = 1, 4 do
@@ -1072,11 +1066,9 @@ return {
 				note.x = enemyArrow.x
 				note.y = enemyArrow.y + (enemyNoteData[j].distance * (settings.downscroll and -1 or 1))
 				if not randomSpeed and (settings.downscroll and note.y < -1000 or note.y > 1000) then
-					--enemyNotesToDraw = j
+					enemyNotesToDraw[noteNum] = j - 1
 					
-					if curSong:lower() == 'splitathon' then
-						break;
-					end
+					break
 				else
 					note.dontdraw = false
 				end
@@ -1142,10 +1134,8 @@ return {
 				note.x = boyfriendArrow.x
 				note.y = boyfriendArrow.y + (boyfriendNoteData[i].distance * (settings.downscroll and -1 or 1))
 				if not randomSpeed and (settings.downscroll and note.y < -1000 or note.y > 1000) then
-					--boyfriendNotesToDraw = i
-					if curSong:lower() == 'splitathon' then
-						break;
-					end
+					boyfriendNotesToDraw[noteNum] = i - 1
+					break;
 				else
 					note.dontdraw = false
 				end
@@ -1443,21 +1433,22 @@ return {
 
 			love.graphics.push()
 			--love.graphics.translate(0, -musicPos)
-			for j = #enemyNotes[i], 1, -1 do
-				if not enemyNotes[i][j].dontdraw and (not settings.downscroll and enemyNotes[i][j].y - enemyArrows[i].y <= 1000) or (settings.downscroll and enemyNotes[i][j].y - enemyArrows[i].y >= -1000) then
-					local animName = enemyNotes[i][j]:getAnimName()
-					
-					graphics.setColor(1, 1, 1, (enemyNoteData[i][j].alpha or 1) * (enemyNoteData[i][j].alphaMult or 1) * (enemyNoteData[i][j].strum.alpha or 1))
-					enemyNotes[i][j]:draw()
-					graphics.setColor(1, 1, 1)
+			if not settings.downscroll and enemyNotesToDraw[i] > 0 or settings.downscroll and #enemyNotes > 0 then
+				for j = (settings.downscroll and 1 or enemyNotesToDraw[i]), (settings.downscroll and enemyNotesToDraw[i] or 1), (settings.downscroll and 1 or -1) do
+					--if not enemyNotes[i][j].dontdraw then
+						graphics.setColor(1, 1, 1, (enemyNoteData[i][j].alpha or 1) * (enemyNoteData[i][j].alphaMult or 1) * (enemyNoteData[i][j].strum.alpha or 1))
+						enemyNotes[i][j]:draw()
+						graphics.setColor(1, 1, 1)
+					--end
 				end
 			end
-			for j = #boyfriendNotes[i], 1, -1 do
-				if not boyfriendNotes[i][j].dontdraw and (not settings.downscroll and boyfriendNotes[i][j].y - boyfriendArrows[i].y <= 1000) or (settings.downscroll and boyfriendNotes[i][j].y - boyfriendArrows[i].y >= -1000) then
-					local animName = boyfriendNotes[i][j]:getAnimName()
-
-					graphics.setColor(1, 1, 1, (boyfriendNoteData[i][j].alpha or 1) * (boyfriendNoteData[i][j].alphaMult or 1) * (boyfriendNoteData[i][j].strum.alpha or 1))
-					boyfriendNotes[i][j]:draw()
+			if not settings.downscroll and boyfriendNotesToDraw[i] > 0 or settings.downscroll and #boyfriendNotes > 0 then
+				for j = (settings.downscroll and 1 or boyfriendNotesToDraw[i]), (settings.downscroll and boyfriendNotesToDraw[i] or 1), (settings.downscroll and 1 or -1) do
+					--print(boyfriendNotesToDraw, i, j)
+					--if not boyfriendNotes[i][j].dontdraw then
+						graphics.setColor(1, 1, 1, (boyfriendNoteData[i][j].alpha or 1) * (boyfriendNoteData[i][j].alphaMult or 1) * (boyfriendNoteData[i][j].strum.alpha or 1))
+						boyfriendNotes[i][j]:draw()
+					--end
 				end
 			end
 			graphics.setColor(1, 1, 1)

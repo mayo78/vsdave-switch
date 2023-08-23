@@ -1071,7 +1071,7 @@ return {
 			completeScore = (completeScore or 0) + score
 			playedCutscene = false
 			if songIndex == 3 and curWeek == '_WEEK2' then
-				switchState(videoState, 'mazeCutscene')
+				switchState(mazeCutscene)
 			else
 				switchState(stage)
 			end

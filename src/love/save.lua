@@ -38,12 +38,12 @@ if settingsRaw then
 	for _,line in pairs(hiii) do
 		local typey, key, value = unpack(line:split ' ')
 		if value then
-			--print('reading this', line)
+			print('reading this', line)
 			if typey == 'number' then value = tonumber(value)
 			elseif typey == 'boolean' then value = value == 'true'
 			elseif typey == 'table' then value = value:split ','
 			end
-			--print('got value', value)
+			print('got value', value)
 			--if type(value) == 'table' then print(table.concat(value, ';')) end
 			s.save[key] = value
 		end

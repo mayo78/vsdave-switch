@@ -104,6 +104,9 @@ return function()
 				back = {"key:escape", "button:b"},
 				pause = {"key:return", "button:start"},
 
+				a = {"key:return", "button:a"},
+				b = {"key:escape", "button:b"},
+
 				gameLeft = gameLeft,
 				gameDown = gameDown,
 				gameUp = gameUp,

@@ -204,6 +204,7 @@ return {
         fonts('comic', 24)
         local desc = lm.string['desc_'..aaa]
         printfOutline(desc, -((#desc/2) * (24/2)), fromTopLeft(0, 720 - 58).y, 9999)
+        printfOutline('Version '..tostring(version), -1280/2, -720/2 + 16)
         
 
         love.graphics.push()

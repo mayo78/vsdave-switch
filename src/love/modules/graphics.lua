@@ -405,18 +405,11 @@ return {
 					local flixelOffset
 					local firstFrame = anim.frames and frameData[anim.frames[1]] or nil
 					local firstFrameOffsets
-					if anim.flixelOffset then
-						--if self.dothecoolthing then print('me offset is', anim.offsetX, anim.offsetY, anim.name) end
-						--drawData.x = drawData.x + anim.offsetX
-						--local widthScale = math.max(frameData[flooredFrame].width/drawData.width, drawData.width/frameData[flooredFrame].width)
-						--someone fix this plzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
-						drawData.x = drawData.x + ((drawData.width / 2) - anim.offsetX - (drawData.width/2) * self.offsetScale)
-						drawData.y = drawData.y - ((anim.offsetY/2) * self.offsetScale)
-					end
 					--self.width = width
 				end		
 				
-				if drawData then		
+				if drawData then
+					love.graphics.translate(-(anim.offsetX or 0), -(anim.offsetY or 0)/2) --i dont know if this is better than the previous system
 					love.graphics.draw(
 						drawData.sheet,
 						drawData.frame,
@@ -430,6 +423,7 @@ return {
 						self.shearX,
 						self.shearY
 					)
+					love.graphics.translate((anim.offsetX or 0), (anim.offsetY or 0)/2)
 				end
 			end,
 			setPosition = function(self, x, y)

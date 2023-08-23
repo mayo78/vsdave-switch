@@ -45,6 +45,7 @@ local canMove = true
 
 return {
 	enter = function(self, previous)
+		canMove = true
         selectSound = paths.sound('menu/select')
         confirmSound = paths.sound('menu/confirm')
 		logo = graphics:newAnimatedSprite('dave/title/logoBumpin', {{name = 'logo bumpin', anim = 'idle', loops = true}}, 'idle', true)
@@ -92,9 +93,6 @@ return {
 				Timer.after(1, function()
 					switchState(menuSelect)
 				end)
-			elseif input:pressed("back") then
-				audio.playSound(selectSound)
-				graphics.fadeOut(0.5, love.event.quit)
 			end
 
 			logo:update(dt)

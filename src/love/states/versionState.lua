@@ -11,11 +11,12 @@ return {
     update = function()
         if controls.pressed.confirm and not done then
             done = true
-            switchState(save.seenWarning and meuTitle or flashingState)
+            switchState(save.seenWarning and titleMenu or flashingState)
         end
     end,
     draw = function()
         love.graphics.push()
+		love.graphics.translate(lovesize.getWidth() / 2, lovesize.getHeight() / 2)
         fonts('comic', 32)
         for i,v in pairs(txtLines) do
             love.graphics.print(v, -((#v/2) * 16), (32*i) + 100)

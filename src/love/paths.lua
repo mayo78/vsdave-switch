@@ -79,7 +79,7 @@ end
 --simple whatever you call this lol
 function l.clearCache()
 	for k,i in pairs(imageCache) do
-		if not i.dontdumpplz and not dumpExclude[k] then
+		if not dumpExclude[k] then
 			i:release()
 			i = nil
 			imageCache[k] = nil

@@ -23,7 +23,6 @@ DEGREE_TO_RADIAN = math.pi/180
 --debugMode = true
 function love.load()
 	--extra useful functions
-	love.graphics.dontdumpplz = true
 	function table.copy(t,st,copyMeta,x)
 		if (copyMeta == nil) then copyMeta = true; end
 		x = x or 0;
@@ -97,8 +96,11 @@ function love.load()
 
 	versionTable = require 'version'
 	version = versionTable:new(0, 1, 0)
-	http = require 'socket.http'
-	onlineVersion = versionTable:fromString(http.request 'https://raw.githubusercontent.com/mayo78/vsdave-switch/main/version.txt')
+	--local ssl = require 'ssl'
+	--local body, code, headers, status = http.request("https://raw.githubusercontent.com/mayo78/vsdave-switch/main/version.txt")
+	--print(code, status, body)
+	onlineVersion = versionTable:new(-999999, -999999, -999999) --fuck this
+
 
 	printf = love.graphics.printf
 	function printfOutline(text, x, y, limit, extra)
@@ -236,6 +238,7 @@ function love.load()
 	debugMenu = require "states.debug-menu"
 	titleMenu = require "states.menu.titleMenu"
 	versionState = require 'states.versionState'
+	flashingState = require 'states.flashingState'
 	menuWeek = require "states.menu.menuWeek"
 	menuSelect = require "states.menu.menuSelect"
 	menuSettings = require 'states.menu.menuSettings'
@@ -243,6 +246,7 @@ function love.load()
 	weeks = require "states.weeks"
 	videoState = require 'states.video'
 	endings = require 'states.ending'
+	mazeCutscene = require 'states.mazeCutscene'
 
 	-- Load substates
 	gameOver = require "substates.game-over"
@@ -309,11 +313,13 @@ function love.load()
 	musicTime = 0
 	health = 0
 
-	if onlineVersion and onlineVersion > version then
-		switchState(versionState)
-	else
-		switchState(save.seenWarning and meuTitle or flashingState)
-	end
+	print(tostring(version), tostring(onlineVersion))
+
+	--if onlineVersion and onlineVersion > version then
+	--	switchState(versionState)
+	--else
+		switchState(save.save.seenWarning and titleMenu or flashingState)
+	--end
 	 
 	character = require 'objects.character'
 	--local testChar = character.new 'bf'
@@ -411,7 +417,7 @@ local function drawWhatever()
 		love.graphics.print(status.getDebugStr(settings.showDebug), 5, 5, nil, 0.5, 0.5)
 	end
 	fonts('comic', 16)
-	love.graphics.printf(" FPS: ".. love.timer.getFPS()..'\n ≈RAM:'..math.floor((love.graphics.getStats().texturememory + collectgarbage 'count')/1048576) .. 'MB', 0, 0, 9999)
+	love.graphics.print(" FPS: ".. love.timer.getFPS()) --..'\n ≈RAM:'..math.floor((love.graphics.getStats().texturememory + collectgarbage 'count')/1048576) .. 'MB', 0, 0, 9999)
 	fonts('comic', 24)
 	
 end

@@ -13,14 +13,15 @@ return {
             done = true
             settings.eyesores = controls.pressed.a
             settings:save()
-            switchState(meuTitle)
+            switchState(titleMenu)
         end
     end,
     draw = function()
         love.graphics.push()
+		love.graphics.translate(lovesize.getWidth() / 2, lovesize.getHeight() / 2)
         fonts('comic', 32)
         for i,v in pairs(txtLines) do
-            love.graphics.print(v, -((#v/2) * 16), (32*i) + 100)
+            love.graphics.print(v, -((#v/2) * 16), (32*i) - ((#txtLines * 32)/2))
         end
         love.graphics.pop()
     end,
