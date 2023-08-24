@@ -29,6 +29,10 @@ function l:new(...)
 	mt.__le = function(a, b)
 		return mt.__eq(a,b) or mt.__lt(a,b)
 	end
+	mt.__gt = function(a, b) return not mt.__lt(a, b) end --i dont thinki this is a thing but maybe it works awesomely
+	mt.__ge = function(a, b) 
+		return mt.__gt(a, b) or mt.__eq(a, b) 
+	end
 	mt.__name = function()
 		return table.concat(ver.raw, '.')
 	end

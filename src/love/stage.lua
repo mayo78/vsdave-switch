@@ -320,6 +320,7 @@ local stages = {
 		end
 		local bg = newSprite('dave/backgrounds/shared/'..skyType, -600/4, -300)
 		bg.alphaMult = 1
+		bg.scrollFactor = point(0.65, 0.65)
 		add(bg)
 
 		local flatgrass = newSprite('dave/backgrounds/farm/gm_flatgrass', -317.5,  -385)
@@ -1166,5 +1167,9 @@ return {
 		eventEvents = nil
 		shredderMode = false
 		weeks:leave()
+	end,
+
+	addSpr = function(self, spr)
+		add(spr)
 	end
 }

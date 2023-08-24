@@ -137,6 +137,7 @@ local curSubtitle
 local combospr
 local readyImg, setImg, goImg
 local pauseOffset = 0
+local stageLight, stageLightOn
 --stolen from my dave psych port lol!
 local function getData(song)
 	local aa = love.filesystem.read('data/credits.txt'):split '\n'
@@ -184,7 +185,7 @@ return {
 		curSong = funkin.curSong
 		jsonChart = paths.song(curSong) -- funkin.difficulty)
 		self.jsonChart = jsonChart
-		randomSpeed = curSong:lower() == 'unfairness' or curSong:lower() == 'exploitation'
+		randomSpeed = settngs.modcharts and (curSong:lower() == 'unfairness' or curSong:lower() == 'exploitation')
 		--eventChart = paths.event(curSong)
 
 		local healths = {
@@ -327,6 +328,8 @@ return {
 	end,
 
 	initUI = function(self)
+		stageLight = nil
+		stageLightOn = false
 		events = {}
 		enemyNotes = {}
 		enemyNoteData = {}
@@ -673,6 +676,20 @@ return {
 								end
 							end
 						end
+					elseif event[1] == 'stageLightToggle' and not stageLight then
+						stageLight = graphics.newImage(paths.image'dave/spotlight')
+						stageLight.y = enemyObject.y - 200
+						stageLight.blendMode = 'add'
+						stageLight.dontdraw = true;
+						stageLight.dontupdate = true
+						local meangle = 0
+						local et = 0
+						function stageLight:update(dt)
+							et = et + dt
+							meangle = math.sin(et)
+							stageLight.orientation = meangle * DEGREE_TO_RADIAN
+						end
+						stage:addSpr(stageLight) --woops
 					end
 				end
 			end
@@ -1114,6 +1131,7 @@ return {
 					table.remove(enemyNoteData, j)
 				end
 			end
+			if randomSpeed then enemyNotesToDraw[noteNum] = #enemyNote end
 			if input:pressed(curInput) and not strumsBlocked[noteNum] then
 				boyfriendArrow:animate("press", false)
 			end
@@ -1254,7 +1272,7 @@ return {
 				end
 			end
 			local forcedMiss = false
-			if not settings.modcharts and (randomSpeed) then forcedMiss = input:pressed(curInput) and not pressedNote end
+			if randomSpeed then forcedMiss = input:pressed(curInput) and not pressedNote end
 			if noteMissed or forcedMiss then
 				notMissed[noteNum] = false
 				if not noMissMode then
@@ -1291,6 +1309,7 @@ return {
 			if input:released(curInput) then
 				boyfriendArrow:animate("off", false)
 			end
+			if randomSpeed then boyfriendNotesToDraw[noteNum] = #boyfriendNote end
 		end
 
 		if health > 20 and boyfriendIcon:getAnimName() == "losing" then
@@ -1299,7 +1318,7 @@ return {
 			if camShaking then
 				if funkin.curSong == 'blocked' or funkin.curScore == 'corn-theft' or funkin.curSong == 'maze' then
 					love.system.openURL 'https://www.youtube.com/watch?v=HtfxYr4uV9k' --would this even work lol?? also reupload!
-					os.exit(0)
+					love.event.quit()
 				else
 					save.save['unlocked_bambi-3d'] = true
 					save:writeSave()
@@ -1669,6 +1688,11 @@ return {
 						switchController:setVibration()
 					end
 				end
+			end,
+			stageLightToggle = function()
+				stageLightOn = not stageLightOn
+				stageLight.dontdraw = false
+				stageLight.dontupdate = false
 			end
 		}
 		print('DOING EVENT', n, v1, v2)
