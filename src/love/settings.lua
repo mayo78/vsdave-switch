@@ -68,7 +68,7 @@ function settings:reset()
 				end
 				--print('got value', value)
 				--if type(value) == 'table' then print(table.concat(value, ';')) end
-				tempSettings[key] = value
+				settings[key] = value
 			end
 		end
 		love.audio.setVolume(settings.volume)
