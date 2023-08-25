@@ -13,14 +13,16 @@ function s:writeSave()
 		end
 		table.insert(lines, table.concat({type(v), k, value}, ' '))
 	end
-	love.filesystem.write('save.txt', table.concat(lines, '\n'))
+	local str = table.concat(lines, '\n')
+	love.filesystem.write('save.txt', str)
 	local highlines = {}
 	for k,v in pairs(s.highscores) do
 		local yay = table.concat({k, v}, ' ')
 		print('saving line', table.concat({k, v}, ' '))
 		table.insert(highlines, yay)
 	end
-	love.filesystem.write('highscores.txt', table.concat(highlines, '\n'))
+	local highstr = table.concat(highlines, '\n')
+	love.filesystem.write('highscores.txt', highstr)
 	return str, highstr
 end
 --settings:writeSave()

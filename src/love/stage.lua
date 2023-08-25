@@ -1,21 +1,4 @@
---[[----------------------------------------------------------------------------
-This file is part of Friday Night Funkin' Rewritten
 
-Copyright (C) 2021  HTV04
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-------------------------------------------------------------------------------]]
 
 local song, difficulty
 
@@ -1019,7 +1002,7 @@ return {
 		weeks:load()
 
 		self:initUI()
-		if storyMode and love.filesystem.getInfo('data/dialogue/'..funkin.curSong..'.txt') and not playedCutscene then
+		if storyMode and paths.dialogue(funkin.curSong) and not playedCutscene then
 			playedCutscene = true
 			openSubstate(dialogue, false, funkin.curSong)
 		else
@@ -1062,7 +1045,7 @@ return {
 		updateTable(sprites, dt)
 	end,
 	songEnd = function(self)
-		if storyMode and songFinished and love.filesystem.getInfo('data/dialogue/'..funkin.curSong..'-endDialogue.txt') and not cutscene then
+		if storyMode and songFinished and paths.dialogue(funkin.curSong..'-endDialogue') and not cutscene then
 			print('hi ')
 			openSubstate(dialogue, false, funkin.curSong..'-endDialogue', true)
 			dont = true

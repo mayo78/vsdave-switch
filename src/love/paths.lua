@@ -76,6 +76,13 @@ end
 function l.voices(song)
 	return l.music('songs/'..song:lower()..'/Voices', 'stream')
 end
+
+function l.dialogue(key)
+	local langPath = 'locale/'..lm.language..'/data/dialogue/'..key..'.txt'
+	if love.filesystem.getInfo(langPath) then return love.filesystem.read(langPath) end
+	local path = 'data/dialogue/'..key..'.txt'
+	if love.filesystem.getInfo(path) then return love.filesystem.read(path) end
+end
 --simple whatever you call this lol
 function l.clearCache()
 	for k,i in pairs(imageCache) do

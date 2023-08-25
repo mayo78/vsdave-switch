@@ -24,7 +24,7 @@ return {
 			pauseVid = true 
 			curAudio:stop()
 		end
-		if started and not curVid:isAnimated() and not leaving then
+		if (started and not curVid:isAnimated() or pauseVid) and not leaving then
 			leaving = true
 			switchState(stage)
 		end

@@ -1,8 +1,7 @@
 // TITLE STATE
-Presiona Enter para empezar
 
 // OUTDATED SUBSTATE //
-introWarningFirstPlay==Hola! Este mod utiliza shaders que le puede resultar perturbador a algunos. Si deseas sacarlos, presiona N, al contrario, presiona Y. Puedes cambiar esto en el menu de opciones. También, Supernovae y Glitch no se deben de tomar seriamente, y no están compuestas por mí. Supernovae fue compuesta por "ArchWk" y Glitch por "The Boneyard"
+introWarningFirstPlay==Hola! Este mod utiliza shaders que le puede resultar perturbador a algunos. Si deseas sacarlos, presiona B, al contrario, presiona A. Puedes cambiar esto en el menu de opciones. También, Supernovae y Glitch no se deben de tomar seriamente, y no están compuestas por mí. Supernovae fue compuesta por "ArchWk" y Glitch por "The Boneyard"
 introWarningSeen==Este mod utiliza shaders que le puede resultar perturbador a algunos. Si deseas sacarlos, desactiva la opcion de "Efectos" en el menu de opciones. También, Supernovae y Glitch no se deben de tomar seriamente, y no están compuestas por mí. Supernovae fue compuesta por "ArchWk" y Glitch por "The Boneyard" Presiona Enter para continuar.
 intoWarningExpunged==Cobarde.
 

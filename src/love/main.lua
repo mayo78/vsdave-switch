@@ -108,6 +108,7 @@ function love.load()
 		if extra.font or extra.size then
 			fonts(extra.font or 'comic', extra.size or 24)
 		end
+		extra.color = extra.color or {1, 1, 1}
 		extra.size = extra.size or 24
 		extra.depth = extra.depth or 0.1 --non ints make a cool outline
 		
@@ -122,8 +123,9 @@ function love.load()
 		printf(text, x + extra.depth * extra.size, y + extra.depth * extra.size, limit or 9999)
 		printf(text, x, y + extra.depth * extra.size, limit or 9999)
 		printf(text, x - extra.depth * extra.size, y + extra.depth * extra.size, limit or 9999)
-		love.graphics.setColor(1, 1, 1, extra.alpha or 1)
+		love.graphics.setColor(extra.color[1], extra.color[2], extra.color[3], extra.alpha or 1)
 		printf(text, x, y, limit or 9999)
+		love.graphics.setColor(1, 1, 1, 1)
 		love.graphics.pop()
 	end
 
@@ -239,6 +241,7 @@ function love.load()
 	titleMenu = require "states.menu.titleMenu"
 	versionState = require 'states.versionState'
 	flashingState = require 'states.flashingState'
+	languageState = require 'states.languageState'
 	menuWeek = require "states.menu.menuWeek"
 	menuSelect = require "states.menu.menuSelect"
 	menuSettings = require 'states.menu.menuSettings'
@@ -318,7 +321,7 @@ function love.load()
 	--if onlineVersion and onlineVersion > version then
 	--	switchState(versionState)
 	--else
-		switchState(save.save.seenWarning and titleMenu or flashingState)
+		switchState(settings.language and titleMenu or languageState)
 	--end
 	 
 	character = require 'objects.character'

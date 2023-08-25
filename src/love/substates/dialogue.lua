@@ -144,7 +144,7 @@ return {
 		end
 		print('am i end ignasr k;gh ', endDial)
 
-		local raw = love.filesystem.read('data/dialogue/'..dial..'.txt')
+		local raw = paths.dialogue(dial)
 		--print('MY RAW ASS IS ', raw)
 		dialogue = {}
 		for k,v in pairs(raw:split'\n') do
