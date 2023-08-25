@@ -72,6 +72,13 @@ local function drawTable(sprites)
 			spr = weeks:getCurGirlfriend()
 		end
 		if not spr.dontdraw then
+			if spr.stageLight and stageOverlay.alpha > 0 then
+				love.graphics.scale(1/curCamZoom, 1/curCamZoom)
+				graphics.setColor(stageOverlay[1], stageOverlay[2], stageOverlay[3], stageOverlay.alpha)
+				love.graphics.rectangle("fill", -1280/2, -720/2, 1280, 720)
+				graphics.setColor(1, 1, 1, 1)
+				love.graphics.scale(curCamZoom, curCamZoom)
+			end
 			love.graphics.push()
 			if not spr.scrollFactor then 
 				spr.scrollFactor = point(1, 1)
@@ -1055,7 +1062,7 @@ return {
 		updateTable(sprites, dt)
 	end,
 	songEnd = function(self)
-		if songFinished and love.filesystem.getInfo('data/dialogue/'..funkin.curSong..'-endDialogue.txt') and not cutscene then
+		if storyMode and songFinished and love.filesystem.getInfo('data/dialogue/'..funkin.curSong..'-endDialogue.txt') and not cutscene then
 			print('hi ')
 			openSubstate(dialogue, false, funkin.curSong..'-endDialogue', true)
 			dont = true

@@ -132,6 +132,9 @@ return {
 			else
 				switchState(stage)
 			end
+		elseif controls.pressed.back and not leaving then
+			leaving = true
+			switchState(menuSelect)
 		end
 		for i=1,3 do
 			curColor[i] = lerp(curColor[i], colory[i], dt * 15)
@@ -140,9 +143,6 @@ return {
 			butt.x = lerp(butt.x, targetButt[i], dt * 20)
 		end
 		curScore = math.floor(lerp(curScore, targetScore, 0.4))
-	elseif controls.pressed.back and not leaving then
-		leaving = true
-		switchState(menuSelect)
 	end,
 
 	draw = function(self)

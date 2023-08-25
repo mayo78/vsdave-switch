@@ -77,7 +77,7 @@ local boyfriends = {}
 local dads = {}
 local gfs = {}
 
-local stageOverlay = {0, 0, 0, alpha = 0}
+stageOverlay = {0, 0, 0, alpha = 0}
 local stageMode = false
 
 local elapseduitime = 0
@@ -180,12 +180,16 @@ return {
 			death = paths.sounds("death", "static")
 		}
 
+		for _,v in pairs(sounds.miss) do
+			v:setVolume(0.25)
+		end
+
 
 
 		curSong = funkin.curSong
 		jsonChart = paths.song(curSong) -- funkin.difficulty)
 		self.jsonChart = jsonChart
-		randomSpeed = settngs.modcharts and (curSong:lower() == 'unfairness' or curSong:lower() == 'exploitation')
+		randomSpeed = settings.modcharts and (curSong:lower() == 'unfairness' or curSong:lower() == 'exploitation')
 		--eventChart = paths.event(curSong)
 
 		local healths = {
@@ -678,16 +682,19 @@ return {
 						end
 					elseif event[1] == 'stageLightToggle' and not stageLight then
 						stageLight = graphics.newImage(paths.image'dave/spotlight')
-						stageLight.y = enemyObject.y - 200
+						stageLight.y = -200
+						stageLight.x = -400
 						stageLight.blendMode = 'add'
-						stageLight.dontdraw = true;
+						stageLight.dontdraw = true
 						stageLight.dontupdate = true
+						stageLight.stageLight = true
 						local meangle = 0
 						local et = 0
 						function stageLight:update(dt)
 							et = et + dt
-							meangle = math.sin(et)
+							meangle = (math.sin(et * 2) * 10)
 							stageLight.orientation = meangle * DEGREE_TO_RADIAN
+							stageLight.x = lerp(stageLight.x, mustHitSection and 150 or -390, math.boundTo(dt * 2.4, 0, 1))
 						end
 						stage:addSpr(stageLight) --woops
 					end
@@ -975,12 +982,14 @@ return {
 		enemyObject:update(dt)
 		boyfriendObject:update(dt)
 
-		if musicThres ~= oldMusicThres and math.fmod(absMusicTime, 120000 / bpm) < 100 then
+		if musicThres ~= oldMusicThres and math.fmod(absMusicTime, 40000 / bpm) < 100 then
 			if not girlfriend:isAnimated() then
 				girlfriendObject:dance()
 
 				--girlfriend:setAnimSpeed(14.4 / (60 / bpm))
 			end
+		end
+		if musicThres ~= oldMusicThres and math.fmod(absMusicTime, 120000 / bpm) < 100 then
 			if not enemy:isAnimated() then
 				enemyObject:dance()
 				if not mustHitSection then camOffset = point() end
@@ -1218,17 +1227,23 @@ return {
 						end
 
 						ratingVisibility[1] = 1
+						rating.x = girlfriend.x
 						rating.y = girlfriend.y - 50
+						combospr.x = girlfriend.x
 						combospr.y = rating.y + 50
 						for i = 1, 3 do
+							numbers[i].x = girlfriend.x - 100 + 50 * i
 							numbers[i].y = girlfriend.y + 50
 						end
 
 						ratingTimers[1] = Timer.tween(0.5, ratingVisibility, {0}, 'in-expo')
 						ratingTimers[2] = Timer.tween(0.5, rating, {y = rating.y + love.math.random(50, 60)}, "in-back", nil, 5)
 						ratingTimers[3] = Timer.tween(0.5, combospr, {y = combospr.y + love.math.random(50, 60)}, 'in-back', nil, 5)
+						ratingTimers[10] = Timer.tween(0.5, rating, {x = rating.x + love.math.random(-5, 5)}, 'out-quad')
+						ratingTimers[11] = Timer.tween(0.5, combospr, {x = combospr.x + love.math.random(-5, 5)}, 'out-quad')
 						for i=1,3 do 
 							ratingTimers[i+3] = Timer.tween(0.5, numbers[i], {y = numbers[i].y + love.math.random(50, 60)}, "in-back", nil, 5)
+							ratingTimers[i+6] = Timer.tween(0.5, numbers[i], {x = numbers[i].x + love.math.random(-5, 5)}, 'out-quad')
 						end
 					
 
@@ -1405,7 +1420,7 @@ return {
 
 	drawUI = function(self)
 		love.graphics.push()
-		if stageOverlay.alpha > 0 then
+		if stageOverlay.alpha > 0 and not stageLightOn then
 			graphics.setColor(stageOverlay[1], stageOverlay[2], stageOverlay[3], stageOverlay.alpha)
 			love.graphics.rectangle("fill", 0, 0, 1280, 720)
 			graphics.setColor(1, 1, 1, 1)
@@ -1454,20 +1469,20 @@ return {
 			--love.graphics.translate(0, -musicPos)
 			if not settings.downscroll and enemyNotesToDraw[i] > 0 or settings.downscroll and #enemyNotes > 0 then
 				for j = (settings.downscroll and 1 or enemyNotesToDraw[i]), (settings.downscroll and enemyNotesToDraw[i] or 1), (settings.downscroll and 1 or -1) do
-					--if not enemyNotes[i][j].dontdraw then
+					if enemyNotes[i][j] then
 						graphics.setColor(1, 1, 1, (enemyNoteData[i][j].alpha or 1) * (enemyNoteData[i][j].alphaMult or 1) * (enemyNoteData[i][j].strum.alpha or 1))
 						enemyNotes[i][j]:draw()
 						graphics.setColor(1, 1, 1)
-					--end
+					end
 				end
 			end
 			if not settings.downscroll and boyfriendNotesToDraw[i] > 0 or settings.downscroll and #boyfriendNotes > 0 then
 				for j = (settings.downscroll and 1 or boyfriendNotesToDraw[i]), (settings.downscroll and boyfriendNotesToDraw[i] or 1), (settings.downscroll and 1 or -1) do
 					--print(boyfriendNotesToDraw, i, j)
-					--if not boyfriendNotes[i][j].dontdraw then
+					if boyfriendNotes[i][j] then
 						graphics.setColor(1, 1, 1, (boyfriendNoteData[i][j].alpha or 1) * (boyfriendNoteData[i][j].alphaMult or 1) * (boyfriendNoteData[i][j].strum.alpha or 1))
 						boyfriendNotes[i][j]:draw()
-					--end
+					end
 				end
 			end
 			graphics.setColor(1, 1, 1)
@@ -1691,8 +1706,8 @@ return {
 			end,
 			stageLightToggle = function()
 				stageLightOn = not stageLightOn
-				stageLight.dontdraw = false
-				stageLight.dontupdate = false
+				stageLight.dontdraw = not stageLightOn
+				stageLight.dontupdate = not stageLightOn
 			end
 		}
 		print('DOING EVENT', n, v1, v2)
