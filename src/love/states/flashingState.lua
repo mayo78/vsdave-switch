@@ -1,7 +1,6 @@
 
 local done = false
-local txt = [[This mod contains flashing lights and shaders that can strain your eyes!
-Press A to continue with them enabled, press B to disable them.]]
+local txt = lm.introWarningFirstPlay
 local txtLines = txt:split '\n'
 return {
     enter = function()
