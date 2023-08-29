@@ -796,32 +796,65 @@ return {
 									"linear",
 									function()
 										mustHitSection = not mustHitSection
-										countingDown = false
+										if not greetingsCutscene then
+											countingDown = false
 
-										previousFrameTime = love.timer.getTime() * 1000
-										musicTime = 0
-										if inst then 
-											inst:play()
-										end
-										if voices then voices:play() end
-										if songHeader then
-											Timer.tween(0.5, songHeader, {x = songHeader.x + (songHeader.width * songHeader.sizeX)}, 'out-back', function()
-												Timer.after(0.5, function() Timer.tween(0.5, songHeader, {x = songHeader.x - (songHeader.width * songHeader.sizeX)}, 'in-back') end)
+											previousFrameTime = love.timer.getTime() * 1000
+											musicTime = 0
+											if inst then 
+												inst:play()
+											end
+											if voices then voices:play() end
+											if songHeader then
+												Timer.tween(0.5, songHeader, {x = songHeader.x + (songHeader.width * songHeader.sizeX)}, 'out-back', function()
+													Timer.after(0.5, function() Timer.tween(0.5, songHeader, {x = songHeader.x - (songHeader.width * songHeader.sizeX)}, 'in-back') end)
+												end)
+											end
+											if table.contains({'polygonized', 'interdimensional', 'five-nights'}, curSong:lower()) then
+												local img = paths.image((curSong:lower() == 'five-nights') and 'dave/ui/doorWarning' or 'dave/ui/shapeNoteWarning')
+												local hi = graphics.newImage(img)
+												hi.x = hi.width - ((1280/2)/0.7)
+												local they = ((720/2)/0.7) - ((hi.height/0.7)/2)
+												local othery = ((720/2)/0.7) + ((hi.height/0.7))
+												hi.y = othery
+												hi.alpha = 0
+												hi.sizeX, hi.sizeY = 1/0.7, 1/0.7
+												shapeWarning = hi
+												Timer.tween(1, shapeWarning, {alpha = 1, y = they}, 'out-back', function()
+													Timer.after(2, function()
+														Timer.tween(1, shapeWarning, {alpha = 0, y = othery}, 'in-back')
+													end)
+												end)
+											end
+										else
+											for _,t in pairs{boyfriendArrows, enemyArrows} do
+												for _,me in pairs(t) do
+													Timer.tween(0.5, me, {alpha = 0})
+												end
+											end
+											
+											local hi = paths.music 'rumble'
+											hi:play()
+											local me = paths.sound 'transition'
+											-- local mydave = point(enemy.x, enemy.y)
+											local fly = true
+											local angle = 0
+											camShaking = true
+											stage:setOnUpdate(function(dt)
+												if fly then
+													dad.y = dad.y - dt * 50
+													angle = angle - dt * 6
+													dad.orientation = angle * DEGREE_TO_RADIAN
+												end
 											end)
-										end
-										if table.contains({'polygonized', 'interdimensional', 'five-nights'}, curSong:lower()) then
-											local img = paths.image((curSong:lower() == 'five-nights') and 'dave/ui/doorWarning' or 'dave/ui/shapeNoteWarning')
-											local hi = graphics.newImage(img)
-											hi.x = hi.width - ((1280/2)/0.7)
-											local they = ((720/2)/0.7) - ((hi.height/0.7)/2)
-											local othery = ((720/2)/0.7) + ((hi.height/0.7))
-											hi.y = othery
-											hi.alpha = 0
-											hi.sizeX, hi.sizeY = 1/0.7, 1/0.7
-											shapeWarning = hi
-											Timer.tween(1, shapeWarning, {alpha = 1, y = they}, 'out-back', function()
-												Timer.after(2, function()
-													Timer.tween(1, shapeWarning, {alpha = 0, y = othery}, 'in-back')
+											Timer.after(3, function()
+												me:play()
+												stageOverlay = {1, 1, 1, alpha = 0}
+												Timer.tween(3, stageOverlay, {alpha = 1}, nil, function()
+													fly = false
+													camShaking = false
+													stageOverlay = {0, 0, 0, alpha = 1}
+													openSubstate(dialogue, false, 'greetings-cutscene', true)
 												end)
 											end)
 										end

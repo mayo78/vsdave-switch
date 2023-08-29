@@ -1,5 +1,5 @@
 
-
+--i just realized i should've used a json for the save someone remind me to convert later
 local curOS = love.system.getOS()
 --note: only string arrays supported! lol! get rekt! noob! loser!
 local settings = {}
@@ -111,6 +111,7 @@ if settings.settingsVer == 'DAVE_1' then --reset controls if settings are old ma
 	settings.gameFive = {'key:space', 'key:b', 'button:a'}
 	settings.confirm = {"key:return", "key:y", "button:b"}
 	settings.back = {"key:escape", "key:n", "button:a"}
+	settings.settingsVer = 'DAVE_2'
 end
 
 return settings

@@ -122,11 +122,13 @@ return {
 	enter = function(self, dial, endy)
 		musicTime = (240 / bpm) * -1000
 		leaving = false
-		song = paths.music(mesongs[funkin.curSong] or 'DaveDialogue')
-		song:setLooping(true)
-		song:setVolume(0)
+		if not greetingsCutscene then
+			song = paths.music(mesongs[funkin.curSong] or 'DaveDialogue')
+			song:setLooping(true)
+			song:setVolume(0)
+			song:play()
+		end
 		songVol = 0
-		song:play()
 		cutscene = true
 		dialIndex = 0
 		finishedDial = false
@@ -198,7 +200,9 @@ return {
 		end
 		if fadingOut then fadeOutAlpha = fadeOutAlpha + dt * 5 end
 		dropTxtColor[4] = songVol
-		song:setVolume(songVol)
+		if not greetingsCutscene then
+			song:setVolume(songVol)
+		end
 		if controls.pressed.confirm and not leaving then
 			if finishedDial then
 				nextDial()

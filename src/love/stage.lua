@@ -1161,5 +1161,8 @@ return {
 
 	addSpr = function(self, spr)
 		add(spr)
+	end,
+	setOnUpdate = function(self, ou)
+		onUpdate = ou
 	end
 }
