@@ -357,33 +357,30 @@ return {
 					local height
 
 
-					if options and options.noOffset then
-						print 'no offset!'
-						if framey.frameWidth and framey.frameWidth ~= 0 then
-							width = frameData[flooredFrame].frameX
-						end
-						if framey.frameHeight and framey.frameHeight ~= 0 then
-							height = frameData[flooredFrame].frameY
-						end
+					local offset = point(-(anim.offsetX or 0)/2, -(anim.offsetY or 0)/2)
+					local x,y = 0,0
+
+
+					if not framey.frameWidth or framey.frameWidth == 0 then
+						width = math.floor(frameData[flooredFrame].width / 2)
 					else
-						if not framey.frameWidth or framey.frameWidth == 0 then
-							width = math.floor(frameData[flooredFrame].width / 2)
-						else
-							width = math.floor(frameData[flooredFrame].frameWidth / 2) + frameData[flooredFrame].frameX
-						end
-						if not framey.frameHeight or framey.frameHeight == 0 then
-							height = math.floor(frameData[flooredFrame].height / 2)
-						else
-							height = math.floor(frameData[flooredFrame].frameHeight / 2) + frameData[flooredFrame].frameY
-						end
+						width = math.floor(frameData[flooredFrame].frameWidth / 2) + frameData[flooredFrame].frameX
 					end
+					if offset.x >= 0 then width = width + offset.x else x = x + offset.x end
+					if not framey.frameHeight or framey.frameHeight == 0 then
+						height = math.floor(frameData[flooredFrame].height / 2)
+					else
+						height = math.floor(frameData[flooredFrame].frameHeight / 2) + frameData[flooredFrame].frameY
+					end
+					if offset.y >= 0 then height = height + offset.y else y = y + offset.y end
+
 					drawData = {
 						sheet = sheet,
 						frame = frames[flooredFrame],
 						width = width + self.offsetX,
 						height = height + self.offsetY,
-						x = 0,
-						y = 0
+						x = x,
+						y = y
 					}
 					local flixelOffset
 					local firstFrame = anim.frames and frameData[anim.frames[1]] or nil
@@ -392,7 +389,6 @@ return {
 				end		
 				
 				if drawData then
-					love.graphics.translate(-(anim.offsetX or 0), -(anim.offsetY or 0)/2) --i dont know if this is better than the previous system
 					love.graphics.draw(
 						drawData.sheet,
 						drawData.frame,
@@ -406,7 +402,6 @@ return {
 						self.shearX,
 						self.shearY
 					)
-					love.graphics.translate((anim.offsetX or 0), (anim.offsetY or 0)/2)
 				end
 			end,
 			setPosition = function(self, x, y)
