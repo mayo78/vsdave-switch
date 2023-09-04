@@ -391,7 +391,7 @@ return {
 		inSocial = false
 		weirdAlpha = {0}
 		for i,v in ipairs(peopleInCredits) do
-			v.sprite = graphics.newImage(paths.image('dave/title/credits/icons/'..v.type..'/'..v.name:lower()))
+			v.sprite = graphics.newImage(paths.image('dave/title/credits/icons/'..v.type..'/'..(v.name:gsub('!', '')):lower()))
 			v.sprite.x = ((#v.name)/2 * 16) + v.sprite.width - 24
 			v.sprite.y = (100 * i) + 64
 			for _,v in pairs(v.socials) do
