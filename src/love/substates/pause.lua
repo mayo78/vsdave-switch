@@ -40,6 +40,7 @@ local funcs = {
 		closeSubstate()
 		inst:seek(inst:getDuration "seconds" - 0.3)
 		voices:seek(inst:getDuration "seconds" - 0.3)
+		skippingSong = true
 	end
 }
 return {

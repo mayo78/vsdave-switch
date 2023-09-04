@@ -27,3 +27,8 @@ tools/funkin-xna/*
 !tools/funkin-json-sniff/funkin-json-sniff.py
 !tools/funkin-xml/funkin-xml.py
 !tools/funkin-xna/funkin-xna.py
+
+# i imported exclusive bf as a test since they have very specific offsets and its easy to tell when the offset system isnt working
+src/love/images/png/characters/*
+src/love/characters/exclusive-bf.json
+src/love/images/png/dave/icons/exclusive-bf-pixel.png

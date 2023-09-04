@@ -102,7 +102,9 @@ return {
         states = {
             ['story mode'] = menuWeek,
             freeplay = menuFreeplay,
-            options = menuSettings
+            options = menuSettings,
+            credits = menuCredits,
+            ost = menuOst,
         }
 		menuButton = 1
 		songNum = 0

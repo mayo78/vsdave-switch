@@ -41,7 +41,9 @@ local killingmyself = {
 }
 
 local STUPIDNAMES = {
-	['post-maze'] = 'postmaze'
+	['post-maze'] = 'postmaze',
+	festival = 'festival_happy',
+	['festival-3d-scared'] = '3d_festival'
 }
 
 local song
@@ -108,7 +110,9 @@ local function nextDial()
 		end
 	else
 		leaving = true
-		song:stop()
+		if song then
+			song:stop()
+		end
 		--Timer.after(1, function()
 		--	song:stop()
 		--end)
@@ -220,11 +224,17 @@ return {
 	draw = function(self)
 		love.graphics.push()
 		fadeColor[4] = fadeAlpha
+		if greetingsCutscene then
+			love.graphics.setBlendMode 'replace'
+		end
 		graphics.setColor(rgb255(unpack(fadeColor)))
 		love.graphics.rectangle('fill', 0, 0, 1280, 720)
 		if fadeOutAlpha and fadeOutAlpha > 0 then
 			graphics.setColor(0, 0, 0, fadeOutAlpha)
 			love.graphics.rectangle('fill', 0, 0, 1280, 720)
+		end
+		if greetingsCutscene then
+			love.graphics.setBlendMode 'alpha'
 		end
 		graphics.setColor(1, 1, 1, portraitAlpha * songVol)
 		if curDial and curDial.animated then

@@ -154,6 +154,7 @@ return {
 			elseif controls.pressed.confirm then
 				love.audio.stop();
 				storyMode = false
+				curWeek = nil
 				funkin.curSong = songs[songIndex][1]
 				switchState(stage)
 			end

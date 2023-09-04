@@ -109,12 +109,15 @@ return {
 		--get xml and make it compatible with the graphics module
 		local xml = paths.xml(imagePth)
 		local anims = {}
+		local loopers = {}
 		for k,v in pairs(animations) do
 			--print('FROM '..imagePth, k, v)
 			local last
 			if not v.offsets then v.offsets = {0, 0} end
 			if not v.name then error('no name in anim!') end
 			local anim = {speed = v.fps or 24, offsetX = v.offsets[1], offsetY = v.offsets[2], flixelOffset = true, frames = {}, loops = v.loops or v.loop}
+			--print('anim:'..v.anim, 'loop:'..tostring(anim.loops))
+			loopers[v.anim] = anim.loops
 			for i,c in pairs(xml) do
 				--for k,v in pairs(c) do print(k, v) end
 				if c.name:lower():startsWith(v.name:lower()) then
@@ -134,7 +137,7 @@ return {
 			end
 			anims[v.anim] = anim
 		end
-		return self.newSprite(manualimage or paths.image(imagePth), xml, anims, defaultAnim, anims[defaultAnim] and anims[defaultAnim].loops or false), anims, xml
+		return self.newSprite(manualimage or paths.image(imagePth), xml, anims, defaultAnim, anims[defaultAnim] and anims[defaultAnim].loops or false, {loopers = loopers}), anims, xml
 	end,
 
 	newSprite = function(imageData, frameData, animData, animName, loopAnim, optionsTable)
@@ -165,6 +168,8 @@ return {
 
 		local drawData
 
+		local loopAnims = optionsTable and optionsTable.loopers or {}
+
 		local object = {
 			x = 0,
 			y = 0,
@@ -176,6 +181,8 @@ return {
 			shearX = 0,
 			shearY = 0,
 			offsetScale = 1,
+
+			debug = false,
 
 			setSheet = function(self, imageData)
 				sheet = imageData
@@ -189,6 +196,7 @@ return {
 			end,
 
 			animate = function(self, animName, loopAnim)
+				self.curAnim = animName
 				--print('playing this animation!', animName, loopAnim)
 				calledAnimCallback = false
 				isLooped = loopAnim
@@ -217,13 +225,16 @@ return {
 				anim.speed = anims[animName].speed
 				anim.offsetX = anims[animName].offsetX
 				anim.offsetY = anims[animName].offsetY
+				--if self.debug then
+				--	print('OFFSETS:', anim.offsetX, anim.offsetY)
+				--end
 				anim.flixelOffset = anims[animName].flixelOffset
 				anim.indices = anims[animName].indices
 				if anim.indices then anim.indices.index = 1 end
 				anim.frames = anims[animName].frames
 				if anim.frames then anim.frames.index = 1 end
-				if anim.loops ~= nil then isLooped = anim.loops end
-				if anim.loop ~= nil then isLooped = anim.loop end
+				if loopAnims[anim.name] then isLooped = loopAnims[anim.name] end
+				--if self.debug then print('MY LOOP IS THIS: ', isLooped) end
 
 				local data
 				if anim.frames then data = frameData[anim.frames[1]]
@@ -300,6 +311,9 @@ return {
 							frame = anim.start
 						end
 					else
+						if self.debug then
+							print 'FINISHED ANIM'
+						end
 						isAnimated = false
 						if not calledAnimCallback and self.onAnimComplete then
 							calledAnimCallback = true
@@ -308,8 +322,8 @@ return {
 					end
 				end
 			end,
-			screenCenter = function(self)
-				
+			getFrame = function(self)
+				return frame
 			end,
 			draw = function(self)
 				if isAnimated then
@@ -353,30 +367,21 @@ return {
 					y = math.floor(y)
 				end
 				if not pastLength then
-					local width
-					local height
+					local width, height
 
 
-					if options and options.noOffset then
-						print 'no offset!'
-						if framey.frameWidth and framey.frameWidth ~= 0 then
-							width = frameData[flooredFrame].frameX
-						end
-						if framey.frameHeight and framey.frameHeight ~= 0 then
-							height = frameData[flooredFrame].frameY
-						end
+
+					if not framey.frameWidth or framey.frameWidth == 0 then
+						width = math.floor(frameData[flooredFrame].width / 2)
 					else
-						if not framey.frameWidth or framey.frameWidth == 0 then
-							width = math.floor(frameData[flooredFrame].width / 2)
-						else
-							width = math.floor(frameData[flooredFrame].frameWidth / 2) + frameData[flooredFrame].frameX
-						end
-						if not framey.frameHeight or framey.frameHeight == 0 then
-							height = math.floor(frameData[flooredFrame].height / 2)
-						else
-							height = math.floor(frameData[flooredFrame].frameHeight / 2) + frameData[flooredFrame].frameY
-						end
+						width = math.floor(frameData[flooredFrame].frameWidth / 2) + frameData[flooredFrame].frameX
 					end
+					if not framey.frameHeight or framey.frameHeight == 0 then
+						height = math.floor(frameData[flooredFrame].height / 2)
+					else
+						height = math.floor(frameData[flooredFrame].frameHeight / 2) + frameData[flooredFrame].frameY
+					end
+
 					drawData = {
 						sheet = sheet,
 						frame = frames[flooredFrame],
@@ -385,10 +390,6 @@ return {
 						x = 0,
 						y = 0
 					}
-					local flixelOffset
-					local firstFrame = anim.frames and frameData[anim.frames[1]] or nil
-					local firstFrameOffsets
-					--self.width = width
 				end		
 				
 				if drawData then

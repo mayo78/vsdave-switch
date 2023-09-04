@@ -94,14 +94,6 @@ function love.load()
 		end
 	end
 
-	versionTable = require 'version'
-	version = versionTable:new(0, 1, 0)
-	--local ssl = require 'ssl'
-	--local body, code, headers, status = http.request("https://raw.githubusercontent.com/mayo78/vsdave-switch/main/version.txt")
-	--print(code, status, body)
-	onlineVersion = versionTable:new(-999999, -999999, -999999) --fuck this
-
-
 	printf = love.graphics.printf
 	function printfOutline(text, x, y, limit, extra)
 		extra = extra or {}
@@ -185,6 +177,8 @@ function love.load()
 		end
 	}
 
+	nickname = love.getNickname and love.getNickname() or 'User'
+
 	--shaders lol
 	shaders = require 'shaders'
 
@@ -233,19 +227,28 @@ function love.load()
 		setmetatable(t, mt)
 	end
 	
-	
+	http = require 'socket.http'
+
+	versionTable = require 'version'
+	version = versionTable:new(0, 1, 1)
+	--local ssl = require 'ssl'
+	--local body, code, headers, status = http.request("https://raw.githubusercontent.com/mayo78/vsdave-switch/main/version.txt")
+	--print(code, status, body)
+	onlineVersion = versionTable:fromString((http.request 'https://www.mayo78.com/vsdaveswitch-version.txt' or '-99.-99.-99'):gsub('v', ''))
 
 	-- Load states
 	clickStart = require "states.click-start"
 	debugMenu = require "states.debug-menu"
 	titleMenu = require "states.menu.titleMenu"
 	versionState = require 'states.versionState'
-	flashingState = require 'states.flashingState'
 	languageState = require 'states.languageState'
+	flashingState = require 'states.flashingState'
 	menuWeek = require "states.menu.menuWeek"
 	menuSelect = require "states.menu.menuSelect"
 	menuSettings = require 'states.menu.menuSettings'
 	menuFreeplay = require "states.menu.menuFreeplay"
+	menuCredits = require 'states.menu.menuCredits'
+	menuOst = require 'states.menu.menuOst'
 	weeks = require "states.weeks"
 	videoState = require 'states.video'
 	endings = require 'states.ending'
@@ -316,13 +319,13 @@ function love.load()
 	musicTime = 0
 	health = 0
 
-	print(tostring(version), tostring(onlineVersion))
+	--print(tostring(version), tostring(onlineVersion))
 
-	--if onlineVersion and onlineVersion > version then
-	--	switchState(versionState)
-	--else
+	if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
+		switchState(versionState)
+	else
 		switchState(settings.language and titleMenu or languageState)
-	--end
+	end
 	 
 	character = require 'objects.character'
 	--local testChar = character.new 'bf'
@@ -549,7 +552,7 @@ Press any button to close the game
 		love.event.pump()
 
 		for e, a, b, c in love.event.poll() do
-			if e == "quit" or e == "keypressed" then
+			if e == "quit" then
 				return 1
 			end
 		end

@@ -11,28 +11,6 @@ end
 function l:new(...)
 	local ver = {raw = {...}}
 	local mt = {}
-	mt.__lt = function(a, b)
-		for i,v in ipairs(a.raw) do
-			if b.raw[i] > v then
-				return true
-			end
-		end
-	end
-	mt.__eq = function(a, b)
-		for i,v in ipairs(a.raw) do
-			if b.raw[i] ~= v then
-				return false
-			end
-		end
-		return true
-	end
-	mt.__le = function(a, b)
-		return mt.__eq(a,b) or mt.__lt(a,b)
-	end
-	mt.__gt = function(a, b) return not mt.__lt(a, b) end --i dont thinki this is a thing but maybe it works awesomely
-	mt.__ge = function(a, b) 
-		return mt.__gt(a, b) or mt.__eq(a, b) 
-	end
 	mt.__name = function()
 		return table.concat(ver.raw, '.')
 	end
@@ -41,5 +19,27 @@ function l:new(...)
 	end
 	setmetatable(ver, mt)
 	return ver
+end
+function l:lessThan(a, b)
+	for i,v in ipairs(a.raw) do
+		if b.raw[i] > v then
+			return true
+		end
+	end
+end
+function l:equalTo(a, b)
+	for i,v in ipairs(a.raw) do
+		if b.raw[i] ~= v then
+			return false
+		end
+	end
+	return true
+end
+function l:greaterThan(a, b)
+	for i,v in ipairs(b.raw) do
+		if a.raw[i] > v then
+			return true
+		end
+	end
 end
 return l;

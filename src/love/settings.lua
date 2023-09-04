@@ -24,12 +24,14 @@ function settings:reset()
 		vsync = 0,
 		width = 1280,
 		height = 720,
+		selfAwareness = true,
 		metadata = { --oops this daveing sucks
 			eyesores = {'Eyesore effects', 'Whether to show eye straining effects or not'},
 			modcharts = {'Modcharts', 'Whether to have modcharts that makes it hard to play'},
 			shoulderControls = {'Shoulder Controls', 'Unchecking this will have you play with the buttons, and key five will become the shoulder buttons', {onChange = function() input = reloadInput() end}},
 			volume = {'Master Volume', '', {min = 0, max = 1, change = 0.1, onChange = function(v) love.audio.setVolume(v) end}},
-			downscroll = {'Downscroll', 'checking this puts the strums on the bottom, and makes the notes come from the top'}
+			downscroll = {'Downscroll', 'checking this puts the strums on the bottom, and makes the notes come from the top'},
+			selfAwareness = {'Self Awareness', 'If disabled, Exploitation will not use your current user\'s nickname.'}
 		}
 	}
 	print(love.filesystem.getSaveDirectory())

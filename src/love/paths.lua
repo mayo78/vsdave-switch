@@ -36,7 +36,10 @@ end
 
 function l.json(key)
 	local json = files[(key..'.json'):lower()]
-	if not json then error('json not found' .. key) end
+	if not json then 
+		print('json not found' .. key) 
+		return nil
+	end
 	return json, (key..'.json'):lower()
 end
 
@@ -84,21 +87,25 @@ function l.dialogue(key)
 	if love.filesystem.getInfo(path) then return love.filesystem.read(path) end
 end
 --simple whatever you call this lol
-function l.clearCache()
-	for k,i in pairs(imageCache) do
-		if not dumpExclude[k] then
-			i:release()
-			i = nil
-			imageCache[k] = nil
-			cache[k] = nil
+function l.clearCache(only)
+	if not only or only == 'image' then
+		for k,i in pairs(imageCache) do
+			if not dumpExclude[k] then
+				i:release()
+				i = nil
+				imageCache[k] = nil
+				cache[k] = nil
+			end
 		end
 	end
-	for k,i in pairs(audioCache) do
-		if not dumpExclude[k] then
-			i:release()
-			i = nil
-			audioCache[k] = nil
-			cache[k] = nil
+	if not only or only == 'audio' then
+		for k,i in pairs(audioCache) do
+			if not dumpExclude[k] then
+				i:release()
+				i = nil
+				audioCache[k] = nil
+				cache[k] = nil
+			end
 		end
 	end
 end

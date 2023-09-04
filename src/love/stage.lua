@@ -1057,14 +1057,20 @@ return {
 	tryToLeave = function(self)
 		print 'gonna leave this stuff'
 		if not stage.stateToLeaveTo and storyMode and songIndex < #funkin.songList then
-			songIndex = songIndex + 1
-			funkin.curSong = funkin.songList[songIndex]
-			completeScore = (completeScore or 0) + score
-			playedCutscene = false
-			if songIndex == 3 and curWeek == '_WEEK2' then
-				switchState(mazeCutscene)
-			else
+			if funkin.curSong == 'greetings' and not greetingsCutscene then
+				greetingsCutscene = true
 				switchState(stage)
+			else
+				greetingsCutscene = false
+				songIndex = songIndex + 1
+				funkin.curSong = funkin.songList[songIndex]
+				completeScore = (completeScore or 0) + score
+				playedCutscene = false
+				if songIndex == 3 and curWeek == '_WEEK2' then
+					switchState(mazeCutscene)
+				else
+					switchState(stage)
+				end
 			end
 		else
 			if songFinished and not noMissMode then
@@ -1106,6 +1112,10 @@ return {
 					end
 					whatever = true
 					myBallsJustBlewUp = false
+				elseif curWeek == '_WEEK4' then
+					--save.save.beatGame = true
+					--save.writeSave()
+					switchState(menuCredits)
 				end
 				noMissMode = false
 			end
