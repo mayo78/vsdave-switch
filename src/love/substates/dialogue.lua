@@ -41,7 +41,9 @@ local killingmyself = {
 }
 
 local STUPIDNAMES = {
-	['post-maze'] = 'postmaze'
+	['post-maze'] = 'postmaze',
+	festival = 'festival_happy',
+	['festival-3d-scared'] = '3d_festival'
 }
 
 local song
@@ -108,7 +110,9 @@ local function nextDial()
 		end
 	else
 		leaving = true
-		song:stop()
+		if song then
+			song:stop()
+		end
 		--Timer.after(1, function()
 		--	song:stop()
 		--end)
@@ -122,11 +126,13 @@ return {
 	enter = function(self, dial, endy)
 		musicTime = (240 / bpm) * -1000
 		leaving = false
-		song = paths.music(mesongs[funkin.curSong] or 'DaveDialogue')
-		song:setLooping(true)
-		song:setVolume(0)
+		if not greetingsCutscene then
+			song = paths.music(mesongs[funkin.curSong] or 'DaveDialogue')
+			song:setLooping(true)
+			song:setVolume(0)
+			song:play()
+		end
 		songVol = 0
-		song:play()
 		cutscene = true
 		dialIndex = 0
 		finishedDial = false
@@ -144,7 +150,7 @@ return {
 		end
 		print('am i end ignasr k;gh ', endDial)
 
-		local raw = love.filesystem.read('data/dialogue/'..dial..'.txt')
+		local raw = paths.dialogue(dial)
 		--print('MY RAW ASS IS ', raw)
 		dialogue = {}
 		for k,v in pairs(raw:split'\n') do
@@ -198,7 +204,9 @@ return {
 		end
 		if fadingOut then fadeOutAlpha = fadeOutAlpha + dt * 5 end
 		dropTxtColor[4] = songVol
-		song:setVolume(songVol)
+		if not greetingsCutscene then
+			song:setVolume(songVol)
+		end
 		if controls.pressed.confirm and not leaving then
 			if finishedDial then
 				nextDial()
@@ -216,11 +224,17 @@ return {
 	draw = function(self)
 		love.graphics.push()
 		fadeColor[4] = fadeAlpha
+		if greetingsCutscene then
+			love.graphics.setBlendMode 'replace'
+		end
 		graphics.setColor(rgb255(unpack(fadeColor)))
 		love.graphics.rectangle('fill', 0, 0, 1280, 720)
 		if fadeOutAlpha and fadeOutAlpha > 0 then
 			graphics.setColor(0, 0, 0, fadeOutAlpha)
 			love.graphics.rectangle('fill', 0, 0, 1280, 720)
+		end
+		if greetingsCutscene then
+			love.graphics.setBlendMode 'alpha'
 		end
 		graphics.setColor(1, 1, 1, portraitAlpha * songVol)
 		if curDial and curDial.animated then

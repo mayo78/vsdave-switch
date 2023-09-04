@@ -1,21 +1,4 @@
---[[----------------------------------------------------------------------------
-This file is part of Friday Night Funkin' Rewritten
 
-Copyright (C) 2021  HTV04
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-------------------------------------------------------------------------------]]
 
 local animList = {
 	"left",
@@ -77,7 +60,7 @@ local boyfriends = {}
 local dads = {}
 local gfs = {}
 
-local stageOverlay = {0, 0, 0, alpha = 0}
+stageOverlay = {0, 0, 0, alpha = 0}
 local stageMode = false
 
 local elapseduitime = 0
@@ -136,7 +119,7 @@ local subtitleIndex = 0
 local curSubtitle
 local combospr
 local readyImg, setImg, goImg
-local pauseOffset = 0
+local stageLight, stageLightOn
 --stolen from my dave psych port lol!
 local function getData(song)
 	local aa = love.filesystem.read('data/credits.txt'):split '\n'
@@ -157,8 +140,13 @@ local function getData(song)
 		end
 	end
 end
+local hudAlpha
+local strumsAreShapes
 return {
 	enter = function(self)
+		strumsAreShapes = false
+		hudAlpha = {0}
+		timebarAlpha = {0}
 		dads = {}
 		boyfriends = {}
 		gfs = {}
@@ -167,8 +155,8 @@ return {
 		blockedShader = shaders:BLOCKED()
 		blockedShaderOn = false
 		origZoom = camZoom
-		enemyNotesToDraw = 0
-		boyfriendNotesToDraw = 0
+		enemyNotesToDraw = {0, 0, 0, 0, 0}
+		boyfriendNotesToDraw = {0, 0, 0, 0}
 		sounds = {
 			countdown = {},
 			miss = {
@@ -179,12 +167,16 @@ return {
 			death = paths.sounds("death", "static")
 		}
 
+		for _,v in pairs(sounds.miss) do
+			v:setVolume(0.25)
+		end
+
 
 
 		curSong = funkin.curSong
 		jsonChart = paths.song(curSong) -- funkin.difficulty)
 		self.jsonChart = jsonChart
-		randomSpeed = curSong:lower() == 'unfairness' or curSong:lower() == 'exploitation'
+		randomSpeed = settings.modcharts and (curSong:lower() == 'unfairness' or curSong:lower() == 'exploitation')
 		--eventChart = paths.event(curSong)
 
 		local healths = {
@@ -202,6 +194,7 @@ return {
 		timeBarOverlay.sizeX = 1/0.7
 		timeBarOverlay.sizeY = 1/0.7
 
+		if greetingsCutscene then jsonChart.player2 = 'dave-festival' end
 		addCharToList(1, jsonChart.player2 or 'bf')
 		enemyObject = dads[jsonChart.player2 or 'bf']
 		enemy = enemyObject.sprite
@@ -210,9 +203,12 @@ return {
 		girlfriendObject = gfs[jsonChart.gfVersion or 'gf']
 		girlfriend = girlfriendObject.sprite
 
-		addCharToList(0, jsonChart.player1 or 'bf')
-		boyfriendObject = boyfriends[jsonChart.player1 or 'bf']
+		local bf = jsonChart.player1 or 'bf'
+		--bf = 'exclusive-bf'
+		addCharToList(0, bf)
+		boyfriendObject = boyfriends[bf]
 		boyfriend = boyfriendObject.sprite
+		boyfriend.debug = true
 		if boyfriendObject.deadChar then 
 			addCharToList(0, boyfriendObject.deadChar, true) 
 			deadBF = boyfriends[boyfriendObject.deadChar]
@@ -327,6 +323,8 @@ return {
 	end,
 
 	initUI = function(self)
+		stageLight = nil
+		stageLightOn = false
 		events = {}
 		enemyNotes = {}
 		enemyNoteData = {}
@@ -424,20 +422,17 @@ return {
 		local data = getData(curSong:lower())
 		if data then
 			if data.composer == 'glitch' then data.composer = 'DeadShadow & PixelGH' end
+			local animatedNameGuys = {
+				expungedHeading = 'Expunged',
+				unfairHeading = 'Unfairness',
+				botHeading = 'Bot trot',
+				cheatingHeading = 'Cheating',
+				somethingHeading = 'Scramble',
+				californiaHeading = 'California'
+			}
 			local me
-			--its fineeeeeeeee its not doing it like every frame or something
-			if data.header == 'expungedHeading' then
-				me = graphics:newAnimatedSprite('dave/songHeadings/expungedHeading', {{anim = 'idle', name = 'Expunged', loops = true}}, 'idle')
-			elseif data.header == 'unfairHeading' then
-				me = graphics:newAnimatedSprite('dave/songHeadings/unfairHeading', {{anim = 'idle', name = 'Unfairness', loops = true}}, 'idle')
-			elseif data.header == 'botHeading' then
-				me = graphics:newAnimatedSprite('dave/songHeadings/botHeading', {{anim = 'idle', name = 'Bot trot', loops = true}}, 'idle')
-			elseif data.header == 'cheatingHeading' then
-				me = graphics:newAnimatedSprite('dave/songHeadings/cheatingHeading', {{anim = 'idle', name = 'Cheating', loops = true}}, 'idle')
-			elseif data.header == 'somethingHeading' then
-				me = graphics:newAnimatedSprite('dave/songHeadings/somethingHeading', {{anim = 'idle', name = 'Scramble', loops = true}}, 'idle')
-			elseif data.header == 'californiaHeading' then
-				me = graphics:newAnimatedSprite('dave/songHeadings/californiaHeading', {{anim = 'idle', name = 'California', loops = true}}, 'idle')
+			if animatedNameGuys[data.header] then
+				me = graphics:newAnimatedSprite('dave/songHeadings/'..data.header, {{anim = 'idle', name = animatedNameGuys[data.header], loops = true}}, 'idle')
 			else
 				me = graphics.newImage(paths.image('dave/songHeadings/'..data.header))
 			end
@@ -565,6 +560,7 @@ return {
 					if curSong:lower() == 'cheating' and settings.modcharts then strum = strumTable[scramble[id]] end
 					if ghNote then strum = ghStrums[note[2]+1] end
 					--print('my strum is', strum, id)
+					noteREAL.strumTime = note[1] --i should really just rewrite this whole system
 					table.insert(noteTable[id], noteREAL)
 					table.insert(noteDataTable[id], {
 						id = id,
@@ -591,6 +587,7 @@ return {
 							sus.x = strumTable[id].x
 							sus.dontdraw = true
 							--sus.offsetY = -10
+							sus.strumTime = note[1] + susNote
 							table.insert(noteTable[id], sus)
 							table.insert(noteDataTable[id], {
 								id = id,
@@ -632,6 +629,7 @@ return {
 					{anim = 'press', name = dir..' press'}
 				}, 'off')
 				spr.image:setFilter('nearest', 'nearest')
+				spr.alpha = 1
 				i = i - 4
 				shapeArrows[i] = spr
 				shapeArrows[i].x = 100 + 165 * i
@@ -674,6 +672,23 @@ return {
 								end
 							end
 						end
+					elseif event[1] == 'stageLightToggle' and not stageLight then
+						stageLight = graphics.newImage(paths.image'dave/spotlight')
+						stageLight.y = -200
+						stageLight.x = -400
+						stageLight.blendMode = 'add'
+						stageLight.dontdraw = true
+						stageLight.dontupdate = true
+						stageLight.stageLight = true
+						local meangle = 0
+						local et = 0
+						function stageLight:update(dt)
+							et = et + dt
+							meangle = (math.sin(et * 2) * 10)
+							stageLight.orientation = meangle * DEGREE_TO_RADIAN
+							stageLight.x = lerp(stageLight.x, mustHitSection and 150 or -390, math.boundTo(dt * 2.4, 0, 1))
+						end
+						stage:addSpr(stageLight) --woops
 					end
 				end
 			end
@@ -691,18 +706,13 @@ return {
 		--		end
 		--	end
 		--end
-
-		--if settings.downscroll then
-		--	for i = 1, 4 do
-		--		table.sort(enemyNotes[i], function(a, b) return a.y > b.y end)
-		--		table.sort(boyfriendNotes[i], function(a, b) return a.y > b.y end)
-		--	end
-		--else
-		--	for i = 1, 4 do
-		--		table.sort(enemyNotes[i], function(a, b) return a.y < b.y end)
-		--		table.sort(boyfriendNotes[i], function(a, b) return a.y < b.y end)
-		--	end
-		--end
+		local function sort(a, b) return a.strumTime < b.strumTime end
+		for i = 1, 4 do
+			table.sort(enemyNotes[i], sort)
+			table.sort(boyfriendNotes[i], sort)
+			table.sort(enemyNoteData[i], sort) 
+			table.sort(boyfriendNoteData[i], sort)
+		end
 
 		-- Workarounds for bad charts that have multiple notes around the same place
 		--for i = 1, 4 do
@@ -735,6 +745,7 @@ return {
 
 	-- Gross countdown script
 	setupCountdown = function(self)
+		Timer.tween(0.5, hudAlpha, {1})
 		print 'setting up the countdown now'
 		if inst then
 			inst:release()
@@ -795,32 +806,63 @@ return {
 									"linear",
 									function()
 										mustHitSection = not mustHitSection
-										countingDown = false
+										if not greetingsCutscene then
+											Timer.tween(0.25, timebarAlpha, {1})
+											countingDown = false
 
-										previousFrameTime = love.timer.getTime() * 1000
-										musicTime = 0
-										if inst then 
-											inst:play()
-										end
-										if voices then voices:play() end
-										if songHeader then
-											Timer.tween(0.5, songHeader, {x = songHeader.x + (songHeader.width * songHeader.sizeX)}, 'out-back', function()
-												Timer.after(0.5, function() Timer.tween(0.5, songHeader, {x = songHeader.x - (songHeader.width * songHeader.sizeX)}, 'in-back') end)
+											previousFrameTime = love.timer.getTime() * 1000
+											musicTime = 0
+											if inst then 
+												inst:play()
+											end
+											if voices then voices:play() end
+											if songHeader then
+												Timer.tween(0.5, songHeader, {x = songHeader.x + (songHeader.width * songHeader.sizeX)}, 'out-back', function()
+													Timer.after(0.5, function() Timer.tween(0.5, songHeader, {x = songHeader.x - (songHeader.width * songHeader.sizeX)}, 'in-back') end)
+												end)
+											end
+											if table.contains({'polygonized', 'interdimensional', 'five-nights'}, curSong:lower()) then
+												local img = paths.image((curSong:lower() == 'five-nights') and 'dave/ui/doorWarning' or 'dave/ui/shapeNoteWarning')
+												local hi = graphics.newImage(img)
+												hi.x = hi.width - ((1280/2)/0.7)
+												local they = ((720/2)/0.7) - ((hi.height/0.7)/2)
+												local othery = ((720/2)/0.7) + ((hi.height/0.7))
+												hi.y = othery
+												hi.alpha = 0
+												hi.sizeX, hi.sizeY = 1/0.7, 1/0.7
+												shapeWarning = hi
+												Timer.tween(1, shapeWarning, {alpha = 1, y = they}, 'out-back', function()
+													Timer.after(2, function()
+														Timer.tween(1, shapeWarning, {alpha = 0, y = othery}, 'in-back')
+													end)
+												end)
+											end
+										else
+											Timer.tween(0.5, hudAlpha, {0})
+											local hi = paths.sound 'rumble'
+											hi:play()
+											local me = paths.sound 'transition'
+											-- local mydave = point(enemy.x, enemy.y)
+											local fly = true
+											local angle = 0
+											camShaking = true
+											enemyObject.skipDance = true
+											enemyObject:playAnim 'ohNo'
+											stage:setOnUpdate(function(dt)
+												if fly then
+													enemy.y = enemy.y - dt * 50
+													angle = angle - dt * 6
+													enemy.orientation = angle * DEGREE_TO_RADIAN
+												end
 											end)
-										end
-										if table.contains({'polygonized', 'interdimensional', 'five-nights'}, curSong:lower()) then
-											local img = paths.image((curSong:lower() == 'five-nights') and 'dave/ui/doorWarning' or 'dave/ui/shapeNoteWarning')
-											local hi = graphics.newImage(img)
-											hi.x = hi.width - ((1280/2)/0.7)
-											local they = ((720/2)/0.7) - ((hi.height/0.7)/2)
-											local othery = ((720/2)/0.7) + ((hi.height/0.7))
-											hi.y = othery
-											hi.alpha = 0
-											hi.sizeX, hi.sizeY = 1/0.7, 1/0.7
-											shapeWarning = hi
-											Timer.tween(1, shapeWarning, {alpha = 1, y = they}, 'out-back', function()
-												Timer.after(2, function()
-													Timer.tween(1, shapeWarning, {alpha = 0, y = othery}, 'in-back')
+											Timer.after(3, function()
+												me:play()
+												stageOverlay = {1, 1, 1, alpha = 0}
+												Timer.tween(3, stageOverlay, {alpha = 1}, nil, function()
+													fly = false
+													camShaking = false
+													stageOverlay = {0, 0, 0, alpha = 1} --for when the dialogue ends and the substate is closed
+													openSubstate(dialogue, false, 'greetings-cutscene', true)
 												end)
 											end)
 										end
@@ -964,12 +1006,14 @@ return {
 		enemyObject:update(dt)
 		boyfriendObject:update(dt)
 
-		if musicThres ~= oldMusicThres and math.fmod(absMusicTime, 120000 / bpm) < 100 then
+		if musicThres ~= oldMusicThres and math.fmod(absMusicTime, 40000 / bpm) < 100 then
 			if not girlfriend:isAnimated() then
 				girlfriendObject:dance()
 
 				--girlfriend:setAnimSpeed(14.4 / (60 / bpm))
 			end
+		end
+		if musicThres ~= oldMusicThres and math.fmod(absMusicTime, 120000 / bpm) < 100 then
 			if not enemy:isAnimated() then
 				enemyObject:dance()
 				if not mustHitSection then camOffset = point() end
@@ -1009,9 +1053,13 @@ return {
 		if weeks.leaving or cutscene then return end
 		musicPos = musicTime * 0.6 * speed
 		local spacey = controls.down.gameFive
-		if spacey and hasShapes then
+		if spacey and hasShapes and not strumsAreShapes then
+			--print 'okay turning on me'
+			strumsAreShapes = true
 			boyfriendArrows = shapeArrows
-		elseif not spacey and hasShapes then
+		elseif not spacey and hasShapes and strumsAreShapes then
+			--print 'turning offg stupid'
+			strumsAreShapes = false
 			boyfriendArrows = _boyfriendArrows
 		end
 		for i = 1, 5 do
@@ -1024,6 +1072,7 @@ return {
 			if i == 5 then break end
 			local enemyArrow = enemyArrows[i]
 			local boyfriendArrow = boyfriendArrows[i]
+			local boyfriendAltArrows = strumsAreShapes and _boyfriendArrows[i] or (shapeArrows and shapeArrows[i])
 			local enemyNote = enemyNotes[i]
 			local boyfriendNote = boyfriendNotes[i]
 			local enemyNoteData = enemyNoteData[i]
@@ -1035,6 +1084,9 @@ return {
 
 			enemyArrow:update(dt)
 			boyfriendArrow:update(dt)
+			--if boyfriendAltArrows then
+			--	boyfriendAltArrows:update(dt)
+			--end
 
 			if settings.modcharts then
 				elapseduitime = elapseduitime + (dt/10)
@@ -1072,11 +1124,9 @@ return {
 				note.x = enemyArrow.x
 				note.y = enemyArrow.y + (enemyNoteData[j].distance * (settings.downscroll and -1 or 1))
 				if not randomSpeed and (settings.downscroll and note.y < -1000 or note.y > 1000) then
-					--enemyNotesToDraw = j
+					enemyNotesToDraw[noteNum] = j
 					
-					if curSong:lower() == 'splitathon' then
-						break;
-					end
+					break
 				else
 					note.dontdraw = false
 				end
@@ -1122,8 +1172,12 @@ return {
 					table.remove(enemyNoteData, j)
 				end
 			end
+			if randomSpeed then enemyNotesToDraw[noteNum] = #enemyNote end
 			if input:pressed(curInput) and not strumsBlocked[noteNum] then
 				boyfriendArrow:animate("press", false)
+				if boyfriendAltArrows then
+					boyfriendAltArrows:animate 'press'
+				end
 			end
 			local pressedNote = false
 			local noteMissed
@@ -1142,10 +1196,8 @@ return {
 				note.x = boyfriendArrow.x
 				note.y = boyfriendArrow.y + (boyfriendNoteData[i].distance * (settings.downscroll and -1 or 1))
 				if not randomSpeed and (settings.downscroll and note.y < -1000 or note.y > 1000) then
-					--boyfriendNotesToDraw = i
-					if curSong:lower() == 'splitathon' then
-						break;
-					end
+					boyfriendNotesToDraw[noteNum] = i
+					break;
 				else
 					note.dontdraw = false
 				end
@@ -1210,22 +1262,34 @@ return {
 						end
 
 						ratingVisibility[1] = 1
+						rating.x = girlfriend.x
 						rating.y = girlfriend.y - 50
+						combospr.x = girlfriend.x
 						combospr.y = rating.y + 50
 						for i = 1, 3 do
+							numbers[i].x = girlfriend.x - 100 + 50 * i
 							numbers[i].y = girlfriend.y + 50
 						end
 
 						ratingTimers[1] = Timer.tween(0.5, ratingVisibility, {0}, 'in-expo')
 						ratingTimers[2] = Timer.tween(0.5, rating, {y = rating.y + love.math.random(50, 60)}, "in-back", nil, 5)
 						ratingTimers[3] = Timer.tween(0.5, combospr, {y = combospr.y + love.math.random(50, 60)}, 'in-back', nil, 5)
+						ratingTimers[10] = Timer.tween(0.5, rating, {x = rating.x + love.math.random(-5, 5)}, 'out-quad')
+						ratingTimers[11] = Timer.tween(0.5, combospr, {x = combospr.x + love.math.random(-5, 5)}, 'out-quad')
 						for i=1,3 do 
 							ratingTimers[i+3] = Timer.tween(0.5, numbers[i], {y = numbers[i].y + love.math.random(50, 60)}, "in-back", nil, 5)
+							ratingTimers[i+6] = Timer.tween(0.5, numbers[i], {x = numbers[i].x + love.math.random(-5, 5)}, 'out-quad')
 						end
 					
 
-
-						boyfriendArrow:animate("confirm", false)
+						if shapeArrows and strumsAreShapes then
+							shapeArrows[noteNum]:animate 'confirm'
+						else
+							boyfriendArrow:animate("confirm", false)
+						end
+						if boyfriendAltArrows then
+							boyfriendAltArrows:animate 'confirm'
+						end
 
 						if boyfriendNoteData[i].noteType ~= 'phone' then
 							boyfriendObject:playAnim('sing'..curAnim:upper())
@@ -1253,7 +1317,14 @@ return {
 						table.remove(boyfriendNote, i)
 						table.remove(boyfriendNoteData, i)
 	
-						boyfriendArrow:animate("confirm", false)
+						if shapeArrows and strumsAreShapes then --whaaaat the hell
+							shapeArrows[noteNum]:animate 'confirm'
+						else
+							boyfriendArrow:animate("confirm", false)
+						end
+						if boyfriendAltArrows then
+							boyfriendAltArrows:animate 'confirm'
+						end
 	
 						boyfriendObject:playAnim('sing'..curAnim:upper())
 						--notesHit = notesHit + 1
@@ -1264,8 +1335,8 @@ return {
 				end
 			end
 			local forcedMiss = false
-			if not settings.modcharts and (randomSpeed) then forcedMiss = input:pressed(curInput) and not pressedNote end
-			if noteMissed or forcedMiss then
+			if randomSpeed then forcedMiss = input:pressed(curInput) and not pressedNote end
+			if (noteMissed or forcedMiss) and not skippingSong then
 				notMissed[noteNum] = false
 				if not noMissMode then
 					audio.playSound(sounds.miss[love.math.random(3)])
@@ -1300,7 +1371,11 @@ return {
 
 			if input:released(curInput) then
 				boyfriendArrow:animate("off", false)
+				if boyfriendAltArrows then
+					boyfriendAltArrows:animate 'off'
+				end
 			end
+			if randomSpeed then boyfriendNotesToDraw[noteNum] = #boyfriendNote end
 		end
 
 		if health > 20 and boyfriendIcon:getAnimName() == "losing" then
@@ -1309,7 +1384,7 @@ return {
 			if camShaking then
 				if funkin.curSong == 'blocked' or funkin.curScore == 'corn-theft' or funkin.curSong == 'maze' then
 					love.system.openURL 'https://www.youtube.com/watch?v=HtfxYr4uV9k' --would this even work lol?? also reupload!
-					os.exit(0)
+					love.event.quit()
 				else
 					save.save['unlocked_bambi-3d'] = true
 					save:writeSave()
@@ -1396,7 +1471,7 @@ return {
 
 	drawUI = function(self)
 		love.graphics.push()
-		if stageOverlay.alpha > 0 then
+		if stageOverlay.alpha > 0 and not stageLightOn then
 			graphics.setColor(stageOverlay[1], stageOverlay[2], stageOverlay[3], stageOverlay.alpha)
 			love.graphics.rectangle("fill", 0, 0, 1280, 720)
 			graphics.setColor(1, 1, 1, 1)
@@ -1431,33 +1506,34 @@ return {
 
 		love.graphics.scale(0.7, 0.7)
 		for _,strum in pairs(ghStrums) do --so its uinder the notes
-			graphics.setColor(1, 1, 1, strum.alpha)
+			graphics.setColor(1, 1, 1, strum.alpha * hudAlpha[1])
 			strum:draw()
 		end
 		for i = 1, 4 do
-			graphics.setColor(1, 1, 1, enemyArrows[i].alpha)
+			graphics.setColor(1, 1, 1, enemyArrows[i].alpha * hudAlpha[1])
 			enemyArrows[i]:draw()
-			graphics.setColor(1, 1, 1, boyfriendArrows[i].alpha)
+			graphics.setColor(1, 1, 1, boyfriendArrows[i].alpha * hudAlpha[1])
 			boyfriendArrows[i]:draw()
 			graphics.setColor(1, 1, 1)
 
 			love.graphics.push()
 			--love.graphics.translate(0, -musicPos)
-			for j = #enemyNotes[i], 1, -1 do
-				if not enemyNotes[i][j].dontdraw and (not settings.downscroll and enemyNotes[i][j].y - enemyArrows[i].y <= 1000) or (settings.downscroll and enemyNotes[i][j].y - enemyArrows[i].y >= -1000) then
-					local animName = enemyNotes[i][j]:getAnimName()
-					
-					graphics.setColor(1, 1, 1, (enemyNoteData[i][j].alpha or 1) * (enemyNoteData[i][j].alphaMult or 1) * (enemyNoteData[i][j].strum.alpha or 1))
-					enemyNotes[i][j]:draw()
-					graphics.setColor(1, 1, 1)
+			if not settings.downscroll and enemyNotesToDraw[i] > 0 or settings.downscroll and #enemyNotes > 0 then
+				for j = (settings.downscroll and 1 or enemyNotesToDraw[i]), (settings.downscroll and enemyNotesToDraw[i] or 1), (settings.downscroll and 1 or -1) do
+					if enemyNotes[i][j] then
+						graphics.setColor(1, 1, 1, (enemyNoteData[i][j].alpha or 1) * (enemyNoteData[i][j].alphaMult or 1) * (enemyNoteData[i][j].strum.alpha or 1) * hudAlpha[1])
+						enemyNotes[i][j]:draw()
+						graphics.setColor(1, 1, 1)
+					end
 				end
 			end
-			for j = #boyfriendNotes[i], 1, -1 do
-				if not boyfriendNotes[i][j].dontdraw and (not settings.downscroll and boyfriendNotes[i][j].y - boyfriendArrows[i].y <= 1000) or (settings.downscroll and boyfriendNotes[i][j].y - boyfriendArrows[i].y >= -1000) then
-					local animName = boyfriendNotes[i][j]:getAnimName()
-
-					graphics.setColor(1, 1, 1, (boyfriendNoteData[i][j].alpha or 1) * (boyfriendNoteData[i][j].alphaMult or 1) * (boyfriendNoteData[i][j].strum.alpha or 1))
-					boyfriendNotes[i][j]:draw()
+			if not settings.downscroll and boyfriendNotesToDraw[i] > 0 or settings.downscroll and #boyfriendNotes > 0 then
+				for j = (settings.downscroll and 1 or boyfriendNotesToDraw[i]), (settings.downscroll and boyfriendNotesToDraw[i] or 1), (settings.downscroll and 1 or -1) do
+					--print(boyfriendNotesToDraw, i, j)
+					if boyfriendNotes[i][j] then
+						graphics.setColor(1, 1, 1, (boyfriendNoteData[i][j].alpha or 1) * (boyfriendNoteData[i][j].alphaMult or 1) * (boyfriendNoteData[i][j].strum.alpha or 1) * hudAlpha[1])
+						boyfriendNotes[i][j]:draw()
+					end
 				end
 			end
 			graphics.setColor(1, 1, 1)
@@ -1467,29 +1543,32 @@ return {
 		if curSong:lower() ~= 'exploitation' then
 			local hw = healthBarOverlay.width*healthBarOverlay.sizeX
 			local hh = healthBarOverlay.height*healthBarOverlay.sizeY
-			graphics.setColor(boyfriendObject.healthbarColors[1], boyfriendObject.healthbarColors[2], boyfriendObject.healthbarColors[3])
+			graphics.setColor(boyfriendObject.healthbarColors[1], boyfriendObject.healthbarColors[2], boyfriendObject.healthbarColors[3], hudAlpha[1])
 			love.graphics.rectangle("fill", healthBarOverlay.x + 5 - hw/2, healthBarOverlay.y - healthBarOverlay.height/2 + 2, hw - 9, hh - (8 * healthBarOverlay.sizeY) + 0.1)
-			graphics.setColor(enemyObject.healthbarColors[1], enemyObject.healthbarColors[2], enemyObject.healthbarColors[3])
+			graphics.setColor(enemyObject.healthbarColors[1], enemyObject.healthbarColors[2], enemyObject.healthbarColors[3], hudAlpha[1])
 			love.graphics.rectangle("fill", healthBarOverlay.x + 5 - hw/2, healthBarOverlay.y - healthBarOverlay.height/2 + 2, (hw - 9) * (1-(health/100)), hh - (8 * healthBarOverlay.sizeY) + 0.1)
-			graphics.setColor(1, 1, 1)
+			graphics.setColor(1, 1, 1, hudAlpha[1])
 		end
 		healthBarOverlay:draw()
 
 		local tw = timeBarOverlay.width*timeBarOverlay.sizeX
 		local th = timeBarOverlay.height*timeBarOverlay.sizeY
-		graphics.setColor(128/255, 128/255, 128/255)
-		love.graphics.rectangle("fill", timeBarOverlay.x + 5 - tw/2, timeBarOverlay.y - timeBarOverlay.height/2 + 2, tw - 9, th - (8 * timeBarOverlay.sizeY) + 0.1)
 		if musicTime >= 0 then
-			graphics.setColor(57/255, 1, 20/255)
+			--print(musicTime)
+			graphics.setColor(128/255, 128/255, 128/255, hudAlpha[1] * timebarAlpha[1])
+			love.graphics.rectangle("fill", timeBarOverlay.x + 5 - tw/2, timeBarOverlay.y - timeBarOverlay.height/2 + 2, tw - 9, th - (8 * timeBarOverlay.sizeY) + 0.1)
+			graphics.setColor(57/255, 1, 20/255, hudAlpha[1] * timebarAlpha[1])
 			--print(inst:getDuration"seconds", musicTime/1000, (musicTime/1000)/inst:getDuration"seconds")
 			love.graphics.rectangle("fill", timeBarOverlay.x + 5 - tw/2, timeBarOverlay.y - timeBarOverlay.height/2 + 2, (tw - 9) * (musicTime/1000)/inst:getDuration"seconds", th - (8 * timeBarOverlay.sizeY) + 0.1)
+			graphics.setColor(1, 1, 1, hudAlpha[1] * timebarAlpha[1])
+			timeBarOverlay:draw()
+			local hi = formatTime(inst:getDuration"seconds"-(musicTime/1000))
+			printfOutline(hi, -((#hi/2) * 24), timeBarOverlay.y - 32, nil, {size = 48, depth = 0.05, alpha = hudAlpha[1] * timebarAlpha[1]})
 		end
-		graphics.setColor(1, 1, 1)
-		timeBarOverlay:draw()
 		
 		--love.graphics.print("INFO:"..inst:getDuration"seconds"..", "..inst:tell"seconds", 0, 0)
-		local hi = formatTime(inst:getDuration"seconds"-(musicTime/1000))
-		printfOutline(hi, -((#hi/2) * 24), timeBarOverlay.y - 32, nil, {size = 48, depth = 0.05})
+
+		graphics.setColor(1, 1, 1, hudAlpha[1])
 
 		boyfriendIcon:draw()
 		if not enemyIcon.dontdraw then enemyIcon:draw() end
@@ -1500,7 +1579,7 @@ return {
 		if totalNotes == 0 then accuracy = 0 end
 		fonts('comic', 32)
 		local txt = "Score: " .. score..' | Misses: '..misses..' | Accuracy: '..(math.floor(accuracy*1000)/10)..'%'
-		printfOutline(txt, -((#txt/2) * 16), healthBarOverlay.y + 25)
+		printfOutline(txt, -((#txt/2) * 16), healthBarOverlay.y + 25, nil, {alpha = hudAlpha[1]})
 
 		fonts('comic', 16/0.7)
 		local myY = healthBarOverlay.y + 40
@@ -1508,8 +1587,11 @@ return {
 		if lm.string[curSong:lower()..'_credit'] then
 			myY = myY - 30
 			stringy = stringy..'\n'..lm.string[curSong:lower()..'_credit']
+			if curSong:lower() == 'exploitation' then stringy = stringy..' '..nickname..'!' end
 		end
-		printfOutline(stringy, CREDITS_X, myY)
+		if not greetingsCutscene then
+			printfOutline(stringy, CREDITS_X, myY, nil, {alpha = hudAlpha[1]})
+		end
 
 		if curSubtitle and curSubtitle.print and curSubtitle.alpha > 0 then
 			fonts('comic', curSubtitle.size * 1.5)
@@ -1525,7 +1607,7 @@ return {
 		end
 
 		if shapeWarning and shapeWarning.alpha > 0 then
-			graphics.setColor(1, 1, 1, shapeWarning.alpha)
+			graphics.setColor(1, 1, 1, shapeWarning.alpha * hudAlpha[1])
 			shapeWarning:draw()
 		end
 
@@ -1561,10 +1643,12 @@ return {
 		curSubtitle = nil
 		stageOverlay = {0, 0, 0, alpha = 0}
 		--musicTime = -9999
+		skippingSong = false
 		print 'CLEANED UP'
 	end,
 
 	triggerEvent = function(self, n, v1, v2)
+		if skippingSong then return end
 		if musicTime < 0 then return end
 		if v1 == '' then v1 = nil end
 		if v2 == '' then v2 = nil end
@@ -1678,6 +1762,11 @@ return {
 						switchController:setVibration()
 					end
 				end
+			end,
+			stageLightToggle = function()
+				stageLightOn = not stageLightOn
+				stageLight.dontdraw = not stageLightOn
+				stageLight.dontupdate = not stageLightOn
 			end
 		}
 		print('DOING EVENT', n, v1, v2)

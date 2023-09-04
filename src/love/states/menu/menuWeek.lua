@@ -1,21 +1,4 @@
---[[----------------------------------------------------------------------------
-This file is part of Friday Night Funkin' Rewritten
 
-Copyright (C) 2021  HTV04
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-------------------------------------------------------------------------------]]
 
 
 local coolWeeks = {
@@ -46,7 +29,7 @@ local purpleColor, blueColor
 
 local listText
 
-local selectSound, confirmSound, stupidstupidstupidstupid
+local selectSound, confirmSound, leaving
 
 local function change(how)
 	weekIndex = weekIndex + how
@@ -84,7 +67,7 @@ end
 
 return {
 	enter = function(self, previous)
-		stupidstupidstupidstupid = true
+		leaving = false
         selectSound = paths.sound('menu/select')
         confirmSound = paths.sound('menu/confirm')
 		confirmed = false
@@ -128,10 +111,13 @@ return {
 			funkin.curSong = funkin.songList[1]
 			completeScore = 0
 			if curWeek == '_WEEK1' then
-				switchState(videoState, 'daveCutscene')
+				switchState(videoState, 'daveCutscene', 30)
 			else
 				switchState(stage)
 			end
+		elseif controls.pressed.back and not leaving then
+			leaving = true
+			switchState(menuSelect)
 		end
 		for i=1,3 do
 			curColor[i] = lerp(curColor[i], colory[i], dt * 15)

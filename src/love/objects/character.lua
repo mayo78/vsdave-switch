@@ -55,7 +55,7 @@ function c.new (character, isPlayer)
 			return;
 		end
 		o.playingAnim = true
-		self.sprite:animate(animName, loopAnim or false) --idk if nil would mess anything up
+		self.sprite:animate(animName, loopAnim) --idk if nil would mess anything up
 		if animName:startsWith 'sing' then
 			o.singTimer = o.singDuration
 		end

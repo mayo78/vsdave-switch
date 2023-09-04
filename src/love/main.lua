@@ -22,11 +22,7 @@ RADIAN_TO_DEGREE = 180/math.pi
 DEGREE_TO_RADIAN = math.pi/180
 --debugMode = true
 function love.load()
-	
-end
-function actuallyLoad()
 	--extra useful functions
-	love.graphics.dontdumpplz = true
 	function table.copy(t,st,copyMeta,x)
 		if (copyMeta == nil) then copyMeta = true; end
 		x = x or 0;
@@ -104,6 +100,7 @@ function actuallyLoad()
 		if extra.font or extra.size then
 			fonts(extra.font or 'comic', extra.size or 24)
 		end
+		extra.color = extra.color or {1, 1, 1}
 		extra.size = extra.size or 24
 		extra.depth = extra.depth or 0.1 --non ints make a cool outline
 		
@@ -118,8 +115,9 @@ function actuallyLoad()
 		printf(text, x + extra.depth * extra.size, y + extra.depth * extra.size, limit or 9999)
 		printf(text, x, y + extra.depth * extra.size, limit or 9999)
 		printf(text, x - extra.depth * extra.size, y + extra.depth * extra.size, limit or 9999)
-		love.graphics.setColor(1, 1, 1, extra.alpha or 1)
+		love.graphics.setColor(extra.color[1], extra.color[2], extra.color[3], extra.alpha or 1)
 		printf(text, x, y, limit or 9999)
+		love.graphics.setColor(1, 1, 1, 1)
 		love.graphics.pop()
 	end
 
@@ -179,6 +177,8 @@ function actuallyLoad()
 		end
 	}
 
+	nickname = love.getNickname and love.getNickname() or 'User'
+
 	--shaders lol
 	shaders = require 'shaders'
 
@@ -227,19 +227,32 @@ function actuallyLoad()
 		setmetatable(t, mt)
 	end
 	
-	
+	http = require 'socket.http'
+
+	versionTable = require 'version'
+	version = versionTable:new(0, 1, 1)
+	--local ssl = require 'ssl'
+	--local body, code, headers, status = http.request("https://raw.githubusercontent.com/mayo78/vsdave-switch/main/version.txt")
+	--print(code, status, body)
+	onlineVersion = versionTable:fromString((http.request 'https://www.mayo78.com/vsdaveswitch-version.txt' or '-99.-99.-99'):gsub('v', ''))
 
 	-- Load states
 	clickStart = require "states.click-start"
 	debugMenu = require "states.debug-menu"
 	titleMenu = require "states.menu.titleMenu"
+	versionState = require 'states.versionState'
+	languageState = require 'states.languageState'
+	flashingState = require 'states.flashingState'
 	menuWeek = require "states.menu.menuWeek"
 	menuSelect = require "states.menu.menuSelect"
 	menuSettings = require 'states.menu.menuSettings'
 	menuFreeplay = require "states.menu.menuFreeplay"
+	menuCredits = require 'states.menu.menuCredits'
+	menuOst = require 'states.menu.menuOst'
 	weeks = require "states.weeks"
 	videoState = require 'states.video'
 	endings = require 'states.ending'
+	mazeCutscene = require 'states.mazeCutscene'
 
 	-- Load substates
 	gameOver = require "substates.game-over"
@@ -306,10 +319,12 @@ function actuallyLoad()
 	musicTime = 0
 	health = 0
 
-	if curOS == "Web" then
-		switchState(clickStart)
+	--print(tostring(version), tostring(onlineVersion))
+
+	if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
+		switchState(versionState)
 	else
-		switchState(titleMenu)
+		switchState(settings.language and titleMenu or languageState)
 	end
 	 
 	character = require 'objects.character'
@@ -408,17 +423,11 @@ local function drawWhatever()
 		love.graphics.print(status.getDebugStr(settings.showDebug), 5, 5, nil, 0.5, 0.5)
 	end
 	fonts('comic', 16)
-	love.graphics.printf(" FPS: ".. love.timer.getFPS()..'\n ≈RAM:'..math.floor((love.graphics.getStats().texturememory + collectgarbage 'count')/1048576) .. 'MB', 0, 0, 9999)
+	love.graphics.print(" FPS: ".. love.timer.getFPS()) --..'\n ≈RAM:'..math.floor((love.graphics.getStats().texturememory + collectgarbage 'count')/1048576) .. 'MB', 0, 0, 9999)
 	fonts('comic', 24)
 	
 end
 function love.draw()
-	if not finishedLoading then 
-		love.graphics.printf('Loading....', 0, 0, 9999) --i dont think this actually shows up oops
-		if not startedLoading then actuallyLoad() end
-		startedLoading = true
-		return
-	end
 	love.graphics.setCanvas(shaderCanvas)
 	love.graphics.clear()
 	if status.getNoResize() then
@@ -543,7 +552,7 @@ Press any button to close the game
 		love.event.pump()
 
 		for e, a, b, c in love.event.poll() do
-			if e == "quit" or e == "keypressed" then
+			if e == "quit" then
 				return 1
 			end
 		end

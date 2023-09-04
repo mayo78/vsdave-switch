@@ -53,6 +53,10 @@ local function change_state(stack_offset, to, ...)
 	return (to.enter or __NULL__)(to, pre, ...)
 end
 
+local function snapTransition()
+	transition.x = math.floor(transition.x)
+end
+
 function GS.switch(to, ...)
 	assert(to, "Missing argument: Gamestate to switch to")
 	assert(to ~= GS, "Can't call switch with colon operator")
@@ -68,8 +72,8 @@ function switchState(...)
 	end
 	if initState then
 		initState = false
-		transition.x = -432.95 + 2164/2
-		Timer.tween(0.5, transition, {x = 1280 + 2164/2}, nil, onComplete)
+		transition.x = 1280/2
+		Timer.tween(0.5, transition, {x = 1280 + 2164/2}, nil, {after = onComplete, during = snapTransition})
 		status.setLoading(true)
 		GS.switch(...)
 		status.setLoading(false)
@@ -77,17 +81,20 @@ function switchState(...)
 	end
 	local hi = {...}
 	transition.x = -2146 + 2164/2
-	Timer.tween(0.5, transition, {x = -432.95 + 2164/2}, nil, function() 
-		paths.clearing = true --im going to do it
-		status.setLoading(true)
-		paths.clearCache()
-		shaders:clear()
-		if substate then closeSubstate() end
-		GS.switch(unpack(hi)) 
-		Timer.tween(0.5, transition, {x = 1280 + 2164/2}, nil, onComplete)
-		status.setLoading(false)
-		paths.clearing = false
-	end)
+	Timer.tween(0.5, transition, {x = 1280/2}, nil, {after = function()
+		transition.x = 1280/2
+		Timer.after(0.000001, function() --make sure the screen is entirely covered
+			paths.clearing = true --im going to do it
+			status.setLoading(true)
+			paths.clearCache()
+			shaders:clear()
+			if substate then closeSubstate() end
+			GS.switch(unpack(hi)) 
+			Timer.tween(0.5, transition, {x = 1280 + 2164/2}, nil, {after = onComplete, during = snapTransition})
+			status.setLoading(false)
+			paths.clearing = false
+		end)
+	end, during = snapTransition})
 end
 
 function GS.push(to, ...)

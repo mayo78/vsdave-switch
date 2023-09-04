@@ -1,21 +1,4 @@
---[[----------------------------------------------------------------------------
-This file is part of Friday Night Funkin' Rewritten
 
-Copyright (C) 2021  HTV04
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-------------------------------------------------------------------------------]]
 
 local leftFunc, rightFunc, confirmFunc, backFunc, drawFunc
 
@@ -92,14 +75,36 @@ local function flickerLoop()
     Timer.after(0.1, flickerLoop)
 end
 
+local reset
+
 return {
 	enter = function(self, previous)
+        reset = {
+            open = false,
+            selected = false,
+            resetAll = function(self)
+                local settingsBackup, saveBackup, highscoreBackup = settings:save(), save:writeSave()
+                if not love.filesystem.getInfo 'savebackups' then love.filesystem.createDirectory 'savebackups' end
+                local folder = table.concat({time.year, time.month, time.hour, time.min, time.sec}, '-')
+                love.filesystem.createDirectory ('savebackups/'..folder)
+                love.filesystem.write('savebackups/'..folder..'/settings.txt', settingsBackup)
+                love.filesystem.write('savebackups/'..folder..'/save.txt', saveBackup)
+                love.filesystem.write('savebackups/'..folder..'/highscores.txt', highscoreBackup)
+                love.filesystem.remove 'settings.txt'
+                love.filesystem.remove 'save.txt.'
+                love.filesystem.remove 'highscores.txt'
+                settings:reset()
+                save:reset()
+            end
+        }
         selectSound = paths.sound('menu/select')
         confirmSound = paths.sound('menu/confirm')
         states = {
             ['story mode'] = menuWeek,
             freeplay = menuFreeplay,
-            options = menuSettings
+            options = menuSettings,
+            credits = menuCredits,
+            ost = menuOst,
         }
 		menuButton = 1
 		songNum = 0
@@ -204,6 +209,7 @@ return {
         fonts('comic', 24)
         local desc = lm.string['desc_'..aaa]
         printfOutline(desc, -((#desc/2) * (24/2)), fromTopLeft(0, 720 - 58).y, 9999)
+        printfOutline('Version '..tostring(version), -1280/2, -720/2 + 16) --..'\nHold start and select to reset data.'
         
 
         love.graphics.push()

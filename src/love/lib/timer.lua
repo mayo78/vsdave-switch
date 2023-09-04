@@ -102,10 +102,12 @@ function Timer:script(f)
 	end)
 end
 
-local function func_tween(tween, self, len, subject, target, method, after,
+local function func_tween(tween, self, len, subject, target, method, settings,
 	   setters_and_getters, ...)
    -- recursively collects fields that are defined in both subject and target into a flat list
    -- re-use of ref is confusing
+   settings = settings or {}
+   if type(settings) == 'function' then settings = {after = settings} end
    local to_func_tween = {}
    local function set_and_get(subject, k, v)
       setters_and_getters = setters_and_getters or {}
@@ -174,7 +176,8 @@ local function func_tween(tween, self, len, subject, target, method, after,
 	    end
 	 end
       end
-   end, after)
+	  if settings.during then settings.during(dt) end
+   end, settings.after)
 end
 
 local function plain_tween(tween, self, len, subject, target, method, after, ...)

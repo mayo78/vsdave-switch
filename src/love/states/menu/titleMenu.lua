@@ -1,21 +1,4 @@
---[[----------------------------------------------------------------------------
-This file is part of Friday Night Funkin' Rewritten
 
-Copyright (C) 2021  HTV04
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-------------------------------------------------------------------------------]]
 
 local upFunc, downFunc, confirmFunc, backFunc, drawFunc, musicStop
 
@@ -45,6 +28,7 @@ local canMove = true
 
 return {
 	enter = function(self, previous)
+		canMove = true
         selectSound = paths.sound('menu/select')
         confirmSound = paths.sound('menu/confirm')
 		logo = graphics:newAnimatedSprite('dave/title/logoBumpin', {{name = 'logo bumpin', anim = 'idle', loops = true}}, 'idle', true)
@@ -92,9 +76,6 @@ return {
 				Timer.after(1, function()
 					switchState(menuSelect)
 				end)
-			elseif input:pressed("back") then
-				audio.playSound(selectSound)
-				graphics.fadeOut(0.5, love.event.quit)
 			end
 
 			logo:update(dt)

@@ -18,4 +18,14 @@ end
 function l:checkFile(key)
 	return love.filesystem.getInfo('locale/'..self.language..'/'..key)
 end
+local languageData = love.filesystem.read 'locale/languages.txt'
+l.languageArray = {}
+for _,line in pairs(languageData:split'\n') do
+	local hi = line:split ':'
+	table.insert(l.languageArray, {
+		name = hi[1],
+		language = hi[2],
+		color = hi[3]
+	})
+end
 return l

@@ -1,31 +1,39 @@
 
-local curVid, started, leaving, scale
+local curVid, started, leaving, scale, curAudio, pauseVid
 return {
-	enter = function(self, FUCKYOU, vid)
+	enter = function(self, FUCKYOU, vid, fps)
+		pauseVid = false
 		started = false
 		leaving = false
-		curVid = love.graphics.newVideo('videos/'..vid..'.ogv')
-		scale = 1280/curVid:getWidth()
+		curVid = graphics:newAnimatedSprite(vid, {
+			{name = 'cutscene', anim = 'cutscene', fps = 30},
+			{name = 'cutscene', anim = 'static', fps = 0, loops = true}
+		}, 'static', false)
+		curAudio = paths.sound('cutscenes/'..vid)
 		Timer.after(0.5, function()
-			curVid:play()
 			started = true
+			curVid:animate 'cutscene'
+			curAudio:play()
 		end)
 	end,
 	leave = function()
-		curVid:release()
 		curVid = nil
 	end,
 	update = function(self, dt)
-		if controls.pressed.confirm then curVid:pause() end
-		if started and not curVid:isPlaying() and not leaving then
+		if controls.pressed.confirm then 
+			pauseVid = true 
+			curAudio:stop()
+		end
+		if (started and not curVid:isAnimated() or pauseVid) and not leaving then
 			leaving = true
 			switchState(stage)
 		end
+		if not pauseVid then curVid:update(dt) end
 	end,
 	draw = function()
 		love.graphics.push()
-		love.graphics.scale(scale, scale)
-		love.graphics.draw(curVid)
+		love.graphics.translate(lovesize.getWidth() / 2, lovesize.getHeight() / 2)
+		curVid:draw()
 		love.graphics.pop()
 	end
 }

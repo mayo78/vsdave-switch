@@ -1,21 +1,4 @@
---[[----------------------------------------------------------------------------
-This file is part of Friday Night Funkin' Rewritten
 
-Copyright (C) 2021  HTV04
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-------------------------------------------------------------------------------]]
 
 local song, difficulty
 
@@ -72,6 +55,13 @@ local function drawTable(sprites)
 			spr = weeks:getCurGirlfriend()
 		end
 		if not spr.dontdraw then
+			if spr.stageLight and stageOverlay.alpha > 0 then
+				love.graphics.scale(1/curCamZoom, 1/curCamZoom)
+				graphics.setColor(stageOverlay[1], stageOverlay[2], stageOverlay[3], stageOverlay.alpha)
+				love.graphics.rectangle("fill", -1280/2, -720/2, 1280, 720)
+				graphics.setColor(1, 1, 1, 1)
+				love.graphics.scale(curCamZoom, curCamZoom)
+			end
 			love.graphics.push()
 			if not spr.scrollFactor then 
 				spr.scrollFactor = point(1, 1)
@@ -320,6 +310,7 @@ local stages = {
 		end
 		local bg = newSprite('dave/backgrounds/shared/'..skyType, -600/4, -300)
 		bg.alphaMult = 1
+		bg.scrollFactor = point(0.65, 0.65)
 		add(bg)
 
 		local flatgrass = newSprite('dave/backgrounds/farm/gm_flatgrass', -317.5,  -385)
@@ -1011,7 +1002,7 @@ return {
 		weeks:load()
 
 		self:initUI()
-		if storyMode and love.filesystem.getInfo('data/dialogue/'..funkin.curSong..'.txt') and not playedCutscene then
+		if storyMode and paths.dialogue(funkin.curSong) and not playedCutscene then
 			playedCutscene = true
 			openSubstate(dialogue, false, funkin.curSong)
 		else
@@ -1054,7 +1045,7 @@ return {
 		updateTable(sprites, dt)
 	end,
 	songEnd = function(self)
-		if songFinished and love.filesystem.getInfo('data/dialogue/'..funkin.curSong..'-endDialogue.txt') and not cutscene then
+		if storyMode and songFinished and paths.dialogue(funkin.curSong..'-endDialogue') and not cutscene then
 			print('hi ')
 			openSubstate(dialogue, false, funkin.curSong..'-endDialogue', true)
 			dont = true
@@ -1066,14 +1057,20 @@ return {
 	tryToLeave = function(self)
 		print 'gonna leave this stuff'
 		if not stage.stateToLeaveTo and storyMode and songIndex < #funkin.songList then
-			songIndex = songIndex + 1
-			funkin.curSong = funkin.songList[songIndex]
-			completeScore = (completeScore or 0) + score
-			playedCutscene = false
-			if songIndex == 3 and curWeek == '_WEEK2' then
-				switchState(videoState, 'mazeCutscene')
-			else
+			if funkin.curSong == 'greetings' and not greetingsCutscene then
+				greetingsCutscene = true
 				switchState(stage)
+			else
+				greetingsCutscene = false
+				songIndex = songIndex + 1
+				funkin.curSong = funkin.songList[songIndex]
+				completeScore = (completeScore or 0) + score
+				playedCutscene = false
+				if songIndex == 3 and curWeek == '_WEEK2' then
+					switchState(mazeCutscene)
+				else
+					switchState(stage)
+				end
 			end
 		else
 			if songFinished and not noMissMode then
@@ -1115,6 +1112,10 @@ return {
 					end
 					whatever = true
 					myBallsJustBlewUp = false
+				elseif curWeek == '_WEEK4' then
+					--save.save.beatGame = true
+					--save.writeSave()
+					switchState(menuCredits)
 				end
 				noMissMode = false
 			end
@@ -1166,5 +1167,12 @@ return {
 		eventEvents = nil
 		shredderMode = false
 		weeks:leave()
+	end,
+
+	addSpr = function(self, spr)
+		add(spr)
+	end,
+	setOnUpdate = function(self, ou)
+		onUpdate = ou
 	end
 }

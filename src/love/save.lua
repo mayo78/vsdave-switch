@@ -13,14 +13,16 @@ function s:writeSave()
 		end
 		table.insert(lines, table.concat({type(v), k, value}, ' '))
 	end
-	love.filesystem.write('save.txt', table.concat(lines, '\n'))
+	local str = table.concat(lines, '\n')
+	love.filesystem.write('save.txt', str)
 	local highlines = {}
 	for k,v in pairs(s.highscores) do
 		local yay = table.concat({k, v}, ' ')
 		print('saving line', table.concat({k, v}, ' '))
 		table.insert(highlines, yay)
 	end
-	love.filesystem.write('highscores.txt', table.concat(highlines, '\n'))
+	local highstr = table.concat(highlines, '\n')
+	love.filesystem.write('highscores.txt', highstr)
 	return str, highstr
 end
 --settings:writeSave()
@@ -38,12 +40,12 @@ if settingsRaw then
 	for _,line in pairs(hiii) do
 		local typey, key, value = unpack(line:split ' ')
 		if value then
-			--print('reading this', line)
+			print('reading this', line)
 			if typey == 'number' then value = tonumber(value)
 			elseif typey == 'boolean' then value = value == 'true'
 			elseif typey == 'table' then value = value:split ','
 			end
-			--print('got value', value)
+			print('got value', value)
 			--if type(value) == 'table' then print(table.concat(value, ';')) end
 			s.save[key] = value
 		end
