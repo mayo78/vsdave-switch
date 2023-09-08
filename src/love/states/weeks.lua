@@ -204,7 +204,7 @@ return {
 		girlfriend = girlfriendObject.sprite
 
 		local bf = jsonChart.player1 or 'bf'
-		--bf = 'exclusive-bf'
+		bf = 'exclusive-bf'
 		addCharToList(0, bf)
 		boyfriendObject = boyfriends[bf]
 		boyfriend = boyfriendObject.sprite

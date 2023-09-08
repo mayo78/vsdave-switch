@@ -374,12 +374,12 @@ return {
 					if not framey.frameWidth or framey.frameWidth == 0 then
 						width = math.floor(frameData[flooredFrame].width / 2)
 					else
-						width = math.floor(frameData[flooredFrame].frameWidth / 2) + frameData[flooredFrame].frameX
+						width = math.floor(frameData[flooredFrame].frameWidth / 2)
 					end
 					if not framey.frameHeight or framey.frameHeight == 0 then
 						height = math.floor(frameData[flooredFrame].height / 2)
 					else
-						height = math.floor(frameData[flooredFrame].frameHeight / 2) + frameData[flooredFrame].frameY
+						height = math.floor(frameData[flooredFrame].frameHeight / 2)
 					end
 
 					drawData = {
@@ -387,13 +387,14 @@ return {
 						frame = frames[flooredFrame],
 						width = width + self.offsetX,
 						height = height + self.offsetY,
-						x = 0,
-						y = 0
+						x = -(frameData[flooredFrame].frameX or 0), -- - (anim.offsetX or 0)/2,
+						y = -(frameData[flooredFrame].frameY or 0) -- - (anim.offsetY or 0)/2,
 					}
+					self.drawX = x + drawData.x
+					self.drawY = y + drawData.y
 				end		
 				
 				if drawData then
-					love.graphics.translate(-(anim.offsetX or 0), -(anim.offsetY or 0)/2) --i dont know if this is better than the previous system
 					love.graphics.draw(
 						drawData.sheet,
 						drawData.frame,
@@ -407,7 +408,6 @@ return {
 						self.shearX,
 						self.shearY
 					)
-					love.graphics.translate((anim.offsetX or 0), (anim.offsetY or 0)/2)
 				end
 			end,
 			setPosition = function(self, x, y)

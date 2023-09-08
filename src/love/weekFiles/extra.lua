@@ -50,7 +50,13 @@ local a = {
       'Memory',
       'dave',
       'other'
-    }
+    },
+    --was just testing stuff, not charting this whole thing!
+    --{
+    --  'Splitathon-2',
+    --  'dave',
+    --  'other'
+    --}
   },
   color = 'SONG_SPECIFIC',
   banner = 'DaveHouse',

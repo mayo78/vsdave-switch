@@ -1,202 +1,72 @@
+local bf
 
+-- -35
 
-local menuID, selection
-local curDir, dirTable
-local sprite, spriteAnims, overlaySprite
+local animList = {
+	'idle',
+	'singLEFT',
+	'singDOWN',
+	'singUP',
+	'singRIGHT',
+}
+local animIndex = 1
+local animOffsets = {
+	idle = point(0, 0),
+	singLEFT = point(-13, -3),
+	singDOWN = point(-18, -26),
+	singUP = point(-18, 17),
+	singRIGHT = point(-1, -2),
+}
+
+for _,dir in pairs(animList) do
+	animOffsets[dir] = point(0, 0)
+end
 
 return {
-	spriteViewerSearch = function(self, dir)
-		svMode = 1
-
-		if curDir then
-			curDir = curDir .. "/" .. dir
-		else
-			curDir = dir
-		end
-		selection = 1
-		dirTable = love.filesystem.getDirectoryItems(curDir)
-	end,
-
 	enter = function(self, previous)
-		menuID = 1
-		selection = 3
-
-		menus = {
-			{
-				1,
-				"Really Bad Debug Menu",
-				{
-					"Sprite Viewer",
-					function()
-						menuID = 2
-
-						self:spriteViewerSearch("sprites")
-					end
-				}
-			},
-			{2}
-		}
-
-		
-	end,
-
-	keypressed = function(self, key)
-		if menus[menuID][1] == 2 then -- Sprite viewer
-			if svMode == 2 then
-				if key == "w" then
-					overlaySprite.y = overlaySprite.y - 1
-				elseif key == "a" then
-					overlaySprite.x = overlaySprite.x - 1
-				elseif key == "s" then
-					overlaySprite.y = overlaySprite.y + 1
-				elseif key == "d" then
-					overlaySprite.x = overlaySprite.x + 1
-				end
-			end
-		end
-	end,
-
-	spriteViewer = function(self, spritePath)
-		local spriteData = love.filesystem.load(spritePath)
-
-		svMode = 2
-
-		sprite = spriteData()
-		overlaySprite = spriteData()
-
-		spriteAnims = {}
-		for i, _ in pairs(sprite.getAnims()) do
-			table.insert(spriteAnims, i)
-		end
-
-		sprite:animate(spriteAnims[1], false)
-		overlaySprite:animate(spriteAnims[1], false)
+		bf = character.new ('bf', true)
+		bf.skipDance = true
 	end,
 
 	update = function(self, dt)
-		-- I wasn't kidding when I said this was a really bad debug menu
-		if menus[menuID][1] == 2 then -- Sprite viewer
-			if svMode == 2 then
-				sprite:update(dt)
-				overlaySprite:update(dt)
-
-				if input:pressed("up") then
-					selection = selection - 1
-
-					if selection < 1 then
-						selection = #spriteAnims
-					end
-
-					sprite:animate(spriteAnims[selection], false)
-				end
-				if input:pressed("down") then
-					selection = selection + 1
-
-					if selection > #spriteAnims then
-						selection = 1
-					end
-
-					sprite:animate(spriteAnims[selection], false)
-				end
-				if input:pressed("confirm") then
-					overlaySprite:animate(spriteAnims[selection], false)
-				end
-			else
-				if input:pressed("up") then
-					selection = selection - 1
-
-					if selection < 1 then
-						selection = #dirTable
-					end
-				end
-				if input:pressed("down") then
-					selection = selection + 1
-
-					if selection > #dirTable then
-						selection = 1
-					end
-				end
-				if input:pressed("confirm") then
-					if love.filesystem.getInfo(curDir .. "/" .. dirTable[selection]).type == "directory" then
-						self:spriteViewerSearch(dirTable[selection])
-					else
-						self:spriteViewer(curDir .. "/" .. dirTable[selection])
-					end
-				end
-			end
-		else -- Standard menu
-			if input:pressed("up") then
-				selection = selection - 1
-
-				if selection < 3 then
-					selection = #menus[menuID]
-				end
-			end
-			if input:pressed("down") then
-				selection = selection + 1
-
-				if selection > #menus[menuID] then
-					selection = 3
-				end
-			end
-			if input:pressed("confirm") then
-				menus[menuID][selection][2]()
-			end
+		bf:update(dt)
+		if controls.pressed.confirm then
+			animIndex = animIndex + 1
+			if animIndex > #animList then animIndex = 1 end
+			bf:playAnim(animList[animIndex])
+		elseif controls.pressed.back then
+			animIndex = animIndex - 1
+			if animIndex < 1 then animIndex = #animList end
+			bf:playAnim(animList[animIndex])
 		end
-
-		if input:pressed("back") then
-			graphics.fadeOut(0.5, love.event.quit)
+		if controls.pressed.left then
+			animOffsets[animList[animIndex]].x = animOffsets[animList[animIndex]].x - 1
+		elseif controls.pressed.right then
+			animOffsets[animList[animIndex]].x = animOffsets[animList[animIndex]].x + 1
+		end
+		if controls.pressed.up then
+			animOffsets[animList[animIndex]].y = animOffsets[animList[animIndex]].y - 1
+		elseif controls.pressed.down then
+			animOffsets[animList[animIndex]].y = animOffsets[animList[animIndex]].y + 1
+		end
+		if controls.pressed.gameFive then
+			print(animOffsets[animList[animIndex]].x, animOffsets[animList[animIndex]].y)
+			print(bf.sprite.drawX, bf.sprite.drawY)
+			bf:playAnim(animList[animIndex])
 		end
 	end,
 
 	draw = function(self)
-		if menus[menuID][1] == 2 then -- Sprite viewer
-			if svMode == 2 then
-				graphics.clear(0.5, 0.5, 0.5)
-
-				love.graphics.push()
-					love.graphics.translate(lovesize.getWidth() / 2, lovesize.getHeight() / 2)
-
-					sprite:draw()
-					graphics.setColor(1, 1, 1, 0.5)
-					overlaySprite:draw()
-					graphics.setColor(1, 1, 1)
-
-				love.graphics.pop()
-
-				for i = 1, #spriteAnims do
-					if i == selection then
-						graphics.setColor(1, 1, 0)
-					end
-					love.graphics.print(spriteAnims[i], 0, (i - 1) * 20)
-					graphics.setColor(1, 1, 1)
-
-					love.graphics.print("X: " .. tostring(sprite.x - overlaySprite.x), 0, (#spriteAnims + 1) * 20)
-					love.graphics.print("Y: " .. tostring(sprite.y - overlaySprite.y), 0, (#spriteAnims + 2) * 20)
-				end
-			else
-				for i = 1, #dirTable do
-					if i == selection then
-						graphics.setColor(1, 1, 0)
-					elseif love.filesystem.getInfo(curDir .. "/" .. dirTable[i]).type == "directory" then
-						graphics.setColor(1, 0, 1)
-					end
-					love.graphics.print(dirTable[i], 0, (i - 1) * 20)
-					graphics.setColor(1, 1, 1)
-				end
-			end
-		else -- Standard menu
-			love.graphics.print(menus[menuID][2])
-
-			for i = 3, #menus[menuID] do
-				if i == selection then
-					graphics.setColor(1, 1, 0)
-				end
-				love.graphics.print(menus[menuID][i][1], 0, (i - 1) * 20)
-				graphics.setColor(1, 1, 1)
-
-				love.graphics.print("Press Esc to exit at any time", 0, (#menus[menuID] + 1) * 20)
-			end
-		end
+		love.graphics.push()
+		love.graphics.rectangle('fill', 0, 0, 1280, 720)
+		love.graphics.translate(1280/2, 720/2)
+		love.graphics.translate(animOffsets[animList[animIndex]].x, animOffsets[animList[animIndex]].y)
+		bf.sprite:draw()
+		--love.graphics.pop()
+		--love.graphics.push()
+		--love.graphics.translate(1280/2, 720/2)
+		graphics.setColor(1, 0, 0)
+		love.graphics.line(bf.sprite.x - bf.sprite.width/2, bf.sprite.y - bf.sprite.height/2, bf.sprite.x + bf.sprite.width/2, bf.sprite.y + bf.sprite.height/2)
+		love.graphics.pop()
 	end
 }

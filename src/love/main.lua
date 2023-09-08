@@ -326,8 +326,10 @@ function love.load()
 	else
 		switchState(settings.language and titleMenu or languageState)
 	end
-	 
 	character = require 'objects.character'
+
+	--switchState(debugMenu)
+	 
 	--local testChar = character.new 'bf'
 
 	function math.lerp(a,b,t) return a * (1-t) + b * t end
