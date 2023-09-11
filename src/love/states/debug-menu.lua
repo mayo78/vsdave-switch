@@ -5,17 +5,21 @@ local bf
 local animList = {
 	'idle',
 	'singLEFT',
-	'singDOWN',
 	'singUP',
+	'singDOWN',
 	'singRIGHT',
+	'singLEFTmiss',
+	'singUPmiss',
+	'singDOWNmiss',
+	'singRIGHTmiss',
 }
 local animIndex = 1
 local animOffsets = {
-	idle = point(0, 0),
-	singLEFT = point(-13, -3),
-	singDOWN = point(-18, -26),
+	idle = point(206, 207),
+	singLEFT = point(193, 203),
+	singDOWN = point(188, 181),
 	singUP = point(-18, 17),
-	singRIGHT = point(-1, -2),
+	singRIGHT = point(205, 204),
 }
 
 for _,dir in pairs(animList) do
@@ -39,19 +43,22 @@ return {
 			if animIndex < 1 then animIndex = #animList end
 			bf:playAnim(animList[animIndex])
 		end
+		local modifier = controls.down.gameFive and 25 or 1
 		if controls.pressed.left then
-			animOffsets[animList[animIndex]].x = animOffsets[animList[animIndex]].x - 1
+			animOffsets[animList[animIndex]].x = animOffsets[animList[animIndex]].x - modifier
 		elseif controls.pressed.right then
-			animOffsets[animList[animIndex]].x = animOffsets[animList[animIndex]].x + 1
+			animOffsets[animList[animIndex]].x = animOffsets[animList[animIndex]].x + modifier
 		end
 		if controls.pressed.up then
-			animOffsets[animList[animIndex]].y = animOffsets[animList[animIndex]].y - 1
+			animOffsets[animList[animIndex]].y = animOffsets[animList[animIndex]].y - modifier
 		elseif controls.pressed.down then
-			animOffsets[animList[animIndex]].y = animOffsets[animList[animIndex]].y + 1
+			animOffsets[animList[animIndex]].y = animOffsets[animList[animIndex]].y + modifier
 		end
 		if controls.pressed.gameFive then
+			print(animList[animIndex])
 			print(animOffsets[animList[animIndex]].x, animOffsets[animList[animIndex]].y)
-			print(bf.sprite.drawX, bf.sprite.drawY)
+			print(- bf.sprite.width/2 + animOffsets[animList[animIndex]].x, - bf.sprite.height/2 + animOffsets[animList[animIndex]].y)
+			--print(bf.sprite.drawX, bf.sprite.drawY)
 			bf:playAnim(animList[animIndex])
 		end
 	end,
@@ -60,7 +67,6 @@ return {
 		love.graphics.push()
 		love.graphics.rectangle('fill', 0, 0, 1280, 720)
 		love.graphics.translate(1280/2, 720/2)
-		love.graphics.translate(animOffsets[animList[animIndex]].x, animOffsets[animList[animIndex]].y)
 		bf.sprite:draw()
 		--love.graphics.pop()
 		--love.graphics.push()

@@ -14,6 +14,7 @@ return {function(font, size)
 	if not fonts[font][size] then 
 		add(font, size)
 	end
+	curFont = fonts[font][size]
 	love.graphics.setFont(fonts[font][size])
 	return fonts[font][size]
 end, fonts['comic'][24]} --default font

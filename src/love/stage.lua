@@ -523,8 +523,8 @@ local stages = {
 					shredderHighway.alpha = 1
 					boyfriend.alpha = 0
 					shredderMode = true
-					boyfriend.x, boyfriend.y = 700, -50
-					enemy.x, enemy.y = fromTopLeft(-21/0.7, -10/0.7)
+					boyfriend.x, boyfriend.y = 700 - boyfriend.width/2, -50 - boyfriend.height/2
+					enemy.x, enemy.y = fromTopLeft(-21/0.7 - enemy.width/2, -10/0.7 - enemy.height/2)
 					bambispot.alpha = 1
 					--addHalfWidth(enemy)
 					for i=1,4 do
@@ -985,8 +985,11 @@ return {
 		else
 			stages.stage()
 		end
+		boyfriend.x, boyfriend.y = boyfriend.x - boyfriend.width/2, boyfriend.y - boyfriend.height/2
+		enemy.x, enemy.y = enemy.x - enemy.width/2, enemy.y - enemy.height/2
+		girlfriend.x, girlfriend.y = girlfriend.x - girlfriend.width/2, girlfriend.y - girlfriend.height/2
 		if zoom then
-			print('setting the zoom toooo', zoom)
+			--print('setting the zoom toooo', zoom)
 			camZoom = zoom
 			curCamZoom = zoom
 			origZoom = zoom

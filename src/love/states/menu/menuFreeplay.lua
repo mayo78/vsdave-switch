@@ -52,8 +52,11 @@ local function changeSong(how)
 	targetScore = save.highscores[songs[songIndex][1]:lower()] or 0
 end
 local lastCat
+
+local targetX, targetY
 return {
 	enter = function(self, previous)
+		targetX, targetY = 75 * 25, 165 * 25
         selectSound = paths.sound('menu/select')
         confirmSound = paths.sound('menu/confirm')
 		targetColor = nil
@@ -111,8 +114,10 @@ return {
 											{{x = 0, y = 0, width = 150, height = 150}, {x = 0, y = 0, width = 150, height = 150}}, 
 											{idle = {start = 1, stop = 2, speed = 0, offsetX = 0, offsetY = 0}},
 											"idle",
-											false
+											false,
+											{smartOffsets = true}
 										)
+										icon.y = -25
 										if song[2]:endsWith '-pixel' then icon.image:setFilter(getAA(false)) end
 										icons[song[1]] = icon
 										colors[song[1]:lower()] = {hex2rgb(song[3])}
@@ -130,15 +135,11 @@ return {
 				cat.x = math.lerp(cat.x, targetX, dt * 15)
 			end
 		else
+			targetX = math.lerp(targetX, -75 * songIndex, dt * 15)
+			targetY = math.lerp(targetY, -165 * songIndex, dt * 15)
 			for i,song in ipairs(songs) do
-				local icon = icons[song[1]]
-				local targetx = -(60 * (-i + songIndex)) + ((#song[1]/2) * 64) - 500 + 60 * 1.25
-				local targety = -(100 * (-i + songIndex)) - 100 + 50 + songOffset.value
-				icon.x = math.lerp(icon.x, targetx, dt * 15)
-				icon.y = math.lerp(icon.y, targety, dt * 15)
 				if i == songIndex then
 					if colors[song[1]:lower()] then
-						--print('my color isss', colors[song[1]:lower()], table.concat(colors[song[1]:lower()]))
 						for i=1,3 do
 							titleBG.color[i] = lerp(titleBG.color[i], colors[song[1]:lower()][i], dt * 15)
 						end
@@ -188,15 +189,23 @@ return {
 					printfOutline(lm.string['freeplay_'..catStrings[i]] or lm.string.freeplay_extra, cat.x - 128, cat.y - 300, nil, {size = 72, depth = 0.05})
 				end
 			else
+				love.graphics.push()
+				love.graphics.translate(-500, -100)
+				love.graphics.translate(targetX, targetY)
+				fonts('comic', 72)
 				for i,song in ipairs(songs) do
+					love.graphics.translate(75, 165)
 					local icon = icons[song[1]]
 					local nodash = song[1]:gsub('-', ' ')
 					local alpha = (i == songIndex) and 1 or 0.5
 					love.graphics.setColor(1, 1, 1, alpha)
+					icon.x = curFont:getWidth(song[1])
+					--if i == 1 then icon.x = icon.x + 75 end
 					icon:draw()
-					printfOutline(nodash, icon.x - (((#song[1]/2) * 64)) - 60, icon.y - 50, nil, {size = 64, depth = 0.05, alpha = alpha})
+					printfOutline(nodash, 0, 0, nil, {size = 64, depth = 0.05, alpha = alpha})
 					love.graphics.setColor(1, 1, 1, 1)
 				end
+				love.graphics.pop()
 				fonts('comic', 32)
 				love.graphics.setColor(0, 0, 0, 0.6)
 				local str = lm.string.freeplay_personalBest..curScore

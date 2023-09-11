@@ -28,7 +28,7 @@ return function()
 		gameFive = settings.gameFive,
 		gameBack = {"key:escape"}
 	}
-	print('FUCK', controlList.gameFive, controlList.gameFive[3])
+	--print('FUCK', controlList.gameFive, controlList.gameFive[3])
 	for _,control in pairs(bindableKeys) do controlList[control] = {control} end
 	return baton.new {
 		controls = controlList,

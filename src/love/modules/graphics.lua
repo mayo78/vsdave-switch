@@ -90,8 +90,8 @@ return {
 					self.orientation,
 					self.sizeX,
 					self.sizeY,
-					math.floor(width / 2) + self.offsetX,
-					math.floor(height / 2) + self.offsetY,
+					math.floor(width / 2),
+					math.floor(height / 2),
 					self.shearX,
 					self.shearY
 				)
@@ -105,19 +105,20 @@ return {
 		return object
 	end,
 	
-	newAnimatedSprite = function(self, imagePth, animations, defaultAnim, loops, manualimage)
+	newAnimatedSprite = function(self, imagePth, animations, defaultAnim, loops, manualimage, options)
 		--get xml and make it compatible with the graphics module
+		if options then print('my autio cent eris ', options.autoCenter, manualimage) end
 		local xml = paths.xml(imagePth)
 		local anims = {}
 		local loopers = {}
+		options = options or {}
 		for k,v in pairs(animations) do
 			--print('FROM '..imagePth, k, v)
 			local last
 			if not v.offsets then v.offsets = {0, 0} end
 			if not v.name then error('no name in anim!') end
-			local anim = {speed = v.fps or 24, offsetX = v.offsets[1], offsetY = v.offsets[2], flixelOffset = true, frames = {}, loops = v.loops or v.loop}
+			local anim = {speed = v.fps or 24, offsetX = v.offsets[1], offsetY = v.offsets[2], frames = {}, loops = v.loops or v.loop}
 			--print('anim:'..v.anim, 'loop:'..tostring(anim.loops))
-			loopers[v.anim] = anim.loops
 			for i,c in pairs(xml) do
 				--for k,v in pairs(c) do print(k, v) end
 				if c.name:lower():startsWith(v.name:lower()) then
@@ -125,6 +126,7 @@ return {
 					table.insert(anim.frames, i)
 				end
 			end
+			table.insert(anim.frames, anim.frames[#anim.frames]) --what the hell
 			--table.remove(anim.frames, #anim.frames)
 			
 			if v.indices and #v.indices > 0 then
@@ -137,7 +139,8 @@ return {
 			end
 			anims[v.anim] = anim
 		end
-		return self.newSprite(manualimage or paths.image(imagePth), xml, anims, defaultAnim, anims[defaultAnim] and anims[defaultAnim].loops or false, {loopers = loopers}), anims, xml
+		options.loopers = loopers
+		return self.newSprite(manualimage or paths.image(imagePth), xml, anims, defaultAnim, anims[defaultAnim] and anims[defaultAnim].loops or false, options), anims, xml
 	end,
 
 	newSprite = function(imageData, frameData, animData, animName, loopAnim, optionsTable)
@@ -152,8 +155,7 @@ return {
 			stop = nil,
 			speed = nil,
 			offsetX = nil,
-			offsetY = nil,
-			flixelOffset = nil --makes offsets subtract instead of add like in an flxsprite
+			offsetY = nil
 		}
 
 		local isAnimated
@@ -195,11 +197,10 @@ return {
 				return sheet
 			end,
 
-			animate = function(self, animName, loopAnim)
+			animate = function(self, animName)
 				self.curAnim = animName
 				--print('playing this animation!', animName, loopAnim)
 				calledAnimCallback = false
-				isLooped = loopAnim
 				isAnimated = true
 				if anim.name == animName then
 					--print('gonna loop cause its the same!')
@@ -214,26 +215,27 @@ return {
 					end
 					return self
 				end
-				anim.name = animName
 				if not anims[animName] then
 					print('anim not found '..animName)
 					return
 				end
+				anim.name = animName
 
 				anim.start = anims[animName].start
 				anim.stop = anims[animName].stop
 				anim.speed = anims[animName].speed
 				anim.offsetX = anims[animName].offsetX
 				anim.offsetY = anims[animName].offsetY
+
+				
+				isLooped = anims[animName].loops
 				--if self.debug then
 				--	print('OFFSETS:', anim.offsetX, anim.offsetY)
 				--end
-				anim.flixelOffset = anims[animName].flixelOffset
 				anim.indices = anims[animName].indices
 				if anim.indices then anim.indices.index = 1 end
 				anim.frames = anims[animName].frames
 				if anim.frames then anim.frames.index = 1 end
-				if loopAnims[anim.name] then isLooped = loopAnims[anim.name] end
 				--if self.debug then print('MY LOOP IS THIS: ', isLooped) end
 
 				local data
@@ -347,19 +349,7 @@ return {
 					error 'this one... is akward..'
 				end
 				local flooredFrame = math.floor(frame)
-				--if not frameData[flooredFrame] then
-				--	--pastLength = true
-				--	print('uhhhh', flooredFrame, anim.name, #frameData, frameData[flooredFrame+1])
-				--	--print ('FUCK IT WE BALL', anim.name, anim.start, anim.stop)
-				--end
-
-				--if frame == 1 and pastLength then 
-				--	frame = 0 
-				--	pastLength = false
-				--end
-
-				--local stop = anim.indices and anim.indices[#anim.indices] or anim.stop
-				local framey = frameData[flooredFrame]
+				
 				local x = self.x
 				local y = self.y
 				if options and options.floored then
@@ -370,36 +360,28 @@ return {
 					local width, height
 
 
-
-					if not framey.frameWidth or framey.frameWidth == 0 then
-						width = math.floor(frameData[flooredFrame].width / 2)
-					else
-						width = math.floor(frameData[flooredFrame].frameWidth / 2)
-					end
-					if not framey.frameHeight or framey.frameHeight == 0 then
-						height = math.floor(frameData[flooredFrame].height / 2)
-					else
-						height = math.floor(frameData[flooredFrame].frameHeight / 2)
-					end
+					local framey = frameData[flooredFrame]
 
 					drawData = {
 						sheet = sheet,
 						frame = frames[flooredFrame],
-						width = width + self.offsetX,
-						height = height + self.offsetY,
-						x = -(frameData[flooredFrame].frameX or 0), -- - (anim.offsetX or 0)/2,
-						y = -(frameData[flooredFrame].frameY or 0) -- - (anim.offsetY or 0)/2,
+						width = framey.frameWidth or framey.width,
+						height = framey.frameHeight or framey.height,
+						x = (framey.frameX or 0),
+						y = (framey.frameY or 0),
 					}
-					self.drawX = x + drawData.x
-					self.drawY = y + drawData.y
+					if not (optionsTable and optionsTable.smartOffsets) then
+						drawData.x = drawData.x + drawData.width/2
+						drawData.y = drawData.y + drawData.height/2
+					end
 				end		
 				
 				if drawData then
 					love.graphics.draw(
 						drawData.sheet,
 						drawData.frame,
-						x + drawData.x,
-						y + drawData.y,
+						x - drawData.x + self.width - anim.offsetX - (self.offsetX or 0),
+						y - drawData.y + self.height - anim.offsetY - (self.offsetY or 0),
 						self.orientation,
 						self.sizeX,
 						self.sizeY,

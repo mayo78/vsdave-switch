@@ -149,7 +149,6 @@ return {
 				iconP1 = paths.image 'dave/icons/bf'
 				iconP2 = iconImg
 			end
-			icon.x = (#v.print * 36) + (150/2)
 			icon.y = 64
 			djList[k].iconSprite = icon
 			djList[k].icons = {iconP1, iconP2}
@@ -256,6 +255,7 @@ return {
 		for i,v in ipairs(djList) do
 			love.graphics.translate(64, 92)
 			printfOutline(v.print, 0, 0, nil, {alpha = (songIndex == i and 1 or 0.5)})
+			v.iconSprite.x = curFont:getWidth(v.print) + 150/2
 			v.iconSprite:draw()
 		end
 		love.graphics.pop()
@@ -273,8 +273,8 @@ return {
 			local hi = formatTime(musicTime)..' / '..formatTime(inst:getDuration 'seconds')
 			printfOutline(hi, -((#hi/2) * 16), timeBarOverlay.y + 10, nil, {size = 32, depth = 0.05, alpha = 1})
 			local songPercent = musicTime/inst:getDuration 'seconds'
-			iconP2.x = 425 - (tw - 9) * -(songPercent) - 925
-			iconP1.x = (600 - (150/2)) - (tw - 9) * -(songPercent) - 925
+			iconP2.x = -(550 - (tw - 9) * -(1-songPercent) - 925 - 37.5) - 25
+			iconP1.x = -(550 - (tw - 9) * -(1-songPercent) - 925 + 37.5) + 25
 			iconP1:draw()
 			iconP2:draw()
 			love.graphics.pop()

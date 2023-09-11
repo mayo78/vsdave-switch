@@ -26,7 +26,7 @@ function c.new (character, isPlayer)
 	o.singTimer = 0
 	o.playingAnim = false
 	local anims
-	o.sprite, anims = graphics:newAnimatedSprite(o.json.image, o.json.animations, 'idle', false)
+	o.sprite, anims = graphics:newAnimatedSprite(o.json.image, o.json.animations, 'idle', false, nil, {smartOffsets = true})
 	o.is3D = table.contains(threedees, character)
 	o.deadChar = deadChars[character]
 
@@ -65,6 +65,7 @@ function c.new (character, isPlayer)
 	function o:dance()
 		if self.skipDance then return end
 		if not (self:inIdle() and self.sprite:isLooped()) then
+			if self.onIdle then self.onIdle() end
 			if self:inIdle() and self.sprite:isLooped() then return end
 			if self.hasDanceAnims then
 				self:playAnim((self.danced and self.danceAnims[2] or self.danceAnims[1])..self.idleSuffix)
@@ -93,7 +94,7 @@ function c.new (character, isPlayer)
 			self:dance()
 		end
 		--welcome to 3d (character) sinning avenue
-		if curStep then
+		if curStep and (self.curCharacter:lower() == 'recurser' or self.curCharacter:lower() == 'expunged') then
 			local tox = -100 - math.sin((curStep / 9.5) * 2) * 30 * 5
 			local toy = -330 - math.cos((curStep / 9.5)) * 100
 			if self.curCharacter:lower() == 'recurser' then

@@ -3,10 +3,10 @@ local s = {}
 s.save = {}
 s.highscores = {}
 function s:writeSave()
-	print'saving nowe'
+	--print'saving nowe'
 	local lines = {}
 	for k,v in pairs(s.save) do
-		print('saving value', k, v, type(v))
+		--print('saving value', k, v, type(v))
 		local value = v
 		if type(v) == 'boolean' then value = tostring(v)
 		elseif type(v) == 'table' then value = table.concat(v, ',')
@@ -18,7 +18,7 @@ function s:writeSave()
 	local highlines = {}
 	for k,v in pairs(s.highscores) do
 		local yay = table.concat({k, v}, ' ')
-		print('saving line', table.concat({k, v}, ' '))
+		--print('saving line', table.concat({k, v}, ' '))
 		table.insert(highlines, yay)
 	end
 	local highstr = table.concat(highlines, '\n')
@@ -40,12 +40,12 @@ if settingsRaw then
 	for _,line in pairs(hiii) do
 		local typey, key, value = unpack(line:split ' ')
 		if value then
-			print('reading this', line)
+			--print('reading this', line)
 			if typey == 'number' then value = tonumber(value)
 			elseif typey == 'boolean' then value = value == 'true'
 			elseif typey == 'table' then value = value:split ','
 			end
-			print('got value', value)
+			--print('got value', value)
 			--if type(value) == 'table' then print(table.concat(value, ';')) end
 			s.save[key] = value
 		end

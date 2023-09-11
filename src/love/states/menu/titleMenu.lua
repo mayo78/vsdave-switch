@@ -35,7 +35,7 @@ return {
 		logo.x, logo.y = -350, -125
 		logo.sizeX, logo.sizeY = 1.25, 1.25
 
-		girlfriendTitle = graphics:newAnimatedSprite('dave/title/gfDanceTitle', {{name = 'gfDance', anim = 'idle', loops = true}}, 'idle')
+		girlfriendTitle = graphics:newAnimatedSprite('dave/title/gfDanceTitle', {{name = 'gfDance', anim = 'idle', loops = true}}, 'idle', false, nil, {smartOffsets = true})
 		girlfriendTitle.x, girlfriendTitle.y = 325, 65
 		girlfriendTitle.sizeX, girlfriendTitle.sizeY = 1.25, 1.25
 

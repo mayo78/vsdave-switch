@@ -230,7 +230,7 @@ function love.load()
 	http = require 'socket.http'
 
 	versionTable = require 'version'
-	version = versionTable:new(0, 1, 1)
+	version = versionTable:new(0, 1, 2)
 	--local ssl = require 'ssl'
 	--local body, code, headers, status = http.request("https://raw.githubusercontent.com/mayo78/vsdave-switch/main/version.txt")
 	--print(code, status, body)
@@ -318,6 +318,8 @@ function love.load()
 
 	musicTime = 0
 	health = 0
+	
+	character = require 'objects.character'
 
 	--print(tostring(version), tostring(onlineVersion))
 
@@ -326,7 +328,6 @@ function love.load()
 	else
 		switchState(settings.language and titleMenu or languageState)
 	end
-	character = require 'objects.character'
 
 	--switchState(debugMenu)
 	 
