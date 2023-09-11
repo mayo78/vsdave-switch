@@ -963,7 +963,6 @@ return {
 		hudShader = nil
 		jsonChart = weeks:enter()
 		bambcon = nil
-		
 		print(jsonChart)
 
 		song = songNum
@@ -979,6 +978,9 @@ return {
 				davemode = true
 				print 'ENABLING DAVE MODEEEE'
 			end
+		end
+		if weirdPolygonized then
+			jsonChart.stage = 'house'
 		end
 		if jsonChart.stage and stages[jsonChart.stage] then
 			stages[jsonChart.stage]()
@@ -1005,9 +1007,9 @@ return {
 		weeks:load()
 
 		self:initUI()
-		if storyMode and paths.dialogue(funkin.curSong) and not playedCutscene then
+		if (storyMode and paths.dialogue(funkin.curSong) or weirdPolygonized) and not playedCutscene then
 			playedCutscene = true
-			openSubstate(dialogue, false, funkin.curSong)
+			openSubstate(dialogue, false, funkin.curSong..(weirdPolygonized and '-recurser' or ''))
 		else
 			weeks:setupCountdown()
 		end
@@ -1066,7 +1068,7 @@ return {
 			else
 				greetingsCutscene = false
 				songIndex = songIndex + 1
-				funkin.curSong = funkin.songList[songIndex]
+				funkin.curSong = funkin.songList[songIndex]:lower()
 				completeScore = (completeScore or 0) + score
 				playedCutscene = false
 				if songIndex == 3 and curWeek == '_WEEK2' then
@@ -1159,6 +1161,7 @@ return {
 	end,
 
 	leave = function(self)
+		weirdPolygonized = false
 		table.clear(sprites)
 		if houseStage then table.clear(houseStage) end
 		--if inst and inst:isPlaying() then inst:stop() end

@@ -98,6 +98,9 @@ local function nextDial()
 		curDialSounds = {}
 		for _,e in pairs(dialogueSounds[curDial.char] or dialogueSounds.DEFAULT) do table.insert(curDialSounds, paths.sound(e)) end
 		speechBubble.sizeX = curDial.right and 1 or -1
+		if curDial.right then speechBubble.x = 1280/2
+		else speechBubble.x = -1280/2 + 100
+		end
 		speechBubble:animate((curDial.emotion == 'shocked' or curDial.emotion == 'sad') and 'loudOpen' or 'open')
 		speechBubble.onAnimComplete = function(n)
 			if (curDial.emotion == 'shocked' or curDial.emotion == 'sad') then
@@ -127,7 +130,9 @@ return {
 		musicTime = (240 / bpm) * -1000
 		leaving = false
 		if not greetingsCutscene then
-			song = paths.music(mesongs[funkin.curSong] or 'DaveDialogue')
+			if weirdPolygonized then song = paths.music 'DaveDialogue'
+			else song = paths.music(mesongs[funkin.curSong] or 'DaveDialogue')
+			end
 			song:setLooping(true)
 			song:setVolume(0)
 			song:play()
@@ -244,7 +249,7 @@ return {
 		end
 		graphics.setColor(1, 1, 1, songVol)
 		speechBubble:draw()
-		if mesongs[funkin.curSong] ~= 'scaryAmbience' then
+		if not (mesongs[funkin.curSong] == 'scaryAmbience' and not weirdPolygonized) then
 			fonts('comic', 32)
 			graphics.setColor(rgb255(unpack(dropTxtColor)))
 			love.graphics.printf(dialPrint, 102, 502, speechBubble.width - 55)

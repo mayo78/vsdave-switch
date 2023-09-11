@@ -2,6 +2,7 @@
 local s = {}
 s.save = {}
 s.highscores = {}
+s.highscoreChars = {} --stupid
 function s:writeSave()
 	--print'saving nowe'
 	local lines = {}
@@ -17,7 +18,7 @@ function s:writeSave()
 	love.filesystem.write('save.txt', str)
 	local highlines = {}
 	for k,v in pairs(s.highscores) do
-		local yay = table.concat({k, v}, ' ')
+		local yay = table.concat({k, v, s.highscoreChars[k] or 'bf'}, ' ')
 		--print('saving line', table.concat({k, v}, ' '))
 		table.insert(highlines, yay)
 	end
@@ -53,8 +54,9 @@ if settingsRaw then
 	if hasHighscore then
 		local me = highscoreRaw:split '\n'
 		for _,line in pairs(me) do
-			local key, value = unpack(line:split' ')
+			local key, value, char = unpack(line:split' ')
 			s.highscores[key] = tonumber(value)
+			s.highscoreChars[key] = char or 'bf'
 		end
 	end
 else

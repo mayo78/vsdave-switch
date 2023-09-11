@@ -13,7 +13,7 @@ local songDifficulty = 2
 local titleBG
 local selectSound
 local confirmSound
-local catStrings = {'dave', 'joke', 'extras', 'terminal'}
+local catStrings
 local sprites = {}
 local function newSprite(image, x, y)
 	local spr = graphics.newImage(paths.image(image))
@@ -56,6 +56,9 @@ local lastCat
 local targetX, targetY
 return {
 	enter = function(self, previous)
+		if not save.save.found_terminal then catStrings = {'dave', 'joke', 'extras'}
+		else catStrings = {'dave', 'joke', 'extras', 'terminal'}
+		end
 		targetX, targetY = 75 * 25, 165 * 25
         selectSound = paths.sound('menu/select')
         confirmSound = paths.sound('menu/confirm')
@@ -103,25 +106,31 @@ return {
 						--print('idiots', funkin.freeplayList.extras, funkin.freeplayList.extras[1], funkin.freeplayList.extras[2], funkin.freeplayList.extras[2].songs[1][1])
 						for k,cat in pairs(funkin.freeplayList) do
 							print('hiii')
-							if k == catStrings[catIndex] then
+							local docat = k == catStrings[catIndex]
+							if cat == 'terminal' and not save.save.found_terminal then
+								docat = catIndex == 2
+							end
+							if docat then
 								print('found a guy')
 								for _,week in pairs(cat) do
 									for _,song in ipairs(week.songs) do
-										song[3] = _G.colors[song[3] or week.color] or (song[3] or week.color)
-										table.insert(songs, song)
-										local icon = graphics.newSprite(
-											paths.image("dave/icons/"..song[2]),
-											{{x = 0, y = 0, width = 150, height = 150}, {x = 0, y = 0, width = 150, height = 150}}, 
-											{idle = {start = 1, stop = 2, speed = 0, offsetX = 0, offsetY = 0}},
-											"idle",
-											false,
-											{smartOffsets = true}
-										)
-										icon.y = -25
-										if song[2]:endsWith '-pixel' then icon.image:setFilter(getAA(false)) end
-										icons[song[1]] = icon
-										colors[song[1]:lower()] = {hex2rgb(song[3])}
-										print('adding song', song[1])
+										if not song[4] or save.save[song[4]] then
+											song[3] = _G.colors[song[3] or week.color] or (song[3] or week.color)
+											table.insert(songs, song)
+											local icon = graphics.newSprite(
+												paths.image("dave/icons/"..song[2]),
+												{{x = 0, y = 0, width = 150, height = 150}, {x = 0, y = 0, width = 150, height = 150}}, 
+												{idle = {start = 1, stop = 2, speed = 0, offsetX = 0, offsetY = 0}},
+												"idle",
+												false,
+												{smartOffsets = true}
+											)
+											icon.y = -25
+											if song[2]:endsWith '-pixel' then icon.image:setFilter(getAA(false)) end
+											icons[song[1]] = icon
+											colors[song[1]:lower()] = {hex2rgb(song[3])}
+											print('adding song', song[1])
+										end
 									end
 								end
 							end
@@ -156,7 +165,7 @@ return {
 				love.audio.stop();
 				storyMode = false
 				curWeek = nil
-				funkin.curSong = songs[songIndex][1]
+				funkin.curSong = songs[songIndex][1]:lower()
 				switchState(stage)
 			end
 			curScore = math.floor(lerp(curScore, targetScore, 0.4))
@@ -208,8 +217,8 @@ return {
 				love.graphics.pop()
 				fonts('comic', 32)
 				love.graphics.setColor(0, 0, 0, 0.6)
-				local str = lm.string.freeplay_personalBest..curScore
-				local strWidth = (#str * 32) / 2 * 1.25
+				local str = lm.string.freeplay_personalBest..curScore..'\n'..save.highscoreChars[songs[songIndex][1]:lower()]
+				local strWidth = curFont:getWidth(str)
 				love.graphics.rectangle('fill', (1280/2)-strWidth-6, -(720/2), strWidth + 6, 66)
 				love.graphics.setColor(1, 1, 1)
 				love.graphics.printf(str, (1280/2)-strWidth, (-720/2), 9999999)

@@ -206,144 +206,148 @@ function love.load()
 	-- Load modules
 	status = require "modules.status"
 	audio = require "modules.audio"
+	Timer.after(0.05, function() --let the loading text draw :)
+		funkin = require 'funkin'
+		
+		lm = require 'gamestrings' --language manager
+		lm:reloadLanguage(settings.language or 'en-US')
 
-	funkin = require 'funkin'
-	
-	lm = require 'gamestrings' --language manager
-	lm:reloadLanguage(settings.language or 'en-US')
+		
+		reloadInput = require "input"
+		input = reloadInput()
+		local w,h = love.window.getMode()
+		shaderCanvas = love.graphics.newCanvas(1920, 1080)
 
-	
-	reloadInput = require "input"
-	input = reloadInput()
-	local w,h = love.window.getMode()
-	shaderCanvas = love.graphics.newCanvas(1920, 1080)
+		controls = {pressed = {}, down = {}, released = {}}
+		for k,t in pairs(controls) do --so you cn do this: controls.pressed.up, controls.down.up, etc
+			local mt = {__index = function(a, b, c) 
+				--print('calling this guy:', k, 'with argument:', b)
+				return input[k](input, b) 
+			end}
+			setmetatable(t, mt)
+		end
+		
+		http = require 'socket.http'
 
-	controls = {pressed = {}, down = {}, released = {}}
-	for k,t in pairs(controls) do --so you cn do this: controls.pressed.up, controls.down.up, etc
-		local mt = {__index = function(a, b, c) 
-			--print('calling this guy:', k, 'with argument:', b)
-			return input[k](input, b) 
-		end}
-		setmetatable(t, mt)
-	end
-	
-	http = require 'socket.http'
+		versionTable = require 'version'
+		version = versionTable:new(0, 1, 2)
+		--local ssl = require 'ssl'
+		--local body, code, headers, status = http.request("https://raw.githubusercontent.com/mayo78/vsdave-switch/main/version.txt")
+		--print(code, status, body)
+		onlineVersion = versionTable:fromString((http.request 'https://www.mayo78.com/vsdaveswitch-version.txt' or '-99.-99.-99'):gsub('v', ''))
 
-	versionTable = require 'version'
-	version = versionTable:new(0, 1, 2)
-	--local ssl = require 'ssl'
-	--local body, code, headers, status = http.request("https://raw.githubusercontent.com/mayo78/vsdave-switch/main/version.txt")
-	--print(code, status, body)
-	onlineVersion = versionTable:fromString((http.request 'https://www.mayo78.com/vsdaveswitch-version.txt' or '-99.-99.-99'):gsub('v', ''))
+		-- Load states
+		clickStart = require "states.click-start"
+		debugMenu = require "states.debug-menu"
+		titleMenu = require "states.menu.titleMenu"
+		versionState = require 'states.versionState'
+		languageState = require 'states.languageState'
+		flashingState = require 'states.flashingState'
+		menuWeek = require "states.menu.menuWeek"
+		menuSelect = require "states.menu.menuSelect"
+		menuSettings = require 'states.menu.menuSettings'
+		menuFreeplay = require "states.menu.menuFreeplay"
+		menuCredits = require 'states.menu.menuCredits'
+		menuOst = require 'states.menu.menuOst'
+		weeks = require "states.weeks"
+		videoState = require 'states.video'
+		endings = require 'states.ending'
+		mazeCutscene = require 'states.mazeCutscene'
 
-	-- Load states
-	clickStart = require "states.click-start"
-	debugMenu = require "states.debug-menu"
-	titleMenu = require "states.menu.titleMenu"
-	versionState = require 'states.versionState'
-	languageState = require 'states.languageState'
-	flashingState = require 'states.flashingState'
-	menuWeek = require "states.menu.menuWeek"
-	menuSelect = require "states.menu.menuSelect"
-	menuSettings = require 'states.menu.menuSettings'
-	menuFreeplay = require "states.menu.menuFreeplay"
-	menuCredits = require 'states.menu.menuCredits'
-	menuOst = require 'states.menu.menuOst'
-	weeks = require "states.weeks"
-	videoState = require 'states.video'
-	endings = require 'states.ending'
-	mazeCutscene = require 'states.mazeCutscene'
+		terminalState = require 'states.terminalState'
 
-	-- Load substates
-	gameOver = require "substates.game-over"
-	pause = require 'substates.pause'
-	dialogue = require 'substates.dialogue'
+		-- Load substates
+		gameOver = require "substates.game-over"
+		pause = require 'substates.pause'
+		dialogue = require 'substates.dialogue'
 
-	-- Load week data
-	--weekData = {
-	--	require "weeks.tutorial",
-	--	require "weeks.week1",
-	--	require "weeks.week2",
-	--	require "weeks.week3",
-	--	require "weeks.week4",
-	--	require "weeks.week5",
-	--	require "weeks.week6"
-	--}
+		-- Load week data
+		--weekData = {
+		--	require "weeks.tutorial",
+		--	require "weeks.week1",
+		--	require "weeks.week2",
+		--	require "weeks.week3",
+		--	require "weeks.week4",
+		--	require "weeks.week5",
+		--	require "weeks.week6"
+		--}
 
-	stage = require 'stage'
+		stage = require 'stage'
 
-	-- LÖVE init
-	if curOS == "OS X" then
-		love.window.setIcon(love.image.newImageData("icons/macos.png"))
-	else
-		love.window.setIcon(love.image.newImageData("icons/default.png"))
-	end
+		-- LÖVE init
+		if curOS == "OS X" then
+			love.window.setIcon(love.image.newImageData("icons/macos.png"))
+		else
+			love.window.setIcon(love.image.newImageData("icons/default.png"))
+		end
 
-	lovesize.set(1280, 720)
+		lovesize.set(1280, 720)
 
-	-- Variables
-	local fuckyou = require 'fonts'
-	fonts = fuckyou[1]
-	font = fuckyou[2]
-	--for k,v in ipairs(fonts.comic) do print(k, v) end
-	--font = fonts.comic[24]
+		-- Variables
+		local fuckyou = require 'fonts'
+		fonts = fuckyou[1]
+		font = fuckyou[2]
+		--for k,v in ipairs(fonts.comic) do print(k, v) end
+		--font = fonts.comic[24]
 
 
-	weekNum = 1
-	songDifficulty = 2
+		weekNum = 1
+		songDifficulty = 2
 
-	spriteTimers = {
-		0, -- Girlfriend
-		0, -- Enemy
-		0 -- Boyfriend
-	}
+		spriteTimers = {
+			0, -- Girlfriend
+			0, -- Enemy
+			0 -- Boyfriend
+		}
 
-	storyMode = false
-	countingDown = false
+		storyMode = false
+		countingDown = false
 
-	cam = point()
-	cam.sizeX = 0
-	cam.sizeY = 0
-	camOffset = point()
-	camOffsetPos = point()
-	stupidOffset = point()
-	shakeOffset = point()
-	offsetStuff = {point(-20, 0), point(0, 20), point(0, -20), point(20, 0)}
-	camScale = point(0.9, 0.9)
-	uiScale = point(0.7, 0.7)
-	camZoom = 0.9
-	curCamZoom = 1
+		cam = point()
+		cam.sizeX = 0
+		cam.sizeY = 0
+		camOffset = point()
+		camOffsetPos = point()
+		stupidOffset = point()
+		shakeOffset = point()
+		offsetStuff = {point(-20, 0), point(0, 20), point(0, -20), point(20, 0)}
+		camScale = point(0.9, 0.9)
+		uiScale = point(0.7, 0.7)
+		camZoom = 0.9
+		curCamZoom = 1
 
-	overlayColor = {1, 1, 1, alpha = 0}
+		overlayColor = {1, 1, 1, alpha = 0}
 
-	musicTime = 0
-	health = 0
-	
-	character = require 'objects.character'
+		musicTime = 0
+		health = 0
+		
+		character = require 'objects.character'
 
-	--print(tostring(version), tostring(onlineVersion))
+		--print(tostring(version), tostring(onlineVersion))
 
-	if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
-		switchState(versionState)
-	else
-		switchState(settings.language and titleMenu or languageState)
-	end
+		if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
+			switchState(versionState)
+		else
+			switchState(settings.language and titleMenu or languageState)
+		end
 
-	--switchState(debugMenu)
-	 
-	--local testChar = character.new 'bf'
+		--switchState(terminalState)
+		--switchState(debugMenu)
+		
+		--local testChar = character.new 'bf'
 
-	function math.lerp(a,b,t) return a * (1-t) + b * t end
-	lerp = math.lerp --fjasdkljf;klsdj
-	function math.boundTo(value, min, max)
-		return math.max(min, math.min(max, value))
-	end
-	function math.round(num, numDecimalPlaces)
-		local mult = 10^(numDecimalPlaces or 0)
-		return math.floor(num * mult + 0.5) / mult
-	end
-	finishedLoading = true
-	--print(font)
+		function math.lerp(a,b,t) return a * (1-t) + b * t end
+		lerp = math.lerp --fjasdkljf;klsdj
+		function math.boundTo(value, min, max)
+			return math.max(min, math.min(max, value))
+		end
+		function math.round(num, numDecimalPlaces)
+			local mult = 10^(numDecimalPlaces or 0)
+			return math.floor(num * mult + 0.5) / mult
+		end
+		finishedLoading = true
+		--print(font)
+	end)
 end
 
 function love.resize(width, height)
@@ -362,6 +366,9 @@ function love.keypressed(key)
 	else
 		Gamestate.keypressed(key)
 	end
+	if terminalState.keyboardOpened then
+		terminalState:keyInput(key)
+	end
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
@@ -371,8 +378,12 @@ function love.mousepressed(x, y, button, istouch, presses)
 end
 
 function love.update(dt)
-	if gamePaused or not finishedLoading then return end
+	if gamePaused then return end
 	dt = math.min(dt, 1 / 30)
+	if not finishedLoading then
+		Timer.update(dt)
+		return
+	end
 
 	input:update()
 	if substate then substate:update(dt) end --so if the state is closed the main state also updates!
@@ -399,8 +410,8 @@ function love.update(dt)
 	substateJustLeft = false
 end
 local function drawWhatever()
-	love.graphics.setFont(font)
-	if not status.getLoading() then
+	if finishedLoading then
+		love.graphics.setFont(font)
 		graphics.setColor(1, 1, 1) -- Fade effect on
 		Gamestate.draw()
 		if overlayColor.alpha > 0 then
@@ -416,18 +427,20 @@ local function drawWhatever()
 
 		if drawTransition then
 			transition:draw()
-		end			
+		end	
+		
+		fonts('comic', 16)
+		love.graphics.print(" FPS: ".. love.timer.getFPS()) --..'\n ≈RAM:'..math.floor((love.graphics.getStats().texturememory + collectgarbage 'count')/1048576) .. 'MB', 0, 0, 9999)
+		fonts('comic', 24)
 	end
-	if status.getLoading() then
+	if not finishedLoading then
 		love.graphics.setColor(1, 1, 1)
-		love.graphics.print("Loading...", lovesize.getWidth() - 175, lovesize.getHeight() - 50)
+		love.graphics.scale(5, 5)
+		love.graphics.print("Loading...", 0, 0)
 	end
 	if settings.showDebug then
 		love.graphics.print(status.getDebugStr(settings.showDebug), 5, 5, nil, 0.5, 0.5)
 	end
-	fonts('comic', 16)
-	love.graphics.print(" FPS: ".. love.timer.getFPS()) --..'\n ≈RAM:'..math.floor((love.graphics.getStats().texturememory + collectgarbage 'count')/1048576) .. 'MB', 0, 0, 9999)
-	fonts('comic', 24)
 	
 end
 function love.draw()
@@ -441,6 +454,7 @@ function love.draw()
 		drawWhatever()
 		lovesize.finish()
 	end
+	if not finishedLoading then return end
 	love.graphics.setCanvas()
 	if globalShader then
 		love.graphics.setShader(globalShader)

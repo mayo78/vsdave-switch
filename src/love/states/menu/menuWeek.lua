@@ -108,7 +108,7 @@ return {
 				table.insert(tab, song[1]:lower())
 			end
 			funkin.songList = tab
-			funkin.curSong = funkin.songList[1]
+			funkin.curSong = funkin.songList[1]:lower()
 			completeScore = 0
 			if curWeek == '_WEEK1' then
 				switchState(videoState, 'daveCutscene', 30)

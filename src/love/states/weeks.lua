@@ -235,7 +235,9 @@ return {
 		timeBarOverlay.sizeX = 1/0.7
 		timeBarOverlay.sizeY = 1/0.7
 
-		if greetingsCutscene then jsonChart.player2 = 'dave-festival' end
+		if greetingsCutscene then jsonChart.player2 = 'dave-festival'
+		elseif weirdPolygonized then jsonChart.player2 = 'dave'
+		end
 		addCharToList(1, jsonChart.player2 or 'bf')
 		enemyObject = dads[jsonChart.player2 or 'bf']
 		enemy = enemyObject.sprite
@@ -568,7 +570,7 @@ return {
 						
 					]]
 					--local x = 					
-					if note[4] == 'normal' or note[4] == '' then 
+					if note[4] == 'normal' or note[4] == '' or weirdPolygonized then 
 						note[4] = nil
 					end
 					local typeTex = {
@@ -591,7 +593,7 @@ return {
 					local noteREAL = graphics:newAnimatedSprite(tex, {
 						{anim = 'on', name = (ghNote and colors[note[2]+1]..' Note' or colors[id]..'0'), fps = 0}
 					}, 'on')
-					if note[4] == 'shape' then hasShapes = true end
+					if note[4] == 'shape' and not weirdPolygonized then hasShapes = true end
 					if threedee or note[4] == 'shape' then
 						noteREAL.image:setFilter('nearest', 'nearest')
 					end
@@ -690,7 +692,7 @@ return {
 						value2 = event[3]
 					})
 					--print('adding event', event, value1, value2)
-					if event[1] == 'Change Character' then
+					if event[1] == 'Change Character' and not weirdPolygonized then
 						addCharToList(tonumber(event[2]), event[3])
 					elseif event[1] == 'subtitles' and not addedSubs then
 						addedSubs = true
@@ -1039,16 +1041,31 @@ return {
 		girlfriendObject:update(dt)
 		enemyObject:update(dt)
 		boyfriendObject:update(dt)
-		if musicThres ~= oldMusicThres and math.fmod(absMusicTime, 120000 / bpm) < 100 then
-			if not enemy:isAnimated() then
-				enemyObject:dance()
-			end
-			if not boyfriend:isAnimated() then
-				boyfriendObject:dance()
-			end
-		end
 		if not substateJustLeft and controls.pressed.pause and not cutscene then
 			openSubstate(pause, true)
+		end
+
+		if controls.down['button:leftshoulder'] and controls.down['axis:triggerleft+'] and 
+			controls.down['axis:triggerright+'] and controls.down['button:rightshoulder'] and 
+			controls.down.select and controls.down.pause then
+			
+				local cheater = {
+					supernovae = 'cheating',
+					cheating = 'unfairness',
+					glitch = 'kabunga'
+				}
+				storyMode = false
+				if funkin.curSong == 'unfairness' then
+					--terminal stuff
+					save.save.found_terminal = true
+					save.writeSave()
+					switchState(terminalState)
+				elseif cheater[funkin.curSong:lower()] then
+					save.save['found_'..cheater[funkin.curSong:lower()]] = true
+					save.writeSave()
+					funkin.curSong = cheater[funkin.curSong:lower()]
+					switchState(stage)
+				end
 		end
 	end,
 	substateOpened = function(self, pause)
@@ -1682,7 +1699,9 @@ return {
 			end,
 			flash = function() self:flash() end,
 			['Change Character'] = function()
-				changeChar(tonumber(v1), v2)
+				if not weirdPolygonized then
+					changeChar(tonumber(v1), v2)
+				end
 			end,
 			bookmark = function()
 				if self.bookmarkEvents then self.bookmarkEvents(v1, v2) end
@@ -1757,18 +1776,20 @@ return {
 				char:playAnim(v1)
 			end,
 			eyesores = function()
-				if settings.eyesores and not globalShader then
-					globalShader = screenShader.shader
-				end
-				if settings.eyesores then
-					screenShaderOn = not screenShaderOn
-					screenShader.enabled = screenShaderOn
-					camShaking = screenShaderOn
-					if switchController then
-						if screenShaderOn then
-							switchController:setVibration(1, 1)
-						else
-							switchController:setVibration()
+				if not weirdPolygonized then
+					if settings.eyesores and not globalShader then
+						globalShader = screenShader.shader
+					end
+					if settings.eyesores then
+						screenShaderOn = not screenShaderOn
+						screenShader.enabled = screenShaderOn
+						camShaking = screenShaderOn
+						if switchController then
+							if screenShaderOn then
+								switchController:setVibration(1, 1)
+							else
+								switchController:setVibration()
+							end
 						end
 					end
 				end
