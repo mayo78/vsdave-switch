@@ -13,12 +13,23 @@ local controlArray = {
 	{'Confirm', 'confirm'},
 	{'Back', 'back'}
 }
+
 local controlYs = {}
 local menuStuff = {'General', 'Controls', 'Change Language'}
 local settingControl = false
 local controlIndex = 1
 return {
 	enter = function(self, previous)
+		if save.save.foundMuko then
+			for _,v in pairs{
+				{'Close Door', 'mukoDoor'},
+				{'Open Cameras', 'mukoCams'},
+				{'Previous Camera', 'mukoPrev'},
+				{'Next Camera', 'mukoNext'},
+			} do
+				table.insert(controlArray, v)
+			end
+		end
 		menuYs = {}
 		for i,menu in pairs(menuStuff) do
 			menuYs[menu] = {-500, (64*i) - ((#menuStuff * 64)/2)}

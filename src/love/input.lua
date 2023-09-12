@@ -26,7 +26,12 @@ return function()
 		gameUp = settings.gameUp,
 		gameRight = settings.gameRight,
 		gameFive = settings.gameFive,
-		gameBack = {"key:escape"}
+		gameBack = {"key:escape"},
+
+		mukoCams = settings.mukoCams,
+		mukoDoor = settings.mukoDoor,
+		mukoPrev = settings.mukoPrev,
+		mukoNext = settings.mukoNext,
 	}
 	--print('FUCK', controlList.gameFive, controlList.gameFive[3])
 	for _,control in pairs(bindableKeys) do controlList[control] = {control} end

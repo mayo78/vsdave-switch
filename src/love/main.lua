@@ -213,6 +213,9 @@ function love.load()
 		lm:reloadLanguage(settings.language or 'en-US')
 
 		
+		mukoUtil = require 'mukoUtil'
+
+		
 		reloadInput = require "input"
 		input = reloadInput()
 		local w,h = love.window.getMode()
@@ -236,6 +239,8 @@ function love.load()
 		--print(code, status, body)
 		onlineVersion = versionTable:fromString((http.request 'https://www.mayo78.com/vsdaveswitch-version.txt' or '-99.-99.-99'):gsub('v', ''))
 
+
+		hitbox = require 'states.muko.hitbox'
 		-- Load states
 		clickStart = require "states.click-start"
 		debugMenu = require "states.debug-menu"
@@ -262,6 +267,9 @@ function love.load()
 		gameOver = require "substates.game-over"
 		pause = require 'substates.pause'
 		dialogue = require 'substates.dialogue'
+
+		mukoTitle = require 'states.muko.title'
+		mukoGame = require 'states.muko.game'
 
 		-- Load week data
 		--weekData = {
@@ -311,11 +319,9 @@ function love.load()
 		cam.sizeY = 0
 		camOffset = point()
 		camOffsetPos = point()
-		stupidOffset = point()
 		shakeOffset = point()
 		offsetStuff = {point(-20, 0), point(0, 20), point(0, -20), point(20, 0)}
 		camScale = point(0.9, 0.9)
-		uiScale = point(0.7, 0.7)
 		camZoom = 0.9
 		curCamZoom = 1
 
@@ -328,12 +334,13 @@ function love.load()
 
 		--print(tostring(version), tostring(onlineVersion))
 
-		if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
-			switchState(versionState)
-		else
-			switchState(settings.language and titleMenu or languageState)
-		end
+		--if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
+		--	switchState(versionState)
+		--else
+		--	switchState(settings.language and (settings.eyesores and flashingState or titleMenu) or languageState)
+		--end
 
+		switchState(mukoTitle)
 		--switchState(charSelect)
 		--switchState(debugMenu)
 		

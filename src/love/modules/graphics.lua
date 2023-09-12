@@ -83,6 +83,8 @@ return {
 					y = math.floor(y)
 				end
 
+				local nwidth, nheight = options.full and width or math.floor(width/2), options.full and height or math.floor(height/2)
+
 				love.graphics.draw(
 					image,
 					self.x,
@@ -90,8 +92,8 @@ return {
 					self.orientation,
 					self.sizeX,
 					self.sizeY,
-					math.floor(width / 2),
-					math.floor(height / 2),
+					nwidth,
+					nheight,
 					self.shearX,
 					self.shearY
 				)
@@ -100,7 +102,7 @@ return {
 
 		object:setImage(imageData)
 
-		options = optionsTable
+		options = optionsTable or {}
 
 		return object
 	end,

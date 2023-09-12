@@ -19,7 +19,7 @@ return {
 		love.graphics.translate(lovesize.getWidth() / 2, lovesize.getHeight() / 2)
         fonts('comic', 32)
         for i,v in pairs(txtLines) do
-            love.graphics.print(v, -((#v/2) * 16), (32*i) - ((#txtLines * 64)/2))
+            love.graphics.print(v, -curFont:getWidth(v)/2, (32*i) - ((#txtLines * 64)/2))
         end
         love.graphics.pop()
     end,

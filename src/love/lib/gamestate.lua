@@ -24,15 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-transitionLeft = graphics.newImage(paths.image('dave/title/transition'))
-transitionLeft:getImage():setFilter('nearest', 'nearest')
-transitionLeft.x = -2146 + 2164/2
-transitionLeft.y = transitionLeft.y + 720/2
-
-transitionRight = graphics.newImage(paths.image('dave/title/transition'))
-transitionRight:getImage():setFilter('nearest', 'nearest')
-transitionRight.x = -2146 + 2164/2
-transitionRight.y = transitionRight.y + 720/2
+transition = graphics.newImage(paths.image('dave/title/transition'))
+transition:getImage():setFilter('nearest', 'nearest')
+transition.x = -2146 + 2164/2
+transition.y = transition.y + 720/2
 
 local function __NULL__() end
 
@@ -59,7 +54,7 @@ local function change_state(stack_offset, to, ...)
 end
 
 local function snapTransition()
-	transitionLeft.x = math.floor(transitionLeft.x)
+	transition.x = math.floor(transition.x)
 end
 
 function GS.switch(to, ...)
@@ -77,17 +72,17 @@ function switchState(...)
 	end
 	if initState then
 		initState = false
-		transitionLeft.x = 0
-		Timer.tween(0.5, transitionLeft, {x = 1280 + 2164/2}, nil, {after = onComplete, during = snapTransition})
+		transition.x = 1280/2
+		Timer.tween(0.5, transition, {x = 1280 + 2164/2}, nil, {after = onComplete, during = snapTransition})
 		status.setLoading(true)
 		GS.switch(...)
 		status.setLoading(false)
 		return
 	end
 	local hi = {...}
-	transitionLeft.x = -2146 + 2164/2
-	Timer.tween(0.5, transitionLeft, {x = 1280/2}, nil, {after = function()
-		transitionLeft.x = 1280/2
+	transition.x = -2146 + 2164/2
+	Timer.tween(0.5, transition, {x = 1280/2}, nil, {after = function()
+		transition.x = 1280/2
 		Timer.after(0.000001, function() --make sure the screen is entirely covered
 			paths.clearing = true --im going to do it
 			status.setLoading(true)
@@ -95,7 +90,7 @@ function switchState(...)
 			shaders:clear()
 			if substate then closeSubstate() end
 			GS.switch(unpack(hi)) 
-			Timer.tween(0.5, transitionLeft, {x = 1280 + 2164/2}, nil, {after = onComplete, during = snapTransition})
+			Timer.tween(0.5, transition, {x = 1280 + 2164/2}, nil, {after = onComplete, during = snapTransition})
 			status.setLoading(false)
 			paths.clearing = false
 		end)

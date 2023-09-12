@@ -1166,10 +1166,13 @@ return {
 				enemyNoteData[j].distance = (enemyNoteData[j].strumTime - musicTime) * speed * 0.6
 				note.x = enemyArrow.x
 				note.y = enemyArrow.y + (enemyNoteData[j].distance * (settings.downscroll and -1 or 1))
-				if not randomSpeed and (settings.downscroll and note.y < -1000 or note.y > 1000) then
-					enemyNotesToDraw[noteNum] = j
-					
-					break
+				if settings.downscroll and note.y < -1000 or note.y > 1000 then
+					if randomSpeed then
+						note.dontdraw = true
+					else
+						enemyNotesToDraw[noteNum] = j
+						break;
+					end
 				else
 					note.dontdraw = false
 				end
@@ -1238,9 +1241,13 @@ return {
 				boyfriendNoteData[i].distance = (boyfriendNoteData[i].strumTime - musicTime) * speed * 0.6
 				note.x = boyfriendArrow.x
 				note.y = boyfriendArrow.y + (boyfriendNoteData[i].distance * (settings.downscroll and -1 or 1))
-				if not randomSpeed and (settings.downscroll and note.y < -1000 or note.y > 1000) then
-					boyfriendNotesToDraw[noteNum] = i
-					break;
+				if settings.downscroll and note.y < -1000 or note.y > 1000 then
+					if randomSpeed then
+						note.dontdraw = true
+					else
+						boyfriendNotesToDraw[noteNum] = i
+						break;
+					end
 				else
 					note.dontdraw = false
 				end
@@ -1552,7 +1559,7 @@ return {
 			--love.graphics.translate(0, -musicPos)
 			if not settings.downscroll and enemyNotesToDraw[i] > 0 or settings.downscroll and #enemyNotes > 0 then
 				for j = (settings.downscroll and 1 or enemyNotesToDraw[i]), (settings.downscroll and enemyNotesToDraw[i] or 1), (settings.downscroll and 1 or -1) do
-					if enemyNotes[i][j] then
+					if enemyNotes[i][j] and not enemyNotes[i][j].dontdraw then
 						graphics.setColor(1, 1, 1, (enemyNoteData[i][j].alpha or 1) * (enemyNoteData[i][j].alphaMult or 1) * (enemyNoteData[i][j].strum.alpha or 1) * hudAlpha[1])
 						enemyNotes[i][j]:draw()
 						graphics.setColor(1, 1, 1)
@@ -1562,7 +1569,7 @@ return {
 			if not settings.downscroll and boyfriendNotesToDraw[i] > 0 or settings.downscroll and #boyfriendNotes > 0 then
 				for j = (settings.downscroll and 1 or boyfriendNotesToDraw[i]), (settings.downscroll and boyfriendNotesToDraw[i] or 1), (settings.downscroll and 1 or -1) do
 					--print(boyfriendNotesToDraw, i, j)
-					if boyfriendNotes[i][j] then
+					if boyfriendNotes[i][j] and not boyfriendNotes[i][j].dontdraw then
 						graphics.setColor(1, 1, 1, (boyfriendNoteData[i][j].alpha or 1) * (boyfriendNoteData[i][j].alphaMult or 1) * (boyfriendNoteData[i][j].strum.alpha or 1) * hudAlpha[1])
 						boyfriendNotes[i][j]:draw()
 					end

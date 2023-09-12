@@ -3,37 +3,41 @@
 local curOS = love.system.getOS()
 --note: only string arrays supported! lol! get rekt! noob! loser!
 local settings = {}
-function settings:reset()
-	settings = { --default values
-		eyesores = true, 
-		modcharts = true, 
-		shoulderControls = true,
-		gameLeft = {'key:d', 'key:left', 'axis:triggerleft+'},
-		gameDown = {'key:f', 'key:down', 'button:leftshoulder'},
-		gameUp = {'key:j', 'key:up', 'button:rightshoulder'},
-		gameRight = {'key:k', 'key:right', 'axis:triggerright+'},
-		gameFive = {'key:space', 'key:b', 'button:a'},
-		confirm = {"key:return", "key:y", "button:b"},
-		back = {"key:escape", "key:n", "button:a"},
-		volume = 1,
-		hardwareCompression = true,
-		downscroll = false,
-		showDebug = false,
-		settingsVer = 'DAVE_2',
-		fullscreentype = 'desktop',
-		vsync = 0,
-		width = 1280,
-		height = 720,
-		selfAwareness = true,
-		metadata = { --oops this daveing sucks
-			eyesores = {'Eyesore effects', 'Whether to show eye straining effects or not'},
-			modcharts = {'Modcharts', 'Whether to have modcharts that makes it hard to play'},
-			shoulderControls = {'Shoulder Controls', 'Unchecking this will have you play with the buttons, and key five will become the shoulder buttons', {onChange = function() input = reloadInput() end}},
-			volume = {'Master Volume', '', {min = 0, max = 1, change = 0.1, onChange = function(v) love.audio.setVolume(v) end}},
-			downscroll = {'Downscroll', 'checking this puts the strums on the bottom, and makes the notes come from the top'},
-			selfAwareness = {'Self Awareness', 'If disabled, Exploitation will not use your current user\'s nickname.'}
-		}
+settings.default = { --default values
+	eyesores = true, 
+	modcharts = true, 
+	shoulderControls = true,
+	gameLeft = {'key:d', 'key:left', 'axis:triggerleft+'},
+	gameDown = {'key:f', 'key:down', 'button:leftshoulder'},
+	gameUp = {'key:j', 'key:up', 'button:rightshoulder'},
+	gameRight = {'key:k', 'key:right', 'axis:triggerright+'},
+	gameFive = {'key:space', 'key:b', 'button:a'},
+	confirm = {"key:return", "key:y", "button:b"},
+	back = {"key:escape", "key:n", "button:a"},
+	mukoNext = {"key:j", 'key:u', 'button:leftshoulder'},
+	mukoPrev = {'key:l', 'key:i', 'button:rightshoulder'},
+	mukoCams = {'key:space', 'key:b', 'button:b'},
+	mukoDoor = {'key:e', 'key:f', 'button:a'},
+	volume = 1,
+	hardwareCompression = true,
+	downscroll = false,
+	showDebug = false,
+	settingsVer = 'DAVE_3',
+	fullscreentype = 'desktop',
+	vsync = 0,
+	width = 1280,
+	height = 720,
+	selfAwareness = true,
+	metadata = { --oops this daveing sucks
+		eyesores = {'Eyesore effects', 'Whether to show eye straining effects or not'},
+		modcharts = {'Modcharts', 'Whether to have modcharts that makes it hard to play'},
+		volume = {'Master Volume', '', {min = 0, max = 1, change = 0.1, onChange = function(v) love.audio.setVolume(v) end}},
+		downscroll = {'Downscroll', 'checking this puts the strums on the bottom, and makes the notes come from the top'},
+		selfAwareness = {'Self Awareness', 'If disabled, Exploitation will not use your current user\'s nickname.'}
 	}
+}
+function settings:reset()
+	settings = table.copy(settings.default)
 	print(love.filesystem.getSaveDirectory())
 	function settings:save()
 		local str = {}
@@ -113,7 +117,7 @@ if settings.settingsVer == 'DAVE_1' then --reset controls if settings are old ma
 	settings.gameFive = {'key:space', 'key:b', 'button:a'}
 	settings.confirm = {"key:return", "key:y", "button:b"}
 	settings.back = {"key:escape", "key:n", "button:a"}
-	settings.settingsVer = 'DAVE_2'
+	settings.settingsVer = 'DAVE_3'
 end
 
 return settings
