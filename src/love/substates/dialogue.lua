@@ -97,10 +97,7 @@ local function nextDial()
 		curDial.index = 0
 		curDialSounds = {}
 		for _,e in pairs(dialogueSounds[curDial.char] or dialogueSounds.DEFAULT) do table.insert(curDialSounds, paths.sound(e)) end
-		speechBubble.sizeX = curDial.right and 1 or -1
-		if curDial.right then speechBubble.x = 1280/2
-		else speechBubble.x = -1280/2 + 100
-		end
+		speechBubble.sizeX = curDial.right and 1 or -1\
 		speechBubble:animate((curDial.emotion == 'shocked' or curDial.emotion == 'sad') and 'loudOpen' or 'open')
 		speechBubble.onAnimComplete = function(n)
 			if (curDial.emotion == 'shocked' or curDial.emotion == 'sad') then

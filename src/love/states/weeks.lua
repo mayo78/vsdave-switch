@@ -247,6 +247,7 @@ return {
 		girlfriend = girlfriendObject.sprite
 
 		local bf = jsonChart.player1 or 'bf'
+		if bf == 'bf' and charOverride then bf = charOverride end
 		--bf = 'exclusive-bf'
 		addCharToList(0, bf)
 		boyfriendObject = boyfriends[bf]
@@ -692,7 +693,7 @@ return {
 						value2 = event[3]
 					})
 					--print('adding event', event, value1, value2)
-					if event[1] == 'Change Character' and not weirdPolygonized then
+					if event[1] == 'Change Character' and (not weirdPolygonized or charOverride and event[3] == 'bf') then
 						addCharToList(tonumber(event[2]), event[3])
 					elseif event[1] == 'subtitles' and not addedSubs then
 						addedSubs = true
@@ -1266,22 +1267,22 @@ return {
 						end
 
 						if notePos <= 20 then -- "Sick"
-							score = score + 350
+							score = score + (350 * scoreMultiplier[noteNum])
 							ratingAnim = "sick"
 							notesHit = notesHit + 1
 							--print('REWARDING SICK', i)
 						elseif notePos <= safeZoneOffset * 0.25 then -- "Good"
-							score = score + 200
+							score = score + (200 * scoreMultiplier[noteNum])
 							ratingAnim = "good"
 							notesHit = notesHit + 0.65
 							--print('REWARDING gooood', i)
 						elseif notePos <= safeZoneOffset * 0.45 then -- "Bad"
-							score = score + 100
+							score = score + (100 * scoreMultiplier[noteNum])
 							ratingAnim = "bad"
 							notesHit = notesHit + 0.2
 							--print('REWARDING bad...', i)
 						else -- "Shit"
-							score = score + 10
+							score = score + (10 * scoreMultiplier[noteNum])
 							notesHit = notesHit - 2
 							ratingAnim = "shit"
 							--print('reqwarffding NOTHGIN YOU ARE SHIT', i)
@@ -1594,7 +1595,7 @@ return {
 			graphics.setColor(1, 1, 1, hudAlpha[1] * timebarAlpha[1])
 			timeBarOverlay:draw()
 			local hi = formatTime(inst:getDuration"seconds"-(musicTime/1000))
-			printfOutline(hi, -((#hi/2) * 24), timeBarOverlay.y - 32, nil, {size = 48, depth = 0.05, alpha = hudAlpha[1] * timebarAlpha[1]})
+			printfOutline(hi, -curFont:getWidth(hi)/2, timeBarOverlay.y - 32, nil, {size = 48, depth = 0.05, alpha = hudAlpha[1] * timebarAlpha[1]})
 		end
 		
 		--love.graphics.print("INFO:"..inst:getDuration"seconds"..", "..inst:tell"seconds", 0, 0)
@@ -1610,7 +1611,7 @@ return {
 		if totalNotes == 0 then accuracy = 0 end
 		fonts('comic', 32)
 		local txt = "Score: " .. score..' | Misses: '..misses..' | Accuracy: '..(math.floor(accuracy*1000)/10)..'%'
-		printfOutline(txt, -((#txt/2) * 16), healthBarOverlay.y + 25, nil, {alpha = hudAlpha[1]})
+		printfOutline(txt, -curFont:getWidth(txt)/2, healthBarOverlay.y + 25, nil, {alpha = hudAlpha[1]})
 
 		fonts('comic', 16/0.7)
 		local myY = healthBarOverlay.y + 40
@@ -1700,6 +1701,7 @@ return {
 			flash = function() self:flash() end,
 			['Change Character'] = function()
 				if not weirdPolygonized then
+					if v2 == 'bf' and charOverride then return end
 					changeChar(tonumber(v1), v2)
 				end
 			end,

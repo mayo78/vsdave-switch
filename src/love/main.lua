@@ -254,6 +254,8 @@ function love.load()
 		endings = require 'states.ending'
 		mazeCutscene = require 'states.mazeCutscene'
 
+		charSelect = require 'states.charSelect'
+
 		terminalState = require 'states.terminalState'
 
 		-- Load substates
@@ -271,6 +273,7 @@ function love.load()
 		--	require "weeks.week5",
 		--	require "weeks.week6"
 		--}
+		scoreMultiplier = {1, 1, 1, 1}
 
 		stage = require 'stage'
 
@@ -331,7 +334,7 @@ function love.load()
 			switchState(settings.language and titleMenu or languageState)
 		end
 
-		--switchState(terminalState)
+		--switchState(charSelect)
 		--switchState(debugMenu)
 		
 		--local testChar = character.new 'bf'

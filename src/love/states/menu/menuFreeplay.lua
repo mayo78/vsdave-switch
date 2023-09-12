@@ -165,8 +165,14 @@ return {
 				love.audio.stop();
 				storyMode = false
 				curWeek = nil
-				funkin.curSong = songs[songIndex][1]:lower()
-				switchState(stage)
+				if songs[songIndex][1]:lower() == 'enter terminal' then
+					switchState(terminalState)
+				else
+					charOverride = nil
+					scoreMultiplier = {1, 1, 1, 1}
+					funkin.curSong = songs[songIndex][1]:lower()
+					switchState((controls.down['button:y'] or love.keyboard.isDown'lshift') and stage or charSelect)
+				end
 			end
 			curScore = math.floor(lerp(curScore, targetScore, 0.4))
 		end
@@ -217,7 +223,7 @@ return {
 				love.graphics.pop()
 				fonts('comic', 32)
 				love.graphics.setColor(0, 0, 0, 0.6)
-				local str = lm.string.freeplay_personalBest..curScore..'\n'..save.highscoreChars[songs[songIndex][1]:lower()]
+				local str = lm.string.freeplay_personalBest..curScore..'\n'..(save.highscoreChars[songs[songIndex][1]:lower()] or 'bf')
 				local strWidth = curFont:getWidth(str)
 				love.graphics.rectangle('fill', (1280/2)-strWidth-6, -(720/2), strWidth + 6, 66)
 				love.graphics.setColor(1, 1, 1)

@@ -1,0 +1,78 @@
+{
+	"animations": [
+		{
+			"offsets": [
+				0,
+				0
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "idle",
+			"loop": false,
+			"name": "dave idle"
+		},
+		{
+			"offsets": [
+				72,
+				8
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singLEFT",
+			"loop": false,
+			"name": "dave l"
+		},
+		{
+			"offsets": [
+				-69,
+				-2
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singDOWN",
+			"loop": false,
+			"name": "dave d"
+		},
+		{
+			"offsets": [
+				-69,
+				45
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singUP",
+			"loop": false,
+			"name": "dave u"
+		},
+		{
+			"offsets": [
+				-42,
+				6
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singRIGHT",
+			"loop": false,
+			"name": "dave r"
+		}
+	],
+	"no_antialiasing": false,
+	"image": "dave/dave/characters/dave_awesome",
+	"position": [
+		0,
+		0
+	],
+	"healthicon": "dave-awesome",
+	"flip_x": false,
+	"healthbar_colors": [
+		235,
+		235,
+		241
+	],
+	"camera_position": [
+		0,
+		0
+	],
+	"sing_duration": 6.1,
+	"scale": 1
+}

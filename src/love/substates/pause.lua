@@ -53,16 +53,17 @@ return {
 		name.print = funkin.curSong:gsub('-', ' ')
 		table.insert(texts, name)
 
-		local randomString = expungedTaunts[love.math.random(1, #expungedTaunts)]
+		if funkin.curSong:lower() == 'exploitation' then
+			local randomString = expungedTaunts[love.math.random(1, #expungedTaunts)]
 
-		for i=1,math.ceil(720/16) do
-			local hi = point(0, (32 * (i+1)) - 32)
-			hi.alpha = 0
-			hi.print = randomString
-			if i > 0 then hi.back = true end
-			table.insert(texts, hi)
+			for i=1,math.ceil(720/16) do
+				local hi = point(0, (32 * (i+1)) - 32)
+				hi.alpha = 0
+				hi.print = randomString
+				if i > 0 then hi.back = true end
+				table.insert(texts, hi)
+			end
 		end
-
 		for i,v in pairs(texts) do
 			v.timer = 0
 			if i > 1 then
@@ -145,6 +146,7 @@ return {
 		end
 		graphics.setColor(0, 0, 0, fadeInAlpha)
 		love.graphics.rectangle("fill", 0, 0, 1280, 720)
+		graphics.setColor(0, 0, 0, (fadeInAlpha * 2) * 0.6)
 		love.graphics.draw(gridguy, gridframe, gridPos.x, gridPos.y)
 		graphics.setColor(1, 1, 1)
 		fonts('comic', 64)
@@ -153,7 +155,7 @@ return {
 		end
 		fonts('comic', 32)
 		for _,v in pairs(texts) do
-			printfOutline(v.print, 1280-curFont:getWidth(v.print), v.y, nil, {alpha = v.alpha})
+			printfOutline(v.print, 1280-curFont:getWidth(v.print) - 6, v.y, nil, {alpha = v.alpha})
 			if v.back then break end
 		end
 		love.graphics.pop()

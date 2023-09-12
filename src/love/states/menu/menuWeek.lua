@@ -110,6 +110,8 @@ return {
 			funkin.songList = tab
 			funkin.curSong = funkin.songList[1]:lower()
 			completeScore = 0
+			charOverride = nil
+			scoreMultiplier = {1, 1, 1, 1}
 			if curWeek == '_WEEK1' then
 				switchState(videoState, 'daveCutscene', 30)
 			else

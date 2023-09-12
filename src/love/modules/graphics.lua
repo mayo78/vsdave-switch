@@ -328,6 +328,7 @@ return {
 				return frame
 			end,
 			draw = function(self)
+				local negativeX, negativeY = self.sizeX < 0, self.sizeY < 0
 				if isAnimated then
 					if anim.indices then
 						pastLength = anim.indices.index > #anim.indices
@@ -374,22 +375,26 @@ return {
 						drawData.x = drawData.x + drawData.width/2
 						drawData.y = drawData.y + drawData.height/2
 					end
-				end		
+				end
+				if negativeX then x = -x end
+				if negativeY then y = -y end
 				
 				if drawData then
+					if negativeX or negativeY then love.graphics.scale(negativeX and -1 or 1, negativeY and -1 or 1) end
 					love.graphics.draw(
 						drawData.sheet,
 						drawData.frame,
 						x - drawData.x + self.width - anim.offsetX - (self.offsetX or 0),
 						y - drawData.y + self.height - anim.offsetY - (self.offsetY or 0),
 						self.orientation,
-						self.sizeX,
-						self.sizeY,
+						math.abs(self.sizeX),
+						math.abs(self.sizeY),
 						drawData.width,
 						drawData.height,
 						self.shearX,
 						self.shearY
 					)
+					if negativeX or negativeY then love.graphics.scale(negativeX and -1 or 1, negativeY and -1 or 1) end
 				end
 			end,
 			setPosition = function(self, x, y)

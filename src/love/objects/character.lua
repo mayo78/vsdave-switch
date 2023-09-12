@@ -115,6 +115,12 @@ function c.new (character, isPlayer)
 	end
 	--precachedChars[character] = table.copy(o)
 	o:dance()
+	if o.sprite.sizeX < 0 then
+		o.sprite.x = o.sprite.x + 1280
+	end
+	if o.sprite.sizeY < 0 then
+		o.sprite.y = o.sprite.y + 1280
+	end
 	return o
 end
 c.threedees = threedees
