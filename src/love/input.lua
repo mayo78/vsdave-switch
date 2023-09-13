@@ -32,6 +32,13 @@ return function()
 		mukoDoor = settings.mukoDoor,
 		mukoPrev = settings.mukoPrev,
 		mukoNext = settings.mukoNext,
+
+		mukoUp = {"key:w", "axis:righty-"},
+		mukoLeft = {"key:a", "axis:rightx-"},
+		mukoDown = {"key:s", "axis:righty+"},
+		mukoRight = {"key:d", "axis:rightx+"},
+		mukoClick = {"key:x", "button:rightstick"},
+
 	}
 	--print('FUCK', controlList.gameFive, controlList.gameFive[3])
 	for _,control in pairs(bindableKeys) do controlList[control] = {control} end

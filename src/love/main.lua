@@ -20,12 +20,21 @@ local pauseScreen
 
 RADIAN_TO_DEGREE = 180/math.pi
 DEGREE_TO_RADIAN = math.pi/180
+
+local printBuffer = {}
 --debugMode = true
 function love.load()
+	local printer = print
+	function print(...)
+		printer(...)
+		local hi = {...}
+		for k,v in pairs(hi) do hi[k] = tostring(v) end
+		table.insert(printBuffer, {print = table.concat(hi, ', '), time = 3})
+	end
 	--https://love2d.org/forums/viewtopic.php?t=77272
-	function love.graphics.roundrect(mode, x, y, width, height, xround, yround)
+	function love.graphics.roundrect(mode, x, y, width, height, xround, yround, p)
 		local points = {}
-		local precision = (xround + yround) * .1
+		local precision =  p or (xround + yround) * .1
 		local tI, hP = table.insert, .5*math.pi
 		if xround > width*.5 then xround = width*.5 end
 		if yround > height*.5 then yround = height*.5 end
@@ -366,13 +375,13 @@ function love.load()
 
 		--print(tostring(version), tostring(onlineVersion))
 
-		if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
-			switchState(versionState)
-		else
-			switchState(settings.language and (settings.eyesores and flashingState or titleMenu) or languageState)
-		end
+		--if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
+		--	switchState(versionState)
+		--else
+		--	switchState(settings.language and (settings.eyesores and flashingState or titleMenu) or languageState)
+		--end
 
-		--switchState(mukoTitle)
+		switchState(mukoTitle)
 		--switchState(charSelect)
 		--switchState(debugMenu)
 		
@@ -450,6 +459,12 @@ function love.update(dt)
 	end
 	shaders:update(dt)
 	substateJustLeft = false
+	for i,v in pairs(printBuffer) do
+		v.time = v.time - dt
+		if v.time <= 0 then
+			table.remove(printBuffer, i)
+		end
+	end
 end
 local function drawWhatever()
 	if finishedLoading then
@@ -483,7 +498,6 @@ local function drawWhatever()
 	if settings.showDebug then
 		love.graphics.print(status.getDebugStr(settings.showDebug), 5, 5, nil, 0.5, 0.5)
 	end
-	
 end
 function love.draw()
 	love.graphics.setCanvas(shaderCanvas)
@@ -504,6 +518,12 @@ function love.draw()
 	love.graphics.draw(shaderCanvas, 0, 0, 0)
 	graphics.screenBase(love.graphics.getWidth(), love.graphics.getHeight())
 	love.graphics.setShader()
+	if finishedLoading then
+		fonts('comic', 16)
+		for i,v in pairs(printBuffer) do
+			love.graphics.print(v.print, 0, (i + 1) * 18)
+		end
+	end
 end
 
 local utf8 = require("utf8")
