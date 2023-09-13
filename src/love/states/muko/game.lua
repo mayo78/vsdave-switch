@@ -1,18 +1,137 @@
 local util = mukoUtil
+local function random(a, b) --randomizer that supports random floats
+	if math.floor(a) ~= a or math.floor(b) ~= b then
+		local scale = 1
+		while math.floor(a) ~= a or math.floor(b) ~= b do
+			scale = scale * 10
+			a = a * 10
+			b = b * 10
+		end
+		scale = scale * 10
+		a = a * 10
+		b = b * 10
+		return love.math.random(a, b)/scale
+	else
+		return love.math.random(a, b)
+	end
+end
+local random = love.math.random
 
-local office, inCams, camFlipper, map, usageSprite
+local office, inCams, camFlipper, map, usageSprite, cam, static, staticImages, door, doorImages
+local staticTimer, staticIndex
 local powerUsage, power
 local cams = {}
 local camIndex
-for i=1,5 do table.insert(cams, {name = 'cam_0'..i}) end
+local doorOpened, doorJammed
+do
+	local camList = {'stage_empty', 'diner', 'lounge', 'hall', 'kitchen'}
+	for i=1,5 do table.insert(cams, {name = 'cam_0'..i, cam = camList[i], num = i}) end
+end
 local function powerLoop()
 	power = power - powerUsage
 	if power > 0 then
-		Timer.after(8.9 + love.math.random(-0.05, 0.6), powerLoop)
+		Timer.after(8.9 + random(-0.05, 0.6), powerLoop)
 	end
 end
+local frame30
+
+local cameraScrollLoop
+local function frame30loop() --fixed 30 fps update thing
+	if camIndex ~= 4 then
+		cameraScrollLoop = cameraScrollLoop + 1
+		if cameraScrollLoop <= 120 then
+			cam.x = cam.x - 2
+		else
+			if cameraScrollLoop > 240 then
+				cameraScrollLoop = 0
+			else
+				cam.x = cam.x + 2
+			end
+		end
+	end
+end
+local function changeCam(how)
+	local lastCam = camIndex
+	camIndex = camIndex + how
+	if camIndex > #cams then camIndex = 1
+	elseif camIndex < 1 then camIndex = #cams
+	end
+	cam.x = 0
+	cameraScrollLoop = 0
+	cam:setImage(cams[camIndex].image)
+	if camIndex == 4 then powerUsage = powerUsage + 1
+	elseif lastCam == 4 then powerUsage = powerUsage - 1
+	end
+end
+local ai
+local function character(name, spots, level, pos, handler)
+	local char = {
+		camImages = {},
+		pos = pos,
+		handler = handler,
+		level = level,
+		updateSprite = function(self)
+			if self.camImages[self.pos] then
+				self.sprite:setImage(self.camImages[self.pos])
+			end
+		end,
+	}
+	handler.char = char
+	for i,v in pairs(spots) do
+		char.camImages[i] = paths.image('muko/cameras/characters/'..name..'/'..v)
+	end
+	char.sprite = graphics.newImage(char.camImages[pos])
+	char.sprite.sizeX, char.sprite.sizeY = 1.5, 1.5
+	handler:start()
+	return char
+end
+local mukoHandler, daveHandler, tiktokHandler, scottHandler, mixHandler
+local function amLoop()
+	time = time + 1
+	if time == 13 then 
+		time = 1
+	elseif time == 1 then
+		ai.muko.level = ai.muko.level + 1
+	elseif time == 2 then
+		ai.mix.level = ai.mix.level + 1
+	elseif time == 3 then
+		ai.dave.level = ai.dave.level + 1
+	elseif time == 4 then
+		if ai.tiktok.level ~= 0 then
+			ai.tiktok.level = ai.tiktok.level + 1
+		end
+	elseif time == 5 then
+		ai.dave.level = ai.dave.level + 1
+		ai.mix.level = ai.mix.level - 1
+		ai.muko.level = ai.muko.level + 1
+	else
+		print 'finished Night!!'
+		return
+	end
+	Timer.after(70, amLoop)
+end
 return {
-	enter = function() 
+	enter = function(self)
+		mukoDay = 6
+		self:initChars()
+		local aiLevels = {
+			muko = {2, 3, 5, 7, 8, 13},
+			dave = {0, 4, 5, 6, 7, 11},
+			tiktok = {0, 0, 2, 6, 12, 16},
+			scott = {0, 1, 2, 4, 8, 13},
+			mix = {0, 1, 3, 6, 10, 13}
+		}
+		ai = {
+			muko = character('muko', {nil, 'diner_just_muko', 'muko_bar'}, aiLevels.muko[mukoDay], 2, mukoHandler),
+			dave = character('dave', {'stage_just_dave', 'diner_dave', 'dave_bar'}, aiLevels.dave[mukoDay], 1, daveHandler),
+			tiktok = character('tiktok', {[5] = 'kitchen_tiktok'}, aiLevels.tiktok[mukoDay], 5, tiktokHandler),
+			scott = character('scott', {'scott_generic', 'scott_generic', 'lounge_travis_only', nil, 'scott_generic'}, aiLevels.scott[mukoDay], 3, scottHandler),
+			--mix = character('mix', {[2] = 'diner_mix', [5] = 'kitchen_mix'}, aiLevels.mix[mukoDay], 5, mixHandler)
+		}
+		doorOpened = false
+		doorJammed = false
+		cameraScrollLoop = 0 
+		frame30 = 0
 		camIndex = 1
 		power = 100
 		powerUsage = 0
@@ -22,6 +141,11 @@ return {
 		inCams = false
 		office = graphics.newImage(paths.image('muko/office/office'))
 		office.sizeX, office.sizeY = 1.5, 1.5
+		for k,v in pairs(cams) do
+			v.image = paths.image('muko/cameras/'..v.cam)
+		end
+		cam = graphics.newImage(cams[1].image)
+		cam.sizeX, cam.sizeY = 1.5, 1.5
 		camFlipper = graphics.newImage(paths.image('muko/office/canera_thing'))
 		camFlipper.y = util:getY(-159)
 		do
@@ -45,6 +169,16 @@ return {
 		usageSprite = graphics.newImage(paths.image('muko/office/usage'))
 		usageSprite.sizeX, usageSprite.sizeY = 0.8, 0.8
 		usageSprite.x, usageSprite.y = util:getX(195), util:getY(-159)
+
+		staticTimer = 0
+		staticIndex = false
+		staticImages = {paths.image('muko/shared/camera'), paths.image('muko/shared/camera2')}
+		static = graphics.newImage(staticImages[1])
+
+		doorImages = {paths.image('muko/office/open_door'), paths.image('muko/office/close_door')}
+		door = graphics.newImage(doorImages[1])
+		door.sizeX, door.sizeY = 0.5, 0.5
+		paths.sounds'muko/door'
 	end,
 	leave = function()
 	end,
@@ -54,10 +188,30 @@ return {
 		love.graphics.scale(480/960, 360/720)
 		if not inCams then
 			office:draw()
+			local darkness = controls.down.mukoDoor and 0.5 or 1
+			love.graphics.setColor(darkness, darkness, darkness, doorJammed and 0.3 or 1)
+			door:draw()
+			love.graphics.setColor(1, 1, 1)
 		else
+			cam:draw()
+			for i,v in pairs(ai) do
+				if v.pos == camIndex then
+					v.sprite.x = cam.x
+					v.sprite:draw()
+				end
+			end
+			love.graphics.setColor(1, 1, 1, 0.2)
+			static:draw()
+			love.graphics.setColor(1, 1, 1)
 			map:draw()
 			for i,v in pairs(cams) do
+				if i == camIndex then
+					love.graphics.setColor(1, 0, 0)
+				end
 				v.sprite:draw()
+				if i == camIndex then
+					love.graphics.setColor(1, 1, 1)
+				end
 			end
 		end
 		camFlipper:draw()
@@ -66,13 +220,27 @@ return {
 		love.graphics.rectangle('fill', usageSprite.x + usageSprite.width*0.4, usageSprite.y - usageSprite.height*0.4, -(5-powerUsage)*33, usageSprite.height * 0.8)
 		love.graphics.setColor(1,1,1)
 		fonts('notosans', 32)
-		love.graphics.print(time..' AM', util:getX(193) - curFont:getWidth(time..' AM')/2, util:getY(147))
-		love.graphics.print('Night '..mukoDay, util:getX(189) - curFont:getWidth('Night '..mukoDay)/2, util:getY(128))
+		love.graphics.print(time..' AM', util:getX(193) - curFont:getWidth(time..' AM')/2, util:getY(147) - 16)
+		love.graphics.print('Night '..mukoDay, util:getX(189) - curFont:getWidth('Night '..mukoDay)/2, util:getY(128) - 16)
 		love.graphics.pop()
-		love.graphics.print(power, 0, 50)
-		love.graphics.print(powerUsage, 0, 80)
+		love.graphics.setColor(rgb255(hex2rgb 'C3CCD9'))
+		love.graphics.roundrect('fill', 6, 324, 52, 22, 25, 7)
+		love.graphics.setColor(rgb255(hex2rgb 'FF8C1A'))
+		love.graphics.roundrect('fill', 7, 325, 50, 20, 25, 7)
+		love.graphics.setColor(1,1,1)
+		fonts('notosans', 16)
+		love.graphics.print(power, 26-curFont:getWidth(power)/2 + 3, 322)
+		love.graphics.print([[Muko: ]]..ai.muko.pos..[[
+Dave: ]]..ai.dave.pos..[[
+Mix: ]]..ai.mix.pos..[[
+Scott: ]]..ai.scott.pos, 0, 25)
 	end,
 	update = function(self, dt)
+		frame30 = frame30 + (30 * dt)
+		if frame30 >= 1 then 
+			frame30loop()
+			frame30 = 0
+		end
 		if not inCams then
 			if controls.down.left and office.x < 120 then
 				office.x = office.x + dt * 350
@@ -81,11 +249,33 @@ return {
 				office.x = office.x - dt * 350
 				if office.x < -120 then office.x = -120 end
 			end
+			if controls.pressed.mukoDoor then
+				doorOpened = not doorOpened
+				paths.sounds'muko/door':stop()
+				paths.sounds'muko/door':play()
+				door:setImage(doorImages[doorOpened and 2 or 1])
+				powerUsage = powerUsage + (1 * (doorOpened and 1 or -1))
+			end
+			door.x = office.x - (110 * util.scaleX)
+			door.y = office.y - (60 * util.scaleY)
+		else
+			if controls.pressed.mukoNext then
+				changeCam(1)
+			elseif controls.pressed.mukoPrev then
+				changeCam(-1)
+			end
 		end
 		if controls.pressed.mukoCams then
 			inCams = not inCams
 			camFlipper.sizeY = inCams and -1 or 1
 			powerUsage = powerUsage + ((inCams and 1 or -1) * ((camIndex == 4) and 2 or 1))
+		end
+		
+		staticTimer = staticTimer - dt
+		if staticTimer < 0 then
+			staticIndex = not staticIndex
+			static:setImage(staticImages[staticIndex and 1 or 2])
+			staticTimer = 0.05
 		end
 	end,
 	--dbeug
@@ -96,4 +286,162 @@ return {
 	--		powerUsage = powerUsage - 1
 	--	end
 	--end
+	initChars = function()
+		local baseHandler = {
+			start = function(self)
+				self:wait(function()
+					self:move()
+				end)
+			end,
+			wait = function(self, callback)
+				if self.char.pos == 4 then
+					Timer.after(random(6, 10), callback)
+				else
+					Timer.after(random(15.5, 35.5), function()
+						self:tryToMove(callback)
+					end)
+				end
+			end,
+			tryToMove = function(self, callback)
+				if random(1, 20) > 20 - self.char.level then
+					callback()
+				else
+					Timer.after(random(1.5, 4), function()
+						self:tryToMove(callback)
+					end)
+				end
+			end
+		}
+		mukoHandler = table.copy(baseHandler)
+		local function _mukomove_()
+			mukoHandler:move()
+		end
+		function mukoHandler:move()
+			local pos = self.char.pos
+			if pos == 1 then
+				self.char.pos = 2
+			elseif pos == 2 then
+				self.char.pos = (random(1, 15) == 1) and 4 or 3
+			elseif pos == 3 then
+				self.char.pos = 2
+				self:wait(function()
+					self.char.pos = 4
+					self:wait(_mukomove_)
+				end)
+				self.char:updateSprite()
+				return
+			elseif pos == 4 then
+				if not doorOpened then
+					nextJumpscare = 'muko'
+					return
+				else
+					self.char.pos = 2
+					self:wait(function()
+						self.char.pos = 3
+						self:wait(_mukomove_)
+					end)
+					self.char:updateSprite()
+					return
+				end
+			end
+			self:wait(_mukomove_)
+			self.char:updateSprite()
+		end
+		daveHandler = table.copy(baseHandler)
+		local function _davemove_()
+			daveHandler:move()
+		end
+		local canHeadBackToBar = true
+		function daveHandler:move()
+			local pos = self.char.pos
+			if pos == 1 then
+				self.char.pos = 2
+			elseif pos == 2 then
+				self:wait(function()
+					if canHeadBackToBar then
+						canHeadBackToBar = false
+						self.char.pos = love.math.random(3, 4)
+					else
+						self.char.pos = 4
+					end
+					self.char:updateSprite()
+					self:wait(_davemove_)
+				end)
+				return
+			elseif pos == 3 then
+				self:wait(function()
+					self.char.pos = 2
+					self.char:updateSprite()
+					self:wait(_davemove_)
+				end)
+				return
+			elseif pos == 4 then
+				if not doorOpened then
+					nextJumpscare = self.char.name
+					return
+				else
+					canHeadBackToBar = true
+					self.char.pos = 2
+					self.char:updateSprite()
+					self:wait(function()
+						self.char.pos = 1
+						self.char:updateSprite()
+						self:wait(_davemove_)
+					end)
+					return
+				end
+			end
+			self.char:updateSprite()
+			self:wait(_davemove_)
+		end
+		local function _scottmove_()
+			scottHandler:move()
+		end
+		scottHandler = {
+			start = function(self)
+				self:wait(function()
+					self:move()
+				end)
+			end,
+			wait = function(self, callback)
+				if self.char.pos == 4 then
+					Timer.after(random(4, 7), callback)
+				else
+					Timer.after(random(12.5, 32.6), function()
+						self:tryToMove(callback)
+					end)
+				end
+			end,
+			tryToMove = function(self, callback)
+				if (random(1, 20) > 20 - self.char.level) and camIndex ~= self.char.pos then
+					callback()
+				else
+					Timer.after(random(3, 6), function()
+						self:tryToMove(callback)
+					end)
+				end
+			end,
+			move = function(self)
+				local pos = self.char.pos
+				if pos == 1 then
+					self.char.pos = 2
+				elseif pos == 2 then
+					return
+				end
+				self.char:updateSprite()
+				self:wait(_scottmove_)
+			end,
+		}
+		
+		tiktokHandler = {
+			start = function(self)
+				self:loop(true)
+			end,
+			loop = function(self, first)
+				if not first then
+				end
+				Timer.after(random(25, 40) - self.char.level, function() self:loop() end)
+			end
+		}
+	end
 }
