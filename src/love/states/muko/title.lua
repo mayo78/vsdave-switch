@@ -161,9 +161,9 @@ return {
 		--if controls.pressed.confirm then
 		--	switchState(mukoGame)
 		--end
-		if controls.pressed.up then
+		if controls.pressed.down then
 			changeSelection(-1)
-		elseif controls.pressed.down then
+		elseif controls.pressed.up then
 			changeSelection(1)
 		end
 

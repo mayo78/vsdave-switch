@@ -24,13 +24,13 @@ DEGREE_TO_RADIAN = math.pi/180
 local printBuffer = {}
 --debugMode = true
 function love.load()
-	local printer = print
-	function print(...)
-		printer(...)
-		local hi = {...}
-		for k,v in pairs(hi) do hi[k] = tostring(v) end
-		table.insert(printBuffer, {print = table.concat(hi, ', '), time = 3})
-	end
+	--local printer = print
+	--function print(...)
+	--	printer(...)
+	--	local hi = {...}
+	--	for k,v in pairs(hi) do hi[k] = tostring(v) end
+	--	table.insert(printBuffer, {print = table.concat(hi, ', '), time = 3})
+	--end
 	--https://love2d.org/forums/viewtopic.php?t=77272
 	function love.graphics.roundrect(mode, x, y, width, height, xround, yround, p)
 		local points = {}
@@ -208,6 +208,16 @@ function love.load()
 		hex = hex:gsub("#",""):gsub('0xFF', '')
 		return tonumber("0x"..hex:sub(1,2)), tonumber("0x"..hex:sub(3,4)), tonumber("0x"..hex:sub(5,6))
 	end
+	
+	function math.lerp(a,b,t) return a * (1-t) + b * t end
+	lerp = math.lerp --fjasdkljf;klsdj
+	function math.boundTo(value, min, max)
+		return math.max(min, math.min(max, value))
+	end
+	function math.round(num, numDecimalPlaces)
+		local mult = 10^(numDecimalPlaces or 0)
+		return math.floor(num * mult + 0.5) / mult
+	end
 
 	colors = {
 		main = '0xFFFDE871',
@@ -311,6 +321,7 @@ function love.load()
 
 		mukoTitle = require 'states.muko.title'
 		mukoGame = require 'states.muko.game'
+		mukoEnd = require 'states.muko.end'
 
 		-- Load week data
 		--weekData = {
@@ -387,15 +398,6 @@ function love.load()
 		
 		--local testChar = character.new 'bf'
 
-		function math.lerp(a,b,t) return a * (1-t) + b * t end
-		lerp = math.lerp --fjasdkljf;klsdj
-		function math.boundTo(value, min, max)
-			return math.max(min, math.min(max, value))
-		end
-		function math.round(num, numDecimalPlaces)
-			local mult = 10^(numDecimalPlaces or 0)
-			return math.floor(num * mult + 0.5) / mult
-		end
 		finishedLoading = true
 		--print(font)
 	end)

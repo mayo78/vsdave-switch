@@ -1,4 +1,28 @@
 local util = mukoUtil
+
+local office, inCams, camFlipper, map, usageSprite, cam, static, staticImages, door, doorImages
+local staticTimer, staticIndex
+local powerUsage, power
+local cams = {}
+local camIndex
+local doorClosed, doorJammed
+do
+	local camList = {'stage_empty', 'diner', 'lounge', 'hall', 'kitchen'}
+	for i=1,5 do table.insert(cams, {name = 'cam_0'..i, cam = camList[i], num = i}) end
+end
+local powerOut, startPowerOutLoop
+local frame30
+
+local cameraScrollLoop
+
+local freeze
+local camBounds = {util:getX(120), util:getY(240)}
+local startedPowerOut, powerOutLoop, powerOutLoopMax, powerOutWalk
+local tiktokpower, tiktokpowerSprites
+local ai
+local mukoHandler, daveHandler, tiktokHandler, scottHandler, mixHandler
+local jumpscare, jumpscareSprites, doingJumpscare, jumpscareLoop, nextJumpscare, doneJumpscare
+local tiktoksounds
 local function random(a, b) --randomizer that supports random floats
 	if math.floor(a) ~= a or math.floor(b) ~= b then
 		local scale = 1
@@ -26,28 +50,20 @@ local function CheckCollision(x1,y1,w1,h1, x2,y2,w2,h2)
          y2 < y1+h1
 end
 
-local office, inCams, camFlipper, map, usageSprite, cam, static, staticImages, door, doorImages
-local staticTimer, staticIndex
-local powerUsage, power
-local cams = {}
-local camIndex
-local doorClosed, doorJammed
-do
-	local camList = {'stage_empty', 'diner', 'lounge', 'hall', 'kitchen'}
-	for i=1,5 do table.insert(cams, {name = 'cam_0'..i, cam = camList[i], num = i}) end
-end
 local function powerLoop()
 	power = power - powerUsage
 	if power > 0 then
 		Timer.after(8.9 + random(-0.05, 0.6), powerLoop)
+	else
+		paths.sounds'muko/powerdown':play()
+		powerOut = true
+		Timer.after(random(4,7), function()
+			powerOutLoop, powerOutLoopMax = 1, random(200, 800)
+			startPowerOutLoop = true
+			paths.sounds'muko/musicbox':play()
+		end)
 	end
 end
-local frame30
-
-local cameraScrollLoop
-
-local freeze
-local camBounds = {util:getX(120), util:getY(240)}
 local function frame30loop() --fixed 30 fps update thing
 	if camIndex ~= 4 then
 		cameraScrollLoop = cameraScrollLoop + 1
@@ -61,8 +77,24 @@ local function frame30loop() --fixed 30 fps update thing
 			end
 		end
 	end
+	if powerOut and not powerOutWalk and startPowerOutLoop then
+		tiktokpower:setImage(tiktokpowerSprites[random(1,2)])
+		powerOutLoop = powerOutLoop + 1
+		if powerOutLoop > powerOutLoopMax then
+			powerOutWalk = true
+			love.audio.stop()
+			Timer.after(random(0.1, 1), function()
+				paths.sounds'muko/deep steps':play()
+				Timer.after(paths.sounds'muko/deep steps':getDuration 'seconds' + random(2,10), function()
+					nextJumpscare = 'tiktok'
+				end)
+			end)
+		end
+	end
 end
 local function changeCam(how)
+	paths.sounds'muko/blip3':stop()
+	paths.sounds'muko/blip3':play()
 	local lastCam = camIndex
 	camIndex = camIndex + how
 	if camIndex > #cams then camIndex = 1
@@ -75,7 +107,6 @@ local function changeCam(how)
 	elseif lastCam == 4 then powerUsage = powerUsage - 1
 	end
 end
-local ai
 local function character(name, spots, level, pos, handler)
 	local char = {
 		camImages = {},
@@ -84,12 +115,12 @@ local function character(name, spots, level, pos, handler)
 		level = level,
 		visible = true,
 		updateSprite = function(self)
-			print('updateing sprite', name, self.pos)
+			--print('updateing sprite', name, self.pos)
 			if self.camImages[self.pos] then
 				self.visible = true
 				self.sprite:setImage(self.camImages[self.pos])
 			else
-				self.visible = false
+				self.dontdraw = true
 			end
 		end,
 	}
@@ -102,8 +133,6 @@ local function character(name, spots, level, pos, handler)
 	handler:start()
 	return char
 end
-local mukoHandler, daveHandler, tiktokHandler, scottHandler, mixHandler
-local jumpscare, jumpscareSprites, doingJumpscare, jumpscareLoop, nextJumpscare, doneJumpscare
 local function doJumpscare()
 	doingJumpscare = true
 	if inCams then
@@ -111,6 +140,12 @@ local function doJumpscare()
 	end
 	jumpscare:setImage(jumpscareSprites[nextJumpscare])
 	Timer.clear()
+	if nextJumpscare ~= 'mix' then
+		paths.sounds'muko/yt1s':play()
+	else
+		paths.sounds'muko/kitchen2':play()
+		paths.sounds'muko/kitchen3':play()
+	end
 end
 local function amLoop()
 	time = time + 1
@@ -131,13 +166,16 @@ local function amLoop()
 		ai.mix.level = ai.mix.level - 1
 		ai.muko.level = ai.muko.level + 1
 	else
-		print 'finished Night!!'
+		Timer.clear()
+		switchState(mukoEnd)
 		return
 	end
 	Timer.after(70, amLoop)
 end
 return {
 	enter = function(self)
+		powerOutWalk = false
+		startedPowerOut = false
 		doneJumpscare = false
 		nextJumpscare = nil
 		jumpscareLoop = 1
@@ -205,10 +243,9 @@ return {
 		staticImages = {paths.image('muko/shared/camera'), paths.image('muko/shared/camera2')}
 		static = graphics.newImage(staticImages[1])
 
-		doorImages = {paths.image('muko/office/open_door'), paths.image('muko/office/close_door')}
+		doorImages = {paths.image('muko/office/close_door'), paths.image('muko/office/open_door')}
 		door = graphics.newImage(doorImages[1])
 		door.sizeX, door.sizeY = 0.5, 0.5
-		paths.sounds'muko/door'
 
 		tiktokSong = graphics.newImage(paths.image('muko/office/tiktoksong'))
 		cursor = graphics.newImage(paths.image('muko/office/cursor'))
@@ -218,6 +255,27 @@ return {
 			jumpscareSprites[i] = paths.image('muko/jumpscares/'..i)
 		end
 		jumpscare = graphics.newImage(jumpscareSprites.muko)
+
+		tiktokpowerSprites = {paths.image'muko/office/tiktok', paths.image'muko/office/tiktok_bright'}
+		tiktokpower = graphics.newImage(tiktokpowerSprites[1])
+		tiktokpower.x, tiktokpower.y = util:getX(120), util:getY(0)
+
+		--load audio
+		
+		paths.sounds'muko/door'
+		paths.sounds'muko/yt1s'
+		paths.sounds'muko/kitchen2'
+		paths.sounds'muko/kitchen3'
+		paths.sounds'muko/blip3'
+		paths.sounds'muko/camup'
+		paths.sounds'muko/camloop'
+		paths.sounds'muko/deep steps'
+		paths.sounds'muko/powerdown'
+		paths.sounds'muko/musicbox'
+		tiktoksounds = {paths.sounds'muko/1', paths.sounds'muko/2', paths.sounds'muko/3'}
+		paths.sounds'muko/ambience2':play()
+
+		amLoop()
 	end,
 	leave = function()
 		Timer.clear()
@@ -226,64 +284,82 @@ return {
 		love.graphics.push()
 		love.graphics.translate(lovesize.getWidth()/2,lovesize.getHeight()/2)
 		love.graphics.scale(480/960, 360/720)
-		if not inCams then
-			office:draw()
-			local darkness = controls.down.mukoDoor and 0.5 or 1
-			love.graphics.setColor(darkness, darkness, darkness, doorJammed and 0.3 or 1)
-			door:draw()
-			love.graphics.setColor(1, 1, 1)
-			if tiktokHandler.visible then
-				tiktokSong:draw()
+		if not powerOut then
+			if not inCams then
+				office:draw()
+				local darkness = controls.down.mukoDoor and 0.5 or 1
+				love.graphics.setColor(darkness, darkness, darkness, doorJammed and 0.3 or 1)
+				door:draw()
+				love.graphics.setColor(1, 1, 1)
+				if tiktokHandler.visible then
+					tiktokSong:draw()
+				end
+				love.graphics.setColor(1, 1, 1, (tiktokHandler.visible and 1 or 0.25))
+				cursor:draw()
+				love.graphics.setColor(1, 1, 1)
+				if nextJumpscare then
+					jumpscare:draw()
+				end
+			else
+				cam:draw()
+				for i,v in pairs(ai) do
+					if v.pos == camIndex then
+						--if camIndex == 4 then print 'WARNIGN !!! warnihng the warn' end
+						if camIndex ~= 4 then
+							v.sprite.x = cam.x
+							v.sprite:draw()
+						end
+						if v.handler.onCamera then
+							v.handler:onCamera(camIndex)
+						end
+					elseif v.handler.offCamera then
+						v.handler:offCamera(camIndex)
+					end
+				end
+				love.graphics.setColor(1, 1, 1, 0.2)
+				static:draw()
+				love.graphics.setColor(1, 1, 1)
+				map:draw()
+				for i,v in pairs(cams) do
+					if i == camIndex then
+						love.graphics.setColor(1, 0, 0)
+					end
+					v.sprite:draw()
+					if i == camIndex then
+						love.graphics.setColor(1, 1, 1)
+					end
+				end
 			end
-			love.graphics.setColor(1, 1, 1, (tiktokHandler.visible and 1 or 0.25))
-			cursor:draw()
-			love.graphics.setColor(1, 1, 1)
+			camFlipper:draw()
+			usageSprite:draw()
+			love.graphics.setColor(0,0,0)
+			love.graphics.rectangle('fill', usageSprite.x + usageSprite.width*0.4, usageSprite.y - usageSprite.height*0.4, -(5-powerUsage)*33, usageSprite.height * 0.8)
+			love.graphics.setColor(1,1,1)
+			fonts('notosans', 32)
+			love.graphics.print(time..' AM', util:getX(193) - curFont:getWidth(time..' AM')/2, util:getY(147) - 16)
+			love.graphics.print('Night '..mukoDay, util:getX(189) - curFont:getWidth('Night '..mukoDay)/2, util:getY(128) - 16)
+		else
+			if not powerOutWalk and startPowerOutLoop then
+				tiktokpower:draw()
+			end
 			if nextJumpscare then
 				jumpscare:draw()
 			end
-		else
-			cam:draw()
-			for i,v in pairs(ai) do
-				if v.visible and v.pos == camIndex then
-					--if camIndex == 4 then print 'WARNIGN !!! warnihng the warn' end
-					v.sprite.x = cam.x
-					v.sprite:draw()
-				end
-			end
-			love.graphics.setColor(1, 1, 1, 0.2)
-			static:draw()
-			love.graphics.setColor(1, 1, 1)
-			map:draw()
-			for i,v in pairs(cams) do
-				if i == camIndex then
-					love.graphics.setColor(1, 0, 0)
-				end
-				v.sprite:draw()
-				if i == camIndex then
-					love.graphics.setColor(1, 1, 1)
-				end
-			end
 		end
-		camFlipper:draw()
-		usageSprite:draw()
-		love.graphics.setColor(0,0,0)
-		love.graphics.rectangle('fill', usageSprite.x + usageSprite.width*0.4, usageSprite.y - usageSprite.height*0.4, -(5-powerUsage)*33, usageSprite.height * 0.8)
-		love.graphics.setColor(1,1,1)
-		fonts('notosans', 32)
-		love.graphics.print(time..' AM', util:getX(193) - curFont:getWidth(time..' AM')/2, util:getY(147) - 16)
-		love.graphics.print('Night '..mukoDay, util:getX(189) - curFont:getWidth('Night '..mukoDay)/2, util:getY(128) - 16)
 		love.graphics.pop()
-		love.graphics.setColor(rgb255(hex2rgb 'C3CCD9'))
-		love.graphics.roundrect('fill', 6, 324, 52, 22, 25, 3, 7)
-		love.graphics.setColor(rgb255(hex2rgb 'FF8C1A'))
-		love.graphics.roundrect('fill', 7, 325, 50, 20, 25, 3, 7)
-		love.graphics.setColor(1,1,1)
-		fonts('notosans', 16)
-		love.graphics.print(power, 26-curFont:getWidth(power)/2 + 3, 322)
+		if not powerOut then
+			love.graphics.setColor(rgb255(hex2rgb 'C3CCD9'))
+			love.graphics.roundrect('fill', 6, 324, 52, 22, 25, 3, 7)
+			love.graphics.setColor(rgb255(hex2rgb 'FF8C1A'))
+			love.graphics.roundrect('fill', 7, 325, 50, 20, 25, 3, 7)
+			love.graphics.setColor(1,1,1)
+			fonts('notosans', 16)
+			love.graphics.print(power, 26-curFont:getWidth(power)/2 + 3, 322)
+		end
 --		love.graphics.printf([[Muko: ]]..ai.muko.pos..[[
 --Dave: ]]..ai.dave.pos..[[
 --Scott: ]]..ai.scott.pos, 0, 25, 9999)
-		love.graphics.print(tiktokHandler:getMisses(), 0, 50)
+		--love.graphics.print(tiktokHandler:getMisses(), 0, 50)
 	end,
 	update = function(self, dt)
 		frame30 = frame30 + (30 * dt)
@@ -300,7 +376,10 @@ return {
 			jumpscare.y = jumpscare.y + (10 * util.scaleY) * dt * 30
 			jumpscareLoop = jumpscareLoop + dt * 30
 			if jumpscareLoop >= 20 then
-				switchState(mukoTitle)
+				Timer.after(2, function()
+					switchState(mukoTitle)
+					love.audio.stop()
+				end)
 				doneJumpscare = true
 				doingJumpscare = false
 			end
@@ -328,6 +407,9 @@ return {
 				CheckCollision(cursor.x-cursor.width/2,cursor.y-cursor.height/2,cursor.width,cursor.height,
 								tiktokSong.x-tiktokSong.width/2,tiktokSong.y-tiktokSong.height/2,tiktokSong.width,tiktokSong.height) then
 				tiktokHandler.visible = false
+				local sound = random(1,3)
+				tiktoksounds[sound]:stop()
+				tiktoksounds[sound]:play()
 			end
 			door.x = office.x - (110 * util.scaleX)
 			door.y = office.y - (60 * util.scaleY)
@@ -352,6 +434,13 @@ return {
 			inCams = not inCams
 			camFlipper.sizeY = inCams and -1 or 1
 			powerUsage = powerUsage + ((inCams and 1 or -1) * ((camIndex == 4) and 2 or 1))
+			paths.sounds(inCams and 'muko/camloop' or 'muko/camup'):stop()
+			paths.sounds(inCams and 'muko/camloop' or 'muko/camup'):play()
+			if not inCams then
+				for i,v in pairs(ai) do
+					if v.handler.offCamera then v.handler:offCamera(camIndex) end
+				end
+			end
 		end
 		
 		staticTimer = staticTimer - dt
@@ -361,8 +450,10 @@ return {
 			staticTimer = 0.05
 		end
 
-		if controls.pressed.back then
+		if controls.pressed.pause then
 			nextJumpscare = 'muko'
+			--time = 5
+			--amLoop()
 		end
 	end,
 	--dbeug
@@ -403,6 +494,10 @@ return {
 		local function _mukomove_()
 			mukoHandler:move()
 		end
+		local beer = paths.sounds 'muko/muko'
+		beer:setLooping(true)
+		beer:play()
+		beer:setVolume(0)
 		function mukoHandler:move()
 			--print 'im muko and im moving'
 			local pos = self.char.pos
@@ -435,10 +530,20 @@ return {
 			self:wait(_mukomove_)
 			self.char:updateSprite()
 		end
+		function mukoHandler:onCamera(cam)
+			beer:setVolume((cam == 4) and 100 or 0)
+		end
+		function mukoHandler:offCamera(cam)
+			beer:setVolume(0)
+		end
 		daveHandler = table.copy(baseHandler)
 		local function _davemove_()
 			daveHandler:move()
 		end
+		local hell = paths.sounds 'muko/dave'
+		hell:setLooping(true)
+		hell:play()
+		hell:setVolume(0)
 		local canHeadBackToBar = true
 		function daveHandler:move()
 			local pos = self.char.pos
@@ -482,9 +587,19 @@ return {
 			self.char:updateSprite()
 			self:wait(_davemove_)
 		end
+		function daveHandler:onCamera(cam)
+			hell:setVolume((cam == 4) and 100 or 0)
+		end
+		function daveHandler:offCamera(cam)
+			hell:setVolume(0)
+		end
 		local function _scottmove_()
 			scottHandler:move()
 		end
+		local itslit = paths.sounds 'muko/scott'
+		itslit:setLooping(true)
+		itslit:play()
+		itslit:setVolume(0)
 		scottHandler = {
 			start = function(self)
 				self:wait(function()
@@ -519,10 +634,20 @@ return {
 				self.char:updateSprite()
 				self:wait(_scottmove_)
 			end,
+			onCamera = function(self, cam)
+				itslit:setVolume((cam == 4) and 100 or 0)
+			end,
+			offCamera = function(self, cam)
+				itslit:setVolume(0)
+			end,
 		}
 		local function _mixmove_()
 			mixHandler:move()
 		end
+		local kitchen = paths.sounds 'muko/kitchen'
+		kitchen:setLooping(true)
+		kitchen:play()
+		kitchen:setVolume(0)
 		mixHandler = {
 			start = function(self)
 				self:wait(function()
@@ -562,9 +687,16 @@ return {
 				end
 				self.char:updateSprite()
 				self:wait(_mixmove_)
-			end
+			end,
+			onCamera = function(self, cam)
+				kitchen:setVolume((cam == 4) and 100 or 80)
+			end,
+			offCamera = function(self, cam)
+				kitchen:setVolume(0)
+			end,
 		}
 		local failed = 0
+		local failSound = paths.sounds 'muko/tiktok_fail'
 		tiktokHandler = {
 			pos = point(-100,-100),
 			start = function(self)
@@ -586,8 +718,10 @@ return {
 							self.visible = false
 							if failed == 2 then
 								power = 0
+								powerLoop()
 								return
 							else
+								failSound:play()
 							end
 						end
 						self:loop()
