@@ -1,11 +1,3 @@
-
-
-local leftFunc, rightFunc, confirmFunc, backFunc, drawFunc
-
-local menuState
-
-local menuNum = 1
-
 local weekNum = 1
 local songNum, songAppend
 local songDifficulty = 2
@@ -14,36 +6,41 @@ local titleBG
 local selectSound
 local confirmSound
 local catStrings
-local sprites = {}
-local function newSprite(image, x, y)
-	local spr = graphics.newImage(paths.image(image))
-	spr.x = x or 0
-	spr.y = y or 0
-	return spr
-end
-local function add(spr)
-	table.insert(sprites, spr)
-end
 
-
-local inRealFreeplay = false
+local inRealFreeplay
 local cats = {}
 local catIndex = 1
-local function changeCat(how)
-	catIndex = catIndex + how
-	if catIndex > #catStrings then catIndex = 1
-	elseif catIndex <= 0 then catIndex = #catStrings
-	end
-end
+
 local songs = {}
 local songIndex = 1
-local songOffset = {value = 0}
 local icons = {}
 local leaving = false
 local targetColor = {0, 0, 0}
 local colors = {}
 local noCat = false
 local curScore, targetScore
+
+local lastCat
+
+local targetX, targetY
+
+
+--recursed
+local timeSincePress
+local lastTimeSincePress
+
+local pressSpeed
+local pressSpeeds = {}
+local pressUnlockNumber
+local lastKey
+local stringKey
+
+local function changeCat(how)
+	catIndex = catIndex + how
+	if catIndex > #catStrings then catIndex = 1
+	elseif catIndex <= 0 then catIndex = #catStrings
+	end
+end
 local function changeSong(how)
 	songIndex = songIndex + how
 	if songIndex > #songs then songIndex = 1
@@ -51,11 +48,18 @@ local function changeSong(how)
 	end
 	targetScore = save.highscores[songs[songIndex][1]:lower()] or 0
 end
-local lastCat
-
-local targetX, targetY
+local function resetPresses()
+	table.clear(pressSpeeds)
+	pressUnlockNumber = random(20,40)
+end
 return {
 	enter = function(self, previous)
+		recursedCooldown, recursedCount = 0, 0
+		inRealFreeplay = false
+		table.clear(icons)
+		table.clear(cats)
+		table.clear(songs)
+		resetPresses()
 		if not save.save.found_terminal then catStrings = {'dave', 'joke', 'extras'}
 		else catStrings = {'dave', 'joke', 'extras', 'terminal'}
 		end
@@ -68,13 +72,11 @@ return {
 		noCat = false
 		curScore = 42353
 
-		titleBG = newSprite(funkin.randomBG())
+		titleBG = graphics.newImage(paths.image(funkin.randomBG()))
 		titleBG.color = {73, 101, 255}
-		add(titleBG)
 		
 		for _,cat in ipairs(catStrings) do
 			local spr = newSprite('dave/title/packs/'..cat)
-			add(spr)
 			table.insert(cats, spr)
 		end
 
@@ -94,8 +96,6 @@ return {
 				audio.playSound(confirmSound)
 				Timer.after(0.1, function()
 					cats[catIndex].alpha = 1
-					songOffset.value = 720
-					Timer.tween(1, songOffset, {value = 0}, 'out-expo')
 					Timer.tween(1, cats[catIndex], {alpha = 0, y = -720}, 'out-expo', function()
 						inRealFreeplay = true
 						if catIndex ~= lastCat then songIndex = 1 end
@@ -181,65 +181,50 @@ return {
 	draw = function(self)
 		if leaving then return end
 		love.graphics.push()
-			love.graphics.translate(graphics.getWidth() / 2, graphics.getHeight() / 2)
-
-
-			love.graphics.push()
-
-			for _,spr in pairs(sprites) do
-				if not spr.dontdraw then
-					if spr.color or spr.alpha then
-						if not spr.color then spr.color = {} end
-						love.graphics.setColor(rgb255(spr.color[1], spr.color[2], spr.color[3], spr.color[4] or spr.alpha))
-						colorized = spr.color
-					else
-						love.graphics.setColor(1, 1, 1, 1)
-					end
-					spr:draw()
-				end
+		love.graphics.translate(graphics.getWidth() / 2, graphics.getHeight() / 2)
+		titleBG:draw()
+		for i,v in pairs(cats) do
+			if not v.dontdraw and v.alpha > 0 then
+				love.graphics.setColor(1,1,1,v.alpha)
+				v:draw()
 			end
-			if not inRealFreeplay then
-				for i,cat in ipairs(cats) do
-					--print(catStrings[i], catStrings, i)
-					printfOutline(lm.string['freeplay_'..catStrings[i]] or lm.string.freeplay_extra, cat.x - 128, cat.y - 300, nil, {size = 72, depth = 0.05})
-				end
-			else
-				love.graphics.push()
-				love.graphics.translate(-500, -100)
-				love.graphics.translate(targetX, targetY)
-				fonts('comic', 72)
-				for i,song in ipairs(songs) do
-					love.graphics.translate(75, 165)
-					local icon = icons[song[1]]
-					local nodash = song[1]:gsub('-', ' ')
-					local alpha = (i == songIndex) and 1 or 0.5
-					love.graphics.setColor(1, 1, 1, alpha)
-					icon.x = curFont:getWidth(song[1])
-					--if i == 1 then icon.x = icon.x + 75 end
-					icon:draw()
-					printfOutline(nodash, 0, 0, nil, {size = 64, depth = 0.05, alpha = alpha})
-					love.graphics.setColor(1, 1, 1, 1)
-				end
-				love.graphics.pop()
-				fonts('comic', 32)
-				love.graphics.setColor(0, 0, 0, 0.6)
-				local str = lm.string.freeplay_personalBest..curScore..'\n'..(save.highscoreChars[songs[songIndex][1]:lower()] or 'bf')
-				local strWidth = curFont:getWidth(str)
-				love.graphics.rectangle('fill', (1280/2)-strWidth-6, -(720/2), strWidth + 6, 66)
-				love.graphics.setColor(1, 1, 1)
-				love.graphics.printf(str, (1280/2)-strWidth, (-720/2), 9999999)
+		end
+		if not inRealFreeplay then
+			for i,cat in ipairs(cats) do
+				--print(catStrings[i], catStrings, i)
+				printfOutline(lm.string['freeplay_'..catStrings[i]] or lm.string.freeplay_extra, cat.x - 128, cat.y - 300, nil, {size = 72, depth = 0.05})
+			end
+		else
+			love.graphics.push()
+			love.graphics.translate(-500, -100)
+			love.graphics.translate(targetX, targetY)
+			fonts('comic', 72)
+			for i,song in ipairs(songs) do
+				love.graphics.translate(75, 165)
+				local icon = icons[song[1]]
+				local nodash = song[1]:gsub('-', ' ')
+				local alpha = (i == songIndex) and 1 or 0.5
+				love.graphics.setColor(1, 1, 1, alpha)
+				icon.x = curFont:getWidth(song[1])
+				--if i == 1 then icon.x = icon.x + 75 end
+				icon:draw()
+				printfOutline(nodash, 0, 0, nil, {size = 64, depth = 0.05, alpha = alpha})
+				love.graphics.setColor(1, 1, 1, 1)
 			end
 			love.graphics.pop()
+			fonts('comic', 32)
+			love.graphics.setColor(0, 0, 0, 0.6)
+			local str = lm.string.freeplay_personalBest..curScore..'\n'..(save.highscoreChars[songs[songIndex][1]:lower()] or 'bf')
+			local strWidth = curFont:getWidth(str)
+			love.graphics.rectangle('fill', (1280/2)-strWidth-6, -(720/2), strWidth + 6, 66)
+			love.graphics.setColor(1, 1, 1)
+			love.graphics.printf(str, (1280/2)-strWidth, (-720/2), 9999999)
+		end
 		love.graphics.pop()
 	end,
 
 	leave = function(self)
 		lastCat = catIndex
-		inRealFreeplay = false
-		table.clear(icons)
-		table.clear(cats)
-		table.clear(songs)
-		table.clear(sprites)
 		Timer.clear()
 	end
 }

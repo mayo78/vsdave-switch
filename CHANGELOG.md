@@ -1,4 +1,4 @@
-# v0.1.1 (wip)
+# v0.1.1
 note: this version uses a new version of love.elf, so donwload it from the new source as listed in the thing :)
 ### Gameplay
 - Controls can be bounded now to any button
@@ -14,3 +14,15 @@ note: this version uses a new version of love.elf, so donwload it from the new s
 - OST and Credits menus (+ end credits)
 ### Other
 - Added a thing where the game checks online the current verison, not sure if this works so i'll jsut wait til i release the next version of this! hahahahahahahhahahahahahah
+
+# v0.1.2
+this fixed one crash oops
+
+# v0.2.0 (wip)
+
+### Gameplay
+- Character dances are 100% on beat now
+
+### Porting
+- The console (pressing 7 is now replaced by holding all the shoulders and triggers and pressing select)
+- Five Night's at Muko's (the whole game, inside this port, do the 7 thing on kabunga im not lying)

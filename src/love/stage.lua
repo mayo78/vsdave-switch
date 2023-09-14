@@ -6,6 +6,35 @@ local stageBack, stageFront, curtains
 
 local subHalfWidth = false
 local sprites = {}
+
+local onUpdate, onBeat, onStep
+
+local davemode = false
+
+local eyesores = false
+local useeyesores = false
+
+local houseStage
+
+local jsonChart
+local eyesore
+local nightColor = {135, 135, 135}
+local sunsetColor = {255, 143, 178}
+local zoom
+
+
+local songtostage = {
+	house = {'warmup', 'house', 'insanity', 'supernovae', 'glitch'},
+	farm = {'blocked', 'corn-theft', 'maze', 'splitathon', 'mealie'},
+	festival = {'shredder', 'greetings'},
+	void = {'polygonized', 'cheating', 'unfairness', 'exploitation'},
+	recursed = {'recursed'},
+	desktop = {'expoitation'},
+	backyard = {'rano'},
+	rapWorld = {'vs-dave-rap', 'vs-dave-rap-two'}
+}
+local playedCutscene
+
 local function newSprite(image, x, y)
 	local spr = graphics.newImage(paths.image(image))
 	spr.x = x or 0
@@ -33,15 +62,6 @@ local function addChars()
 	add(boyfriend)
 	add(enemy)
 end
-
-local onUpdate, onBeat, onStep
-
-local davemode = false
-
-local eyesores = false
-local useeyesores = false
-
-local houseStage
 
 local function drawTable(sprites)
 	for i,spr in ipairs(sprites) do
@@ -98,12 +118,6 @@ local function updateTable(sprites, dt) --nice and simple :3
 		if sprite.update and not sprite.isChar and not sprite.dontupdate then sprite:update(dt) end
 	end
 end
-
-local jsonChart
-local eyesore
-local nightColor = {135, 135, 135}
-local sunsetColor = {255, 143, 178}
-local zoom
 local function sectionStartTime(section)
 	local bpm = jsonChart.bpm
 	local pos = 0
@@ -946,17 +960,6 @@ local stages = {
 		--end
 	end
 }
-local songtostage = {
-	house = {'warmup', 'house', 'insanity', 'supernovae', 'glitch'},
-	farm = {'blocked', 'corn-theft', 'maze', 'splitathon', 'mealie'},
-	festival = {'shredder', 'greetings'},
-	void = {'polygonized', 'cheating', 'unfairness', 'exploitation'},
-	recursed = {'recursed'},
-	desktop = {'expoitation'},
-	backyard = {'rano'},
-	rapWorld = {'vs-dave-rap', 'vs-dave-rap-two'}
-}
-local playedCutscene = false
 return {
 	enter = function(self, from, songNum, songAppend)
 		stopthisnow = false

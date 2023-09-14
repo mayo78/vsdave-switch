@@ -18,7 +18,4 @@ hi
 
 TODOS:
 - finish porting extra songs
-- add playable characters
-- figure out a way to unlock 7 stuff
 - fix any bugs that come in
-- Fix offsets ONCE AND FOR ALL

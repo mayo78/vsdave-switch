@@ -385,6 +385,7 @@ local logo, logoAlpha
 return {
 	enter = function(self, _, doScrolling)
 		scrolling = doScrolling or false
+		--scrolling = true
 		personIndex, socialIndex = 1, 1
 		coolY = {0, 0}
 		canMove = not scrolling
@@ -459,6 +460,15 @@ return {
 		end
 		if not scrolling then
 			coolY[2] = lerp(coolY[2], coolY[1], dt * 30)
+		else
+			if controls.down.confirm then
+				paths.music 'creditsTheme':setPitch(10)
+				for _=1,9 do
+					Timer.update(dt)
+				end
+			else
+				paths.music'creditsTheme':setPitch(1)
+			end
 		end
 	end,
 	draw = function(self)
@@ -522,5 +532,6 @@ return {
 		love.graphics.pop()
 	end,
 	leave = function(self)
+		Timer.clear()
 	end
 }

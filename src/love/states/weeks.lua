@@ -27,12 +27,12 @@ local ratingTimers = {}
 local useAltAnims
 local notMissed = {}
 
-local misses = 0
-local accuracy = 0
-local totalNotes = 0
-local notesHit = 0
+local misses
+local accuracy
+local totalNotes
+local notesHit
 
-local curSong;
+local curSong
 local jsonChart
 
 local songEvents = {}
@@ -41,16 +41,16 @@ local camPos = point()
 
 local colors = {'purple', 'blue', 'green', 'red'}
 
-local has3D = false
+local has3D
 
-local curSongTime = 0
-local lastEvent = {c = 0, st = 0, bpm = 0}
+local curSongTime
+local lastEvent
 
 local healthBarOverlay
 local timeBarOverlay
 
 local safeZoneOffset = (10 / 60) * 1000
-local hasShapes = false
+local hasShapes
 
 local _boyfriendArrows
 
@@ -60,18 +60,28 @@ local boyfriends = {}
 local dads = {}
 local gfs = {}
 
-stageOverlay = {0, 0, 0, alpha = 0}
-local stageMode = false
+local stageMode
 
-local elapseduitime = 0
+local elapseduitime
 
 local screenShader
-local screenShaderOn = false
+local screenShaderOn
 local blockedShader
-local blockedShaderOn = false
+local blockedShaderOn
 
 local hudZoom, hudTargetZoom
 
+local switching
+
+local subtitles = {}
+local subtitleIndex
+local curSubtitle
+local combospr
+local readyImg, setImg, goImg
+local stageLight, stageLightOn
+
+local hudAlpha
+local strumsAreShapes
 --local addedSubs = false
 
 local function addCharToList(type, char)
@@ -128,12 +138,6 @@ local function changeChar(type, char)
 		boyfriendIcon.image:setFilter(boyfriendObject.is3D and 'nearest' or 'linear', boyfriendObject.is3D and 'nearest' or 'linear')
 	end
 end
-local subtitles = {}
-local subtitleIndex = 0
-local curSubtitle
-local combospr
-local readyImg, setImg, goImg
-local stageLight, stageLightOn
 --stolen from my dave psych port lol!
 local function getData(song)
 	local aa = love.filesystem.read('data/credits.txt'):split '\n'
@@ -154,36 +158,66 @@ local function getData(song)
 		end
 	end
 end
-local hudAlpha
-local strumsAreShapes
 local function sectionEvent(eventID)
 	--print('my eventid is', eventID)
-		local oldBpm = bpm
+	local oldBpm = bpm
 
-		if events[eventID].bpm then
-			lastEvent = {c = crochet, st = curSongTime, bpm = bpm}
-			bpm = events[eventID].bpm
-			crochet = ((60 / bpm) * 1000)
-			stepCrochet = crochet / 4
-			curSongTime = 0
-			if not bpm then bpm = oldBpm end
-		end
-
-		if camTimer then
-			Timer.cancel(camTimer)
-		end
-		mustHitSection = events[eventID].mustHitSection
-		altSection = events[eventID].altAnim
-
-		if events[eventID].altAnim then
-			useAltAnims = true
-		else
-			useAltAnims = false
-		end
-		events[eventID] = nil
+	if events[eventID].bpm then
+		lastEvent = {c = crochet, st = curSongTime, bpm = bpm}
+		bpm = events[eventID].bpm
+		crochet = ((60 / bpm) * 1000)
+		stepCrochet = crochet / 4
+		curSongTime = 0
+		if not bpm then bpm = oldBpm end
 	end
+
+	if camTimer then
+		Timer.cancel(camTimer)
+	end
+	mustHitSection = events[eventID].mustHitSection
+	altSection = events[eventID].altAnim
+
+	if events[eventID].altAnim then
+		useAltAnims = true
+	else
+		useAltAnims = false
+	end
+	events[eventID] = nil
+end
+local function resetOverlays()
+	stageOverlay = {0, 0, 0, alpha = 0}
+	overlayColor = {0, 0, 0, alpha = 0}
+end
+resetOverlays()
 return {
 	enter = function(self)
+		camPos:set(0, 0)
+		resetOverlays()
+		elapseduitime = 0
+		stageMode = false
+		globalShader = nil
+		screenShaderOn = false
+		blockedShader = nil
+		hudShader = nil
+		blockedShaderOn = false
+		camShaking = false
+		subtitleIndex = 0
+		
+		fakeBoyfriend = nil
+		table.clear(boyfriends)
+		table.clear(gfs)
+		table.clear(dads)
+		table.clear(subtitles)
+		table.clear(strumsBlocked)
+		table.clear(songEvents)
+		table.clear(notMissed)
+		if curSubtitle and curSubtitle.tween then curSubtitle.tween = nil end
+		if curSubtitle and curSubtitle.timer then curSubtitle.timer = nil end
+		curSubtitle = nil
+		stageOverlay = {0, 0, 0, alpha = 0}
+		--musicTime = -9999
+		skippingSong = false
+		switching = false
 		hudZoom, hudTargetZoom = 1, 1
 		strumsAreShapes = false
 		hudAlpha = {0}
@@ -385,6 +419,8 @@ return {
 		boyfriendArrows = {}
 		_boyfriendArrows = {}
 		has3D = false
+		curSongTime = 0
+		lastEvent = {c = 0, st = 0, bpm = 0}
 		hasShapes = false
 		songHeader = nil
 		songHeaderIcon = nil
@@ -1046,9 +1082,9 @@ return {
 			openSubstate(pause, true)
 		end
 
-		if controls.down['button:leftshoulder'] and controls.down['axis:triggerleft+'] and 
+		if not switching and controls.down['button:leftshoulder'] and controls.down['axis:triggerleft+'] and 
 			controls.down['axis:triggerright+'] and controls.down['button:rightshoulder'] and 
-			controls.down.select and controls.down.pause then
+			controls.down.select then
 			
 				local cheater = {
 					supernovae = 'cheating',
@@ -1061,11 +1097,17 @@ return {
 					save.save.found_terminal = true
 					save.writeSave()
 					switchState(terminalState)
+					switching = true
+				elseif funkin.curSong == 'kabunga' then --once you go in, you cant go back!!!!
+					mukoMode = true
+					switchState(mukoTitle)
+					switching = true
 				elseif cheater[funkin.curSong:lower()] then
 					save.save['found_'..cheater[funkin.curSong:lower()]] = true
 					save.writeSave()
 					funkin.curSong = cheater[funkin.curSong:lower()]
 					switchState(stage)
+					switching = true
 				end
 		end
 	end,
@@ -1661,30 +1703,8 @@ return {
 		love.graphics.pop()
 	end,
 	leave = function(self)
+		resetOverlays()
 		Timer.clear()
-		overlayColor = {0, 0, 0, alpha = 0}
-		globalShader = nil
-		screenShaderOn = false
-		blockedShader = nil
-		hudShader = nil
-		blockedShaderOn = false
-		camShaking = false
-		subtitleIndex = 0
-		
-		fakeBoyfriend = nil
-		table.clear(boyfriends)
-		table.clear(gfs)
-		table.clear(dads)
-		table.clear(subtitles)
-		table.clear(strumsBlocked)
-		table.clear(songEvents)
-		if curSubtitle and curSubtitle.tween then curSubtitle.tween = nil end
-		if curSubtitle and curSubtitle.timer then curSubtitle.timer = nil end
-		curSubtitle = nil
-		stageOverlay = {0, 0, 0, alpha = 0}
-		--musicTime = -9999
-		skippingSong = false
-		print 'CLEANED UP'
 	end,
 
 	triggerEvent = function(self, n, v1, v2)

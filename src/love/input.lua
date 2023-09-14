@@ -17,8 +17,8 @@ return function()
 		pause = {"key:return", "button:start"},
 		select = {"button:back"},
 
-		a = {"button:b"}, --lol!
-		b = {"button:a"},
+		a = {"button:b", "key:a"}, --lol!
+		b = {"button:a", "key:b"},
 
 
 		gameLeft = settings.gameLeft,

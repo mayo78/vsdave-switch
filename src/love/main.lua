@@ -24,13 +24,13 @@ DEGREE_TO_RADIAN = math.pi/180
 local printBuffer = {}
 --debugMode = true
 function love.load()
-	--local printer = print
-	--function print(...)
-	--	printer(...)
-	--	local hi = {...}
-	--	for k,v in pairs(hi) do hi[k] = tostring(v) end
-	--	table.insert(printBuffer, {print = table.concat(hi, ', '), time = 3})
-	--end
+	local printer = print
+	function print(...)
+		printer(...)
+		local hi = {...}
+		for k,v in pairs(hi) do hi[k] = tostring(v) end
+		table.insert(printBuffer, {print = table.concat(hi, ', '), time = 3})
+	end
 	--https://love2d.org/forums/viewtopic.php?t=77272
 	function love.graphics.roundrect(mode, x, y, width, height, xround, yround, p)
 		local points = {}
@@ -386,13 +386,13 @@ function love.load()
 
 		--print(tostring(version), tostring(onlineVersion))
 
-		--if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
-		--	switchState(versionState)
-		--else
-		--	switchState(settings.language and (settings.eyesores and flashingState or titleMenu) or languageState)
-		--end
+		if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
+			switchState(versionState)
+		else
+			switchState(settings.language and (settings.eyesores and flashingState or titleMenu) or languageState)
+		end
 
-		switchState(mukoTitle)
+		--switchState(mukoTitle)
 		--switchState(charSelect)
 		--switchState(debugMenu)
 		
@@ -466,6 +466,9 @@ function love.update(dt)
 		if v.time <= 0 then
 			table.remove(printBuffer, i)
 		end
+	end
+	if controls.down.pause and controls.down.select then
+		love.event.quit()
 	end
 end
 local function drawWhatever()

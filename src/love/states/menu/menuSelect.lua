@@ -79,24 +79,27 @@ local reset
 
 return {
 	enter = function(self, previous)
-        reset = {
-            open = false,
-            selected = false,
-            resetAll = function(self)
-                local settingsBackup, saveBackup, highscoreBackup = settings:save(), save:writeSave()
-                if not love.filesystem.getInfo 'savebackups' then love.filesystem.createDirectory 'savebackups' end
-                local folder = table.concat({time.year, time.month, time.hour, time.min, time.sec}, '-')
-                love.filesystem.createDirectory ('savebackups/'..folder)
-                love.filesystem.write('savebackups/'..folder..'/settings.txt', settingsBackup)
-                love.filesystem.write('savebackups/'..folder..'/save.txt', saveBackup)
-                love.filesystem.write('savebackups/'..folder..'/highscores.txt', highscoreBackup)
-                love.filesystem.remove 'settings.txt'
-                love.filesystem.remove 'save.txt.'
-                love.filesystem.remove 'highscores.txt'
-                settings:reset()
-                save:reset()
-            end
-        }
+        canMove = true
+        table.clear(icons)
+		table.clear(sprites)
+        --reset = {
+        --    open = false,
+        --    selected = false,
+        --    resetAll = function(self)
+        --        local settingsBackup, saveBackup, highscoreBackup = settings:save(), save:writeSave()
+        --        if not love.filesystem.getInfo 'savebackups' then love.filesystem.createDirectory 'savebackups' end
+        --        local folder = table.concat({time.year, time.month, time.hour, time.min, time.sec}, '-')
+        --        love.filesystem.createDirectory ('savebackups/'..folder)
+        --        love.filesystem.write('savebackups/'..folder..'/settings.txt', settingsBackup)
+        --        love.filesystem.write('savebackups/'..folder..'/save.txt', saveBackup)
+        --        love.filesystem.write('savebackups/'..folder..'/highscores.txt', highscoreBackup)
+        --        love.filesystem.remove 'settings.txt'
+        --        love.filesystem.remove 'save.txt.'
+        --        love.filesystem.remove 'highscores.txt'
+        --        settings:reset()
+        --        save:reset()
+        --    end
+        --}
         selectSound = paths.sound('menu/select')
         confirmSound = paths.sound('menu/confirm')
         states = {
@@ -219,9 +222,6 @@ return {
 	end,
 
 	leave = function(self)
-        canMove = true
-        table.clear(icons)
-		table.clear(sprites)
 		Timer.clear()
 	end
 }

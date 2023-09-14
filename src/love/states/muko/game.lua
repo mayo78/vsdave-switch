@@ -23,6 +23,7 @@ local ai
 local mukoHandler, daveHandler, tiktokHandler, scottHandler, mixHandler
 local jumpscare, jumpscareSprites, doingJumpscare, jumpscareLoop, nextJumpscare, doneJumpscare
 local tiktoksounds
+local scottInside
 local function random(a, b) --randomizer that supports random floats
 	if math.floor(a) ~= a or math.floor(b) ~= b then
 		local scale = 1
@@ -172,6 +173,8 @@ local function amLoop()
 	end
 	Timer.after(70, amLoop)
 end
+
+local drawOrder = {'muko', 'dave', 'mix', 'tiktok', 'scott'}
 return {
 	enter = function(self)
 		powerOutWalk = false
@@ -180,6 +183,18 @@ return {
 		nextJumpscare = nil
 		jumpscareLoop = 1
 		freeze = false
+		scottInside = false
+		doorClosed = false
+		doorJammed = false
+		cameraScrollLoop = 0 
+		frame30 = 0
+		camIndex = 1
+		power = 100
+		powerUsage = 0
+		time = 12
+		powerUsage = 1
+		inCams = false
+
 		self:initChars()
 		local aiLevels = {
 			muko = {2, 3, 5, 7, 8, 13, mukoAi.muko or 0},
@@ -195,17 +210,7 @@ return {
 			scott = character('scott', {'scott_generic', 'scott_generic', 'lounge_travis_only', nil, 'scott_generic'}, aiLevels.scott[mukoDay], 3, scottHandler),
 			mix = character('mix', {[2] = 'diner_mix', [5] = 'kitchen_mix'}, aiLevels.mix[mukoDay], 5, mixHandler)
 		}
-		doorClosed = false
-		doorJammed = false
-		cameraScrollLoop = 0 
-		frame30 = 0
-		camIndex = 1
-		power = 100
-		powerUsage = 0
-		time = 12
 		powerLoop()
-		powerUsage = 1
-		inCams = false
 		office = graphics.newImage(paths.image('muko/office/office'))
 		office.sizeX, office.sizeY = 1.5, 1.5
 		for k,v in pairs(cams) do
@@ -272,6 +277,7 @@ return {
 		paths.sounds'muko/deep steps'
 		paths.sounds'muko/powerdown'
 		paths.sounds'muko/musicbox'
+		paths.sounds'muko/error'
 		tiktoksounds = {paths.sounds'muko/1', paths.sounds'muko/2', paths.sounds'muko/3'}
 		paths.sounds'muko/ambience2':play()
 
@@ -302,7 +308,8 @@ return {
 				end
 			else
 				cam:draw()
-				for i,v in pairs(ai) do
+				for _,_v in ipairs(drawOrder) do
+					local v = ai[_v]
 					if v.pos == camIndex then
 						--if camIndex == 4 then print 'WARNIGN !!! warnihng the warn' end
 						if camIndex ~= 4 then
@@ -397,11 +404,16 @@ return {
 			end
 			tiktokSong.x, tiktokSong.y = office.x + tiktokHandler.pos.x, office.y + tiktokHandler.pos.y
 			if controls.pressed.mukoDoor then
-				doorClosed = not doorClosed
-				paths.sounds'muko/door':stop()
-				paths.sounds'muko/door':play()
-				door:setImage(doorImages[doorClosed and 2 or 1])
-				powerUsage = powerUsage + (1 * (doorClosed and 1 or -1))
+				if doorJammed then
+					paths.sounds'muko/error':stop()
+					paths.sounds'muko/error':play()
+				else
+					doorClosed = not doorClosed
+					paths.sounds'muko/door':stop()
+					paths.sounds'muko/door':play()
+					door:setImage(doorImages[doorClosed and 2 or 1])
+					powerUsage = powerUsage + (1 * (doorClosed and 1 or -1))
+				end
 			end
 			if tiktokHandler.visible and controls.pressed.mukoClick and 
 				CheckCollision(cursor.x-cursor.width/2,cursor.y-cursor.height/2,cursor.width,cursor.height,
@@ -440,6 +452,9 @@ return {
 				for i,v in pairs(ai) do
 					if v.handler.offCamera then v.handler:offCamera(camIndex) end
 				end
+			end
+			if scottInside then
+				nextJumpscare = 'scott'
 			end
 		end
 		
@@ -625,11 +640,48 @@ return {
 				end
 			end,
 			move = function(self)
+				print 'moving me i am cool'
 				local pos = self.char.pos
 				if pos == 1 then
 					self.char.pos = 2
 				elseif pos == 2 then
-					return
+					if random(1,2) == 1 then
+						self.char.pos = 3
+					else
+						self.char.pos = (random(1,2) == 1) and 1 or 5
+					end
+				elseif pos == 3 or pos == 5 then
+					self.char.pos = 2
+					if random(1,3) ~= 2 then
+						self.char:updateSprite()
+						self:wait(function()
+							print 'at 4'
+							self.char.pos = 4
+							self:wait(_scottmove_)
+						end)
+						print 'going to 4'
+						return
+					end
+				elseif pos == 4 then
+					if not doorClosed then
+						print 'going to go inside or jam door'
+						self:wait(function()
+							print 'jammed now'
+							doorJammed = true
+							Timer.after(12, function() --this was origjninally handled in its own thing in scratch but this is othe only time the door can be jammed i think so whayever
+								doorJammed = false
+							end)
+							if not doorClosed then
+								scottInside = true
+								self.char.pos = 999 --so the sound stops
+							else
+								self.char.pos = 2
+							end
+						end)
+						return
+					else
+						self.char.pos = 2
+					end
 				end
 				self.char:updateSprite()
 				self:wait(_scottmove_)
@@ -677,7 +729,7 @@ return {
 				if pos == 5 then
 					self.char.pos = 2
 				elseif pos == 2 then
-					self.char.pos = random(5,4)
+					self.char.pos = random(4,5)
 				elseif pos == 4 then
 					if not doorClosed then
 						nextJumpscare = 'mix'
