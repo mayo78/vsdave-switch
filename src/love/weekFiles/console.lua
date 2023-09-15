@@ -4,7 +4,7 @@ local a = {
       'Cheating',
       'bambi-3d-pixel',
       '35BD3B',
-      'foundCheating'
+      'found_cheating'
     },
     {
       'Unfairness',

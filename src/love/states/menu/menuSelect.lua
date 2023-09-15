@@ -80,7 +80,6 @@ local reset
 return {
 	enter = function(self, previous)
         canMove = true
-        table.clear(icons)
 		table.clear(sprites)
         --reset = {
         --    open = false,

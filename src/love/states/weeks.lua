@@ -196,20 +196,11 @@ return {
 		elapseduitime = 0
 		stageMode = false
 		globalShader = nil
-		screenShaderOn = false
 		blockedShader = nil
 		hudShader = nil
-		blockedShaderOn = false
 		camShaking = false
 		subtitleIndex = 0
-		
-		fakeBoyfriend = nil
-		table.clear(boyfriends)
-		table.clear(gfs)
-		table.clear(dads)
 		table.clear(subtitles)
-		table.clear(strumsBlocked)
-		table.clear(songEvents)
 		table.clear(notMissed)
 		if curSubtitle and curSubtitle.tween then curSubtitle.tween = nil end
 		if curSubtitle and curSubtitle.timer then curSubtitle.timer = nil end
@@ -606,7 +597,10 @@ return {
 						C		C
 						
 					]]
-					--local x = 					
+					--local x = 	
+					local anims = {
+						{anim = 'on', name = (ghNote and colors[note[2]+1]..' Note' or colors[id]..'0'), fps = 0}
+					}				
 					if note[4] == 'normal' or note[4] == '' or weirdPolygonized then 
 						note[4] = nil
 					end
@@ -623,18 +617,49 @@ return {
 						threedee = true
 						tex = tex..'_3D'
 					end
+					local noScale = false
+					local lastTex = tex
+					if curSong:lower() == 'recursed' then
+						if not mustPress then
+							tex = 'dave/notes/note_recursed'
+							anims[1].offsets = {-25, 0}
+						elseif ((note[1] / 50) % 20 > 12) then
+							note[4] = 'text'
+							tex = 'dave/alphabet'
+							local hi = paths.xml(tex)
+							local oks = {}
+							for i,v in pairs(hi) do
+								local nonum = v.name:sub(1, #v.name - 4)
+								if nonum:endsWith 'bold' then
+									table.insert(oks, nonum)
+								end
+							end
+							local anim = oks[love.math.random(1,#oks)]
+							note[4] = text
+							anims = {
+								{anim = 'on', name = anim, fps = 12, loops = true}
+							}
+							noScale = true
+						end
+					end
 					if ghNote then 
 						tex = 'dave/notes/NOTE_gh' 
 						threedee = false
 					end
-					local noteREAL = graphics:newAnimatedSprite(tex, {
-						{anim = 'on', name = (ghNote and colors[note[2]+1]..' Note' or colors[id]..'0'), fps = 0}
-					}, 'on')
+					local noteREAL = graphics:newAnimatedSprite(tex, anims, 'on')
+					if noScale then
+						noteREAL.sizeX, noteREAL.sizeY = 1/0.7, 1/0.7
+					end
 					if note[4] == 'shape' and not weirdPolygonized then hasShapes = true end
 					if threedee or note[4] == 'shape' then
 						noteREAL.image:setFilter('nearest', 'nearest')
 					end
 					noteREAL.dontdraw = true
+
+					
+					if noScale then
+						tex = lastTex
+					end
 					--noteREAL.
 					--local coolY = settings.downscroll and 400 or -400
 					local strum = strumTable[id]
@@ -661,10 +686,15 @@ return {
 					--fuck this ill fix it later (sustains sometimes play the on animation for no reason and theres no trace of it doing that AGHJKDKLSJHDFJKLSGUHDFIKHDFJKLHDJK:FL)
 					if note[3] > 0 then
 						for susNote = 71 / speed, note[3], 71 / speed do
-							local sus = graphics:newAnimatedSprite(tex, {
+							local anims = {
 								{anim = 'hold', name = colors[id]..' hold piece', fps = 0},
 								{anim = 'end', name = (colors[id] ~= 'purple') and colors[id]..' hold end' or 'pruple end hold', fps = 0}
-							}, 'hold')
+							}
+							if tex == 'dave/notes/note_recursed' then
+								anims[1].offsets = {-25, 0}
+								anims[2].offsets = {-25, 0}
+							end
+							local sus = graphics:newAnimatedSprite(tex, anims, 'hold')
 							sus.x = strumTable[id].x
 							sus.dontdraw = true
 							--sus.offsetY = -10
@@ -1434,17 +1464,20 @@ return {
 					audio.playSound(sounds.miss[love.math.random(3)])
 					--if combo >= 5 then girlfriendObject:playAnim('sad', true) end
 					if noteMissed and boyfriendNoteData[noteMissed] and boyfriendNotes[noteMissed] then
-						if boyfriendNoteData[noteMissed].noteType ~= 'phone' then
-							if boyfriendObject:animExists('sing'..curAnim:upper()..'miss') then
-								boyfriendObject:playAnim('sing'..curAnim:upper()..'miss')
-							end
-						else
+						if boyfriendNoteData[noteMissed].noteType == 'phone' then
 							boyfriendObject:playAnim 'hit'
 							strumsBlocked[noteNum] = true
 							boyfriendArrow.alpha = 0.01
 							Timer.tween(7, boyfriendArrow, {alpha = 1}, 'in-expo', function()
 								strumsBlocked[noteNum] = false
 							end)
+						else
+							if boyfriendObject:animExists('sing'..curAnim:upper()..'miss') then
+								boyfriendObject:playAnim('sing'..curAnim:upper()..'miss')
+							end
+							if boyfriendNoteData[noteMissed].noteType == 'text' then
+								--recursed miss
+							end
 						end
 						totalNotes = totalNotes + 1
 					else

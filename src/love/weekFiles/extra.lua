@@ -4,7 +4,7 @@ local a = {
       'Recursed',
       'recurser',
       '2C2C2C',
-      'foundRecursed'
+      'found_recursed'
     },
     {
       'Bonus-Song',

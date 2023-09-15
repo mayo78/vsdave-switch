@@ -53,7 +53,7 @@ return {
 
 		music = paths.music('menu/menu')
 		music:setLooping(true)
-		music:play()
+		--music:play()
 	end,
 
 	musicStop = function(self)

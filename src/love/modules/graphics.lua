@@ -109,7 +109,7 @@ return {
 	
 	newAnimatedSprite = function(self, imagePth, animations, defaultAnim, loops, manualimage, options)
 		--get xml and make it compatible with the graphics module
-		if options then print('my autio cent eris ', options.autoCenter, manualimage) end
+		--if options then print('my autio cent eris ', options.autoCenter, manualimage) end
 		local xml = paths.xml(imagePth)
 		local anims = {}
 		local loopers = {}
