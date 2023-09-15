@@ -37,8 +37,12 @@ function l:equalTo(a, b)
 end
 function l:greaterThan(a, b)
 	for i,v in ipairs(b.raw) do
+		--print('checking', v, a.raw[i])
 		if a.raw[i] > v then
+			--print(a.raw[i], 'is greater than', v)
 			return true
+		elseif a.raw[i] ~= v then
+			return false
 		end
 	end
 end

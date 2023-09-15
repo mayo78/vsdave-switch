@@ -18,13 +18,7 @@ end
 
 local curSelected = 1
 
-local optionShit = {		
-    'story mode', 
-    'freeplay', 
-    'credits',
-    'ost',
-    'options'
-}
+local optionShit
 
 local states
 
@@ -77,10 +71,27 @@ end
 
 local reset
 
+local redsky, glitchshader
+
 return {
 	enter = function(self, previous)
+        print('awaitgg', awaitingExploitation)
         canMove = true
 		table.clear(sprites)
+        if awaitingExploitation then
+            optionShit = {'freeplay'}
+
+            redsky = graphics.newImage(paths.image('dave/backgrounds/void/redsky'))
+            glitchshader = shaders:GLITCH()
+        else
+            optionShit = {		
+                'story mode', 
+                'freeplay', 
+                'credits',
+                'ost',
+                'options'
+            }
+        end
         --reset = {
         --    open = false,
         --    selected = false,
@@ -111,13 +122,11 @@ return {
 		menuButton = 1
 		songNum = 0
         
-        bg = newSprite(funkin:randomBG())
+        bg = graphics.newImage(paths.image(funkin:randomBG()))
         bg.color = {253, 232, 113}
-        add(bg)
 
         magenta = graphics.newImage(bg:getImage())
         magenta.color = {253, 113, 155, 0}
-        add(magenta)
 
         selectUi = newSprite('dave/title/mainMenu/Select_Thing')
         add(selectUi)
@@ -125,7 +134,7 @@ return {
         local anims = {}
         icons = {}
         for i,o in ipairs(optionShit) do
-            table.insert(anims, {anim = o, name = (o == 'freeplay' and 'freeplay0') or o})
+            table.insert(anims, {anim = o, name = (o == 'freeplay' and (awaitingExploitation and 'freeplay glitch' or 'freeplay0')) or o})
             local spr = graphics:newAnimatedSprite('dave/title/main_menu_icons', {
                 {anim = 'idle', name = o..' basic', fps = 12, loops = true},
                 {anim = 'select', name = o..' white', loops = true}
@@ -193,6 +202,22 @@ return {
 		love.graphics.push()
         love.graphics.translate(graphics.getWidth() / 2, graphics.getHeight() / 2)
 
+        if awaitingExploitation then
+            love.graphics.setShader(glitchshader.shader)
+            love.graphics.setColor(0.2, 0.2, 0.2)
+            redsky:draw()
+            love.graphics.setColor(1,1,1)
+            love.graphics.setShader()
+        else
+            love.graphics.setColor(rgb255(unpack(bg.color)))
+            bg:draw()
+            if magenta.color[4] > 0 then
+                love.graphics.setColor(rgb255(unpack(bg.color)))
+                magenta:draw()
+            end
+            love.graphics.setColor(1,1,1)
+        end
+        
         local colorized = false
         for _,spr in pairs(sprites) do
             if spr.color then
@@ -206,10 +231,10 @@ return {
         local aaa = (optionShit[curSelected] == 'story mode') and 'story' or optionShit[curSelected]
         --print(lm.string['main_'..aaa], 'main_'..aaa)
         fonts('comic', 64)
-        local main = lm.string['main_'..aaa]
+        local main = lm.string['main_'..aaa..(awaitingExploitation and '_glitch' or '')]
         printfOutline(main, -((#main/2) * (64/2)), fromTopLeft(0, 720/2 + 28).y, 9999)
         fonts('comic', 24)
-        local desc = lm.string['desc_'..aaa]
+        local desc = lm.string['desc_'..aaa..(awaitingExploitation and '_glitch' or '')]
         printfOutline(desc, -((#desc/2) * (24/2)), fromTopLeft(0, 720 - 58).y, 9999)
         printfOutline('Version '..tostring(version), -1280/2, -720/2 + 16) --..'\nHold start and select to reset data.'
         

@@ -228,7 +228,7 @@ function love.load()
 		end
 	}
 
-	nickname = love.getNickname and love.getNickname() or 'User'
+	nickname = (love.getNickname and settings.selfAwareness) and love.getNickname() or 'User'
 
 	--shaders lol
 	shaders = require 'shaders'
@@ -284,7 +284,7 @@ function love.load()
 		http = require 'socket.http'
 
 		versionTable = require 'version'
-		version = versionTable:new(0, 1, 2)
+		version = versionTable:new(0, 2, 0)
 		--local ssl = require 'ssl'
 		--local body, code, headers, status = http.request("https://raw.githubusercontent.com/mayo78/vsdave-switch/main/version.txt")
 		--print(code, status, body)
@@ -309,10 +309,9 @@ function love.load()
 		videoState = require 'states.video'
 		endings = require 'states.ending'
 		mazeCutscene = require 'states.mazeCutscene'
-
 		charSelect = require 'states.charSelect'
-
 		terminalState = require 'states.terminalState'
+		recurserState = require 'states.recurserState'
 
 		-- Load substates
 		gameOver = require "substates.game-over"
@@ -386,14 +385,14 @@ function love.load()
 
 		--print(tostring(version), tostring(onlineVersion))
 
-		if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
-			switchState(versionState)
-		else
-			switchState(settings.language and (settings.eyesores and flashingState or titleMenu) or languageState)
-		end
+		--if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
+		--	switchState(versionState)
+		--else
+		--	switchState(settings.language and (settings.eyesores and flashingState or titleMenu) or languageState)
+		--end
 
 		--switchState(mukoTitle)
-		--switchState(charSelect)
+		switchState(terminalState)
 		--switchState(debugMenu)
 		
 		--local testChar = character.new 'bf'

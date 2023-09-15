@@ -193,6 +193,23 @@ local stages = {
 			redsky.dontdraw = true
 			redsky.image:setFilter(getAA(false))
 			add(redsky)
+		elseif weirdPolygonized then
+			redsky = newSprite('dave/backgrounds/void/redsky', 2000, 1000)
+			redsky.shader = shaders:GLITCH()
+			redsky.dontdraw = true
+			redsky.image:setFilter(getAA(false))
+			add(redsky)
+
+			local events = {
+				finaly = function()
+					redsky.dontdraw = false
+					enemyObject:playAnim 'scared'
+					enemyObject.skipDance = true
+				end
+			}
+			weeks.bookmarkEvents = function(n, v)
+				if events[n] then events[n](v) end
+			end
 		end
 
 		eventEvents = function(n, v1)
@@ -1124,6 +1141,12 @@ return {
 					--save.save.beatGame = true
 					--save.writeSave()
 					switchState(menuCredits)
+					whatever = true
+					myBallsJustBlewUp = false
+				elseif weirdPolygonized then
+					whatever = true
+					myBallsJustBlewUp = false
+					switchState(recurserState)
 				end
 				noMissMode = false
 			end

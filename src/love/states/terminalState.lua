@@ -1,4 +1,5 @@
 local keyBuffer, curText
+local keySounds
 local function setKeyboard(what)
 	keyBuffer = ''
 	love.keyboard.setTextInput(what)
@@ -13,17 +14,63 @@ local function makeCommand(command, help, func, showInHelp, oneCommand)
 		oneCommand = oneCommand == true, --uhhh i dont know why id idn this in my psych port but oim doing ti here :)
 	}
 end
-
+local height, updateHeight, eyeMode
 local function updateText(txt)
 	curText = curText..txt
-	local hi = curText:split '\n'
-	--if  then
-	--end
+	updateHeight = true
 end
 
+--compatability stuff for psych
 local function getAwesome(a)
 	return lm.string[a]
 end
+
+local function loadSong(song)
+	storyMode = false
+	updateText(lm.string['term_loading'])
+	funkin.curSong = song
+	switchState(stage)
+end
+local glitchSpr, expungedMode, expungedEye
+local function expungedReignStarts()
+	setKeyboard(false)
+	expungedMode = true
+	local stuff = {
+		'TAKING OVER....',
+		'ATTEMPTING TO HIJACK ADMIN OVERRIDE...',
+		'THIS REALM IS MINE',
+		"DON'T YOU UNDERSTAND? THIS IS MY WORLD NOW.",
+		"I WIN, YOU LOSE.",
+		"GAME OVER.",
+		"THIS IS IT.",
+		"FUCK YOU!",
+		"I HAVE THE PLOT ARMOR NOW!!",
+		"AHHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAH",
+		"EXPUNGED'S REIGN SHALL START",
+		'[DATA EXPUNGED]',
+		'HACKING INTO '..nickname..'...'
+	}
+	local function loop()
+		updateText('\n'..stuff[love.math.random(1,#stuff)])
+		Timer.after(0.025, loop)
+	end
+	loop()
+	local ok = paths.sound 'expungedGrantedAccess'
+	ok:play()
+	local yay = paths.sound 'iTrollYou'
+	Timer.after(ok:getDuration() + 1, function()
+		eyeMode = true
+		expungedMode = false
+		yay:play()
+		Timer.tween(1, expungedEye, {alpha = 1})
+		Timer.after(1 + yay:getDuration(), function()
+			save.save.awaitingExploitation = true
+			save.writeSave()
+			love.event.quit()
+		end)
+	end)
+end
+
 
 
 makeCommand('echo', 'Echos', function(...)
@@ -62,7 +109,7 @@ makeCommand('admin', getAwesome('term_admin_ins'), function(...)
 		local argStuff = {
 		  ['dave.dat'] = function()
 			terminalModChart = 'house'
-			loadSong('house', -1)
+			loadSong 'house'
 		  end,
 		  ['tristan.dat'] = function()
 			terminalModChart = 'tristan'
@@ -79,12 +126,11 @@ makeCommand('admin', getAwesome('term_admin_ins'), function(...)
 		  end,
 		  ['recurser.dat'] = function()
 			weirdPolygonized = true
-			storyMode = false
-			funkin.curSong = 'polygonized'
-			switchState(stage)
+			loadSong 'polygonized'
 		  end,
 		  ['expunged.dat'] = function()
-			
+			updateText(lm.string['term_loading'])
+			Timer.after(3, expungedReignStarts)
 		  end,
 		  ['moldy.dat'] = function()
 			updateText('\n'..getAwesome('term_moldy_error'))
@@ -208,28 +254,86 @@ end, false, true)
 
 return {
 	enter = function(self)
+		expungedMode = false
+		eyeMode = false
+		glitchSpr = graphics:newAnimatedSprite('dave/glitch', {
+			{name = 'glitch', anim = 'glitch', fps = 40, loops = true}
+		}, 'glitch')
+		expungedEye = graphics.newImage(paths.image('dave/title/mainmenu/eye'))
+		expungedEye.alpha = 0
+		glitchSpr.sizeX, glitchSpr.sizeY = 1/0.75, 1/0.75
 		keyBuffer = ''
 		curText = ''
 		if love.system.getOS() ~= 'nx' then
 			self.keyboardOpened = true
 		end
+		keySounds = {
+			type = paths.sound 'terminal_key',
+			back = paths.sound 'terminal_bkspc',
+			space = paths.sound 'terminal_space'
+		}
 	end,
 	leave = function()
+		setKeyboard(false)
+		Timer.clear()
 	end,
 	draw = function()
+		if eyeMode then
+			love.graphics.push()
+			love.graphics.translate(1280/2, 720/2)
+			love.graphics.setColor(1,1,1,1-expungedEye.alpha)
+			glitchSpr:draw()
+			love.graphics.setColor(1,1,1,expungedEye.alpha)
+			expungedEye:draw()
+			love.graphics.pop()
+			return
+		end
+		if expungedMode then
+			love.graphics.push()
+			love.graphics.translate(1280/2, 720/2)
+			glitchSpr:draw()
+			love.graphics.pop()
+		end
 		love.graphics.push()
 		fonts('fixedsys', 32)
+		local y = 0
+		if updateHeight then
+			local hi = curText:split '\n'
+			local lines = #hi
+			for _,v in pairs(hi) do
+				local width = 0
+				v:gsub('.', function(c)
+					width = width + curFont:getWidth(c)
+					if width > 1280 then
+						lines = lines + 1
+						width = curFont:getWidth(c)
+					end
+				end)
+			end
+			lines = lines + 2
+			height = lines * curFont:getHeight()
+			if height > 720 then
+				y = 720 - height
+			end
+		end
 		local printer = curText..'\n>>'..keyBuffer
-		love.graphics.printf(printer, 0, 0, 1280)
+		love.graphics.printf(printer, 0, y, 1280)
 		love.graphics.pop()
 	end,
 	update = function(self, dt)
-		
+		if expungedMode or eyeMode then
+			glitchSpr:update(dt)
+		end
 	end,
 	keyInput = function(self, key)
+		if expungedMode or eyeMode then return end
 		if key == 'return' then
 			curText = curText..'\n>'..keyBuffer
 			if #keyBuffer > 0 then
+				if keyBuffer == 'secret mod leak' then
+					commands['secret mod leak'].func({})
+					return
+				end
 				local split = keyBuffer:split' '
 				if commands[split[1]] then
 					local new = {}
@@ -243,11 +347,20 @@ return {
 				updateText ''
 			end
 		elseif key == 'backspace' then
+			keySounds.back:stop()
+			keySounds.back:play()
 			keyBuffer = keyBuffer:sub(1, #keyBuffer - 1)
 		elseif key == 'space' or #key == 1 then
 			if key == 'space' then key = ' ' end
 			if love.keyboard.isDown 'lshift' and #key == 1 then key = key:upper() end
 			keyBuffer = keyBuffer..key
+			if key == ' ' then
+				keySounds.space:stop()
+				keySounds.space:play()
+			else
+				keySounds.type:stop()
+				keySounds.type:play()
+			end
 		end
 	end
 }

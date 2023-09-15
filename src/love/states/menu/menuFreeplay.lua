@@ -158,8 +158,10 @@ return {
 		table.clear(cats)
 		table.clear(songs)
 		resetPresses()
-		if not save.save.found_terminal then catStrings = {'dave', 'joke', 'extras'}
-		else catStrings = {'dave', 'joke', 'extras', 'terminal'}
+		if not save.save.found_terminal then 
+			catStrings = {'dave', 'joke', 'extras'}
+		else 
+			catStrings = {'dave', 'joke', 'extras', 'terminal'}
 		end
 		targetX, targetY = 75 * 25, 165 * 25
         selectSound = paths.sound('menu/select')
@@ -209,13 +211,15 @@ return {
 						for k,cat in pairs(funkin.freeplayList) do
 							print('hiii')
 							local docat = k == catStrings[catIndex]
-							if cat == 'terminal' and not save.save.found_terminal then
+							if k == 'terminal' and not save.save.found_terminal then
+								print 'its the terminal song!!! and terminal not found oops!'
 								docat = catIndex == 2
 							end
 							if docat then
 								print('found a guy')
 								for _,week in pairs(cat) do
 									for _,song in ipairs(week.songs) do
+										--song[4] = nil
 										if not song[4] or save.save[song[4]] then
 											song[3] = _G.colors[song[3] or week.color] or (song[3] or week.color)
 											table.insert(songs, song)
@@ -280,7 +284,7 @@ return {
 				love.audio.stop();
 				storyMode = false
 				curWeek = nil
-				if songs[songIndex][1]:lower() == 'enter terminal' then
+				if songs[songIndex][1]:lower() == 'enter-terminal' then
 					switchState(terminalState)
 				else
 					charOverride = nil

@@ -7,6 +7,7 @@ settings.default = { --default values
 	eyesores = true, 
 	modcharts = true, 
 	shoulderControls = true,
+	--controls, first two are keyboard keys and may seem weird, but the controls setting menu only changes the third control in the list!
 	gameLeft = {'key:d', 'key:left', 'axis:triggerleft+'},
 	gameDown = {'key:f', 'key:down', 'button:leftshoulder'},
 	gameUp = {'key:j', 'key:up', 'button:rightshoulder'},
@@ -31,9 +32,17 @@ settings.default = { --default values
 	metadata = { --oops this daveing sucks
 		eyesores = {'Eyesore effects', 'Whether to show eye straining effects or not'},
 		modcharts = {'Modcharts', 'Whether to have modcharts that makes it hard to play'},
-		volume = {'Master Volume', '', {min = 0, max = 1, change = 0.1, onChange = function(v) love.audio.setVolume(v) end}},
+		volume = {'Master Volume', '', {min = 0, max = 1, change = 0.1, onChange = function(v) 
+			if v < 0.1 then
+				v = 0
+			end
+			love.audio.setVolume(v) 
+			return v
+		end}},
 		downscroll = {'Downscroll', 'checking this puts the strums on the bottom, and makes the notes come from the top'},
-		selfAwareness = {'Self Awareness', 'If disabled, Exploitation will not use your current user\'s nickname.'}
+		selfAwareness = {'Self Awareness', 'If disabled, Exploitation will not use your current user\'s nickname.', {onChange = function(v)
+			nickname = (love.getNickname and v) and love.getNickname() or 'User'
+		end}}
 	}
 }
 function settings:reset()
