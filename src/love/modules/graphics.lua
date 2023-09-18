@@ -85,18 +85,34 @@ return {
 
 				local nwidth, nheight = options.full and width or math.floor(width/2), options.full and height or math.floor(height/2)
 
-				love.graphics.draw(
-					image,
-					self.x,
-					self.y,
-					self.orientation,
-					self.sizeX,
-					self.sizeY,
-					nwidth,
-					nheight,
-					self.shearX,
-					self.shearY
-				)
+				if options.quad then
+					love.graphics.draw(
+						image,
+						options.quad,
+						self.x,
+						self.y,
+						self.orientation,
+						self.sizeX,
+						self.sizeY,
+						nwidth,
+						nheight,
+						self.shearX,
+						self.shearY
+					)
+				else
+					love.graphics.draw(
+						image,
+						self.x,
+						self.y,
+						self.orientation,
+						self.sizeX,
+						self.sizeY,
+						nwidth,
+						nheight,
+						self.shearX,
+						self.shearY
+					)
+				end
 			end
 		}
 
@@ -193,6 +209,10 @@ return {
 				sheetWidth = sheet:getWidth()
 				sheetHeight = sheet:getHeight()
 				return self
+			end,
+
+			setGraphicSize = function(self, w, h)
+				self.sizeX, self.sizeY = w / self.width, h / self.height
 			end,
 
 			getSheet = function(self)

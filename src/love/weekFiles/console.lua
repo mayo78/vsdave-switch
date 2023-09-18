@@ -21,8 +21,8 @@ local a = {
     {
       'Enter-Terminal',
       'terminal',
-      '000000'
-      -- 'foundTerminal'
+      '000000',
+      'found_terminal'
     }
   },
   color = 'SONG_SPECIFIC',

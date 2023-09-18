@@ -1,9 +1,11 @@
 
-local deadOver, bopTimer, fade, deadSong
+local deadOver, bopTimer, fade, deadSong, noDeadAnims
 local confirmed = false
 local function bopLoop()
-	deadBF:playAnim 'deathLoop'
-	bopTimer = Timer.after(0.57, bopLoop)
+	if not confirmed then
+		deadBF:playAnim 'deathLoop'
+		bopTimer = Timer.after(0.57, bopLoop)
+	end
 end
 return {
 	enter = function(self)
@@ -11,27 +13,32 @@ return {
 		deathBop = false
 		if inst then inst:setVolume(0) end
 		if voices then voices:setVolume(0) end
-		if not deadBF then
+		noDeadAnims = false
+		if not deadBF and not boyfriendObject.curCharacter:startsWith 'bf' then
 			deadBF = boyfriendObject
-			--noDeadAnims = true
+			noDeadAnims = true
 		end
-		deadBF.skipDance = true
-		deadBF:playAnim 'firstDeath'
 		local deathies = {'dave', 'bambi', 'tristan'}
 		local deathWhatever = '-generic'
 		if table.contains(deathies, boyfriendObject.curCharacter) then deathWhatever = '-'..boyfriendObject.curCharacter
-		elseif boyfriendObject.curCharacter == 'bf' then deathWhatever = ''
+		elseif boyfriendObject.curCharacter == 'bf' or deadBF.curCharacter == 'bf' then deathWhatever = ''
 		end
 		love.audio.play(paths.sound('death/fnf_loss_sfx'..deathWhatever))
 		deadSong = paths.music('gameover'..(funkin.curSong == 'exploitation' and '-ohno' or ''))
 		deadSong:setLooping(true)
 		deadOver = paths.music('gameoverend'..(funkin.curSong == 'exploitation' and '-ohno' or ''))
 		Timer.clear()
-		Timer.after(3, function()
-			deadSong:play()
-			bopLoop()
-		end)
-		Timer.tween(2, cam, {x = -deadBF.sprite.x + 100, y = -deadBF.sprite.y + 100}, 'out-expo')
+		if not noDeadAnims then
+			deadBF.skipDance = true
+			deadBF:playAnim 'firstDeath'
+			deadBF.sprite.onAnimComplete = function(n)
+				if n == 'firstDeath' then
+					deadSong:play()
+					bopLoop()
+				end
+			end
+		else
+		end
 	end,
 
 	update = function(self, dt)
@@ -44,11 +51,14 @@ return {
 			confirmed = true
 			deadSong:stop()
 			deadOver:play()
-			Timer.after(0.25, function()
-				Timer.tween(6, fade, {v = 0}, nil, function()
+			Timer.after(0.7, function()
+				Timer.tween(2, fade, {v = 0}, nil, function()
 					switchState(stage)
 				end)
 			end)
+		end			
+		if deadBF.sprite:getAnimName() == 'firstDeath' and deadBF.sprite:getFrame() == 12 then
+			Timer.tween(2, cam, {x = -deadBF.sprite.x + 100 - deadBF.sprite.width/2, y = -deadBF.sprite.y + 100 - deadBF.sprite.height/2}, 'out-expo')
 		end
 	end,
 

@@ -40,6 +40,8 @@ local canMove
 local recursedScale
 local recursedPrints
 
+local redsky, glitchshader
+
 local function resetPresses()
 	table.clear(pressSpeeds)
 	pressUnlockNumber = love.math.random(20,40)
@@ -162,6 +164,11 @@ return {
 			catStrings = {'dave', 'joke', 'extras'}
 		else 
 			catStrings = {'dave', 'joke', 'extras', 'terminal'}
+		end
+		if awaitingExploitation then            
+			redsky = graphics.newImage(paths.image('dave/backgrounds/void/redsky'))
+            glitchshader = shaders:GLITCH()
+			catStrings = {'uhoh'}
 		end
 		targetX, targetY = 75 * 25, 165 * 25
         selectSound = paths.sound('menu/select')
@@ -304,8 +311,17 @@ return {
 		if shakeTime > 0 then
 			love.graphics.translate(love.math.random(-shakeAmount, shakeAmount), love.math.random(-shakeAmount, shakeAmount))
 		end
-		love.graphics.setColor(rgb255(unpack(titleBG.color)))
-		titleBG:draw()
+		if awaitingExploitation then
+            love.graphics.setShader(glitchshader)
+            redsky:draw()
+            love.graphics.setShader()
+            love.graphics.setColor(0,0,0,0.4)
+            love.graphics.rectangle('fill', -1280/2, -720/2, 1280, 720)
+            love.graphics.setColor(1,1,1)
+        else
+			love.graphics.setColor(rgb255(unpack(titleBG.color)))
+			titleBG:draw()
+		end
 		for i,v in pairs(cats) do
 			if not v.dontdraw and v.alpha > 0 then
 				love.graphics.setColor(1,1,1,v.alpha)
@@ -315,7 +331,7 @@ return {
 		if not inRealFreeplay then
 			for i,cat in ipairs(cats) do
 				--print(catStrings[i], catStrings, i)
-				printfOutline(lm.string['freeplay_'..catStrings[i]] or lm.string.freeplay_extra, cat.x - 128, cat.y - 300, nil, {size = 72, depth = 0.05})
+				printfOutline(awaitingExploitation and 'uh oh' or (lm.string['freeplay_'..catStrings[i]] or lm.string.freeplay_extra), cat.x - 128, cat.y - 300, nil, {size = 72, depth = 0.05})
 			end
 		else
 			love.graphics.push()
@@ -343,8 +359,7 @@ return {
 			if recursedPrints then
 				for i,v in pairs(recursedPrints) do
 					love.graphics.push()
-					love.graphics.rotate(v.angle * DEGREE_TO_RADIAN)
-					printfOutline(v.print, v.x, v.y, nil)
+					printfOutline(v.print, v.x, v.y, nil, {angle = v.angle})
 					love.graphics.pop()
 				end
 			end

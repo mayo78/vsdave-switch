@@ -74,5 +74,6 @@
 		90
 	],
 	"sing_duration": 4,
-	"scale": 1
+	"scale": 1,
+	"positionOffset": [-750, -250]
 }

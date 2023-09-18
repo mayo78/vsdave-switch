@@ -2,13 +2,11 @@
 local c = {}
 --precachedChars = {}
 local threedees = {'dave-angey', 'bambi-3d', 'expunged', 'bambi-unfair', 'exbungo', 'dave-festival-3d', 'dave-3d-recursed', 'bf-3d'}
-local deadChars = {
-	--bf = 'bf-dead'
-	['dave-fnaf'] = 'dave-death'
-}
+local deadChars = {'dave', 'bambi', 'tristan-golden', 'tristan'}
 function c.new (character, isPlayer)
 	
 	--if precachedChars[character] then return table.copy(precachedChars[character]) end
+	local lastColor
 	local o = {}
 	o.danced = false
 	o.idleSuffix = ''
@@ -18,7 +16,7 @@ function c.new (character, isPlayer)
 	local path
 	o.json, path = paths.character(character)
 	if not o.json then
-		error('Character (char: '..tostring(character)..') json not found!\nChecked path '..path)
+		error('Character (char: '..tostring(character)..') json not found!')
 	end
 	--print(o.json.healthIcon)
 	o.icon = o.json.healthicon or 'bf'
@@ -28,7 +26,13 @@ function c.new (character, isPlayer)
 	local anims
 	o.sprite, anims = graphics:newAnimatedSprite(o.json.image, o.json.animations, 'idle', false, nil, {smartOffsets = true})
 	o.is3D = table.contains(threedees, character)
-	o.deadChar = deadChars[character]
+	o.deadChar = o.json.deadChar
+	for i,v in ipairs(deadChars) do --im lazy
+		if character:startsWith(v) then
+			o.deadChar = v..'-death'
+			break;
+		end
+	end
 
 	if o.json.no_antialiasing then o.sprite.image:setFilter('nearest', 'nearest') end
 
@@ -48,6 +52,7 @@ function c.new (character, isPlayer)
 	end
 	local lastAnim
 	function o:playAnim(animName, loopAnim)
+		self.sprite.color2 = nil
 		if self.skipOtherAnims then return end
 		lastAnim = animName
 		if not self:animExists(animName) then
@@ -87,6 +92,9 @@ function c.new (character, isPlayer)
 	end
 	local elapsedtime = 0
 	local canFloat = true
+	local positionOffset = ((o.sprite.sizeX < 0) and o.json.playerOffset or o.json.positionOffset) or {0,0}
+	o.sprite.x = o.sprite.x + positionOffset[1]
+	o.sprite.y = o.sprite.y + positionOffset[2]
 	function o:update(dt)
 		elapsedtime = elapsedtime + dt
 		self.sprite:update(dt)
@@ -95,13 +103,13 @@ function c.new (character, isPlayer)
 		end
 		--welcome to 3d (character) sinning avenue
 		if curStep and (self.curCharacter:lower() == 'recurser' or self.curCharacter:lower() == 'expunged') then
-			local tox = -100 - math.sin((curStep / 9.5) * 2) * 30 * 5
-			local toy = -330 - math.cos((curStep / 9.5)) * 100
+			local tox = (-100 - math.sin((curStep / 9.5) * 2) * 30 * 5) + positionOffset[1]
+			local toy = (-330 - math.cos((curStep / 9.5)) * 100) + positionOffset[2]
 			if self.curCharacter:lower() == 'recurser' then
 				toy = 100 - math.sin((elapsedtime) * 2) * 300;
 				tox = -400 - math.cos((elapsedtime)) * 200;
-				self.sprite.x = self.sprite.x + (tox - self.sprite.x)
-				self.sprite.y = self.sprite.y + (toy - self.sprite.y)
+				self.sprite.x = self.sprite.x + (tox - self.sprite.x) + positionOffset[1]
+				self.sprite.y = self.sprite.y + (toy - self.sprite.y) + positionOffset[2]
 			end
 			if self.is3D and canFloat then
 				if self.curCharacter:lower() == 'expunged' then
@@ -113,14 +121,12 @@ function c.new (character, isPlayer)
 			end
 		end
 	end
+	function o:purpleMiss()
+		self.sprite.color2 = {rgb255(hex2rgb '0xFF000084')}
+	end
 	--precachedChars[character] = table.copy(o)
 	o:dance()
-	if o.sprite.sizeX < 0 then
-		o.sprite.x = o.sprite.x + 1280
-	end
-	if o.sprite.sizeY < 0 then
-		o.sprite.y = o.sprite.y + 1280
-	end
+	o.sprite.color = {255,255,255,alpha=1}
 	return o
 end
 c.threedees = threedees

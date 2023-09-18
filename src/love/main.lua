@@ -21,16 +21,12 @@ local pauseScreen
 RADIAN_TO_DEGREE = 180/math.pi
 DEGREE_TO_RADIAN = math.pi/180
 
+screenAngle = 0
+screenRadian = 0
+
 local printBuffer = {}
 --debugMode = true
 function love.load()
-	local printer = print
-	function print(...)
-		printer(...)
-		local hi = {...}
-		for k,v in pairs(hi) do hi[k] = tostring(v) end
-		table.insert(printBuffer, {print = table.concat(hi, ', '), time = 3})
-	end
 	--https://love2d.org/forums/viewtopic.php?t=77272
 	function love.graphics.roundrect(mode, x, y, width, height, xround, yround, p)
 		local points = {}
@@ -144,20 +140,21 @@ function love.load()
 		extra.color = extra.color or {1, 1, 1}
 		extra.size = extra.size or 24
 		extra.depth = extra.depth or 0.1 --non ints make a cool outline
+		if extra.alpha == 0 then return end
 		
 		--theres a bettter way to d othis right
 		love.graphics.push()
 		love.graphics.setColor(0, 0, 0, extra.alpha or 1)
-		printf(text, x - extra.depth * extra.size, y, limit or 9999)
-		printf(text, x - extra.depth * extra.size, y - extra.depth * extra.size, limit or 9999)
-		printf(text, x, y - extra.depth * extra.size, limit or 9999)
-		printf(text, x + extra.depth * extra.size, y - extra.depth * extra.size, limit or 9999)
-		printf(text, x + extra.depth * extra.size, y, limit or 9999)
-		printf(text, x + extra.depth * extra.size, y + extra.depth * extra.size, limit or 9999)
-		printf(text, x, y + extra.depth * extra.size, limit or 9999)
-		printf(text, x - extra.depth * extra.size, y + extra.depth * extra.size, limit or 9999)
+		printf(text, x - extra.depth * extra.size, y, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
+		printf(text, x - extra.depth * extra.size, y - extra.depth * extra.size, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
+		printf(text, x, y - extra.depth * extra.size, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
+		printf(text, x + extra.depth * extra.size, y - extra.depth * extra.size, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
+		printf(text, x + extra.depth * extra.size, y, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
+		printf(text, x + extra.depth * extra.size, y + extra.depth * extra.size, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
+		printf(text, x, y + extra.depth * extra.size, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
+		printf(text, x - extra.depth * extra.size, y + extra.depth * extra.size, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
 		love.graphics.setColor(extra.color[1], extra.color[2], extra.color[3], extra.alpha or 1)
-		printf(text, x, y, limit or 9999)
+		printf(text, x, y, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
 		love.graphics.setColor(1, 1, 1, 1)
 		love.graphics.pop()
 	end
@@ -228,6 +225,7 @@ function love.load()
 		end
 	}
 
+
 	nickname = (love.getNickname and settings.selfAwareness) and love.getNickname() or 'User'
 
 	--shaders lol
@@ -253,6 +251,17 @@ function love.load()
 	save = require 'save'
 	Gamestate = require "lib.gamestate"
 	Timer = require "lib.timer"
+
+	
+	local printer = print
+	function print(...)
+		printer(...)
+		if settings.showDebug then
+			local hi = {...}
+			for k,v in pairs(hi) do hi[k] = tostring(v) end
+			table.insert(printBuffer, {print = table.concat(hi, ', '), time = 3})
+		end
+	end
 
 	-- Load modules
 	status = require "modules.status"
@@ -385,14 +394,15 @@ function love.load()
 
 		--print(tostring(version), tostring(onlineVersion))
 
-		--if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
-		--	switchState(versionState)
-		--else
-		--	switchState(settings.language and (settings.eyesores and flashingState or titleMenu) or languageState)
-		--end
+		if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
+			switchState(versionState)
+		else
+			print(save.save.seenWarning)
+			switchState(settings.language and (save.save.seenWarning and titleMenu or flashingState) or languageState)
+		end
 
 		--switchState(mukoTitle)
-		switchState(terminalState)
+		--switchState(terminalState)
 		--switchState(debugMenu)
 		
 		--local testChar = character.new 'bf'
@@ -430,6 +440,9 @@ function love.mousepressed(x, y, button, istouch, presses)
 end
 
 function love.update(dt)
+	if screenAngle ~= 0 then
+		screenRadian = screenAngle * DEGREE_TO_RADIAN
+	end
 	if gamePaused then return end
 	dt = math.min(dt, 1 / 30)
 	if not finishedLoading then
@@ -499,9 +512,9 @@ local function drawWhatever()
 		love.graphics.scale(5, 5)
 		love.graphics.print("Loading...", 0, 0)
 	end
-	if settings.showDebug then
-		love.graphics.print(status.getDebugStr(settings.showDebug), 5, 5, nil, 0.5, 0.5)
-	end
+	--if settings.showDebug then
+	--	love.graphics.print(status.getDebugStr(settings.showDebug), 5, 5, nil, 0.5, 0.5)
+	--end
 end
 function love.draw()
 	love.graphics.setCanvas(shaderCanvas)
@@ -519,7 +532,11 @@ function love.draw()
 	if globalShader then
 		love.graphics.setShader(globalShader)
 	end
-	love.graphics.draw(shaderCanvas, 0, 0, 0)
+	if screenRadian == 0 then
+		love.graphics.draw(shaderCanvas, 0, 0, 0)
+	else
+		love.graphics.draw(shaderCanvas, 1280/2, 720/2, screenRadian, 1, 1, 1280/2, 720/2)
+	end
 	graphics.screenBase(love.graphics.getWidth(), love.graphics.getHeight())
 	love.graphics.setShader()
 	if finishedLoading then

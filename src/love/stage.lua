@@ -28,10 +28,10 @@ local songtostage = {
 	farm = {'blocked', 'corn-theft', 'maze', 'splitathon', 'mealie'},
 	festival = {'shredder', 'greetings'},
 	void = {'polygonized', 'cheating', 'unfairness', 'exploitation'},
-	recursed = {'recursed'},
 	desktop = {'expoitation'},
 	backyard = {'rano'},
-	rapWorld = {'vs-dave-rap', 'vs-dave-rap-two'}
+	rapWorld = {'vs-dave-rap', 'vs-dave-rap-two'},
+	freeplay = {'recursed'}
 }
 local playedCutscene
 
@@ -74,7 +74,16 @@ local function drawTable(sprites)
 		elseif spr.isChar == 2 then
 			spr = weeks:getCurGirlfriend()
 		end
-		if not spr.dontdraw then
+		local alpha = (spr.alpha or (spr.color and spr.color[4]) or 1)
+		if not spr.dontdraw and alpha > 0 then
+			local color = spr.color
+			if spr.color2 then
+				color = {
+					spr.color[1] * spr.color2[1], 
+					spr.color[2] * spr.color2[2], 
+					spr.color[3] * spr.color2[3],
+				}
+			end
 			if spr.stageLight and stageOverlay.alpha > 0 then
 				love.graphics.scale(1/curCamZoom, 1/curCamZoom)
 				graphics.setColor(stageOverlay[1], stageOverlay[2], stageOverlay[3], stageOverlay.alpha)
@@ -92,7 +101,7 @@ local function drawTable(sprites)
 			end
 			if spr.color then
 				--print('we found a color... a big color', spr.color[1], spr.color[2], spr.color[3], spr.color[4])
-				love.graphics.setColor(rgb255(spr.color[1], spr.color[2], spr.color[3], (spr.color[4] or spr.alpha or 1) * (spr.alphaMult or 1)))
+				love.graphics.setColor(rgb255(color[1], color[2], color[3], (color[4] or color.alpha or spr.alpha or 1) * (spr.alphaMult or 1)))
 			elseif spr.alpha then
 				love.graphics.setColor(1, 1, 1, spr.alpha * (spr.alphaMult or 1))
 			end
@@ -975,7 +984,161 @@ local stages = {
 		--		print('MY POS:', moveSpr.x, moveSpr.y)
 		--	end
 		--end
-	end
+	end,
+	--everything from here on out is actually good
+	freeplay = function()
+		local daveBG, bambiBG, tristanBG = funkin.randomBG(), funkin.randomBG(), funkin.randomBG()
+		zoom = 0.4
+		local function img(p) return paths.image('dave/'..p) end
+
+		local full = {full=true}
+
+		local darksky = graphics.newImage(img 'recursed/darksky', full)
+		darksky.sizeX, darksky.sizeY = ((1/zoom) * 2), 1/zoom
+		darksky.x = darksky.x + 2000
+		darksky.y = (darksky.height*darksky.sizeY) / 2
+		add(darksky)
+
+		local darksky2 = graphics.newImage(img 'recursed/darksky', full)
+		darksky2.sizeX, darksky2.sizeY = ((1/zoom) * 2), 1/zoom
+		darksky2.y = (darksky2.height*darksky2.sizeY) / 2
+		add(darksky2)
+
+		local freeplayBG = graphics.newImage(paths.image(daveBG))
+		freeplayBG.sizeX, freeplayBG.sizeY = 2,2
+		freeplayBG.color = {hex2rgb '0xFF4965FF'}
+		freeplayBG.color2 = {rgb255(44, 44, 44)}
+		freeplayBG.alpha = 0
+		freeplayBG.scrollFactor = point()
+		add(freeplayBG)
+
+		local scrolls = {}
+		for _,v in pairs{'davescroll','bambiscroll','tristanscroll'} do
+			local image = img('recursed/'..v)
+			image:setWrap('repeat', 'repeat')
+			image:setFilter(getAA(false))
+			scrolls[v] = image
+		end
+
+		local gridguy = scrolls.davescroll
+		local gridframe = love.graphics.newQuad(0, 0, gridguy:getWidth() * 6, gridguy:getHeight() * 4, gridguy:getWidth(), gridguy:getHeight())
+
+		local charBackdrop = graphics.newImage(gridguy, {quad=gridframe})
+		charBackdrop.color = {255,255,255}
+		charBackdrop.color2 = {rgb255(44,44,44)}
+		charBackdrop.alpha = 0
+		charBackdrop.sizeX, charBackdrop.sizeY = 2,2
+		add(charBackdrop)
+
+		local daveSongs = {'House', 'Insanity', 'Polygonized', 'Bonus Song'};
+		local bambiSongs = {'Blocked', 'Corn-Theft', 'Maze', 'Mealie'};
+		local tristanSongs = {'Adventure', 'Vs-Tristan', 'Greetings'}; --added greetings to here since cmon man only 2 songs thats pathetic
+
+		local alphabets = {}
+		local function newAlphabet(list)
+			for i,v in pairs(alphabets) do v.dontdraw = true end
+			alphabets = {}
+			local startWidth = 640
+			local width = startWidth
+			local row = 0
+			while row < 720 do
+				while width < (1280*2.5) do
+					for _,curSong in pairs(list) do
+						curSong:gsub('.', function(c)
+							local angvel = love.math.random(300, 500)/10
+							angvel = angvel * (love.math.random(1,2) == 1 and -1 or 1)
+							local vel = point(love.math.random(-500, 500)/10, love.math.random(-500, 500)/10)
+							local txt = {
+								draw = function(self)
+									fonts('comic', 72)
+									printfOutline(c, self.x, self.y, nil, {angle = self.angle, alpha = self.alpha})
+								end,
+								update = function(self, dt)
+									self.angle = self.angle + dt * angvel * 2
+									self.x, self.y = self.x + vel.x*dt, self.y + vel.y*dt
+								end,
+								x = love.math.random(-1280, 1280 * 2.5),
+								y = love.math.random(0, love.math.random(0, 720 * 2.5)),
+								angle = 0,
+								alpha = 0,
+							}
+							width = width + curFont:getWidth(c) + 20
+							table.insert(alphabets, txt)
+							add(txt)
+							--print('inserting', c, 'from', curSong)
+						end)
+						if width > 1280 * 2.5 then break end
+					end
+					--print('new width:', width)
+				end
+				row = row + 120
+				width = startWidth
+			end
+		end
+		newAlphabet(daveSongs)
+
+		girlfriend.x, girlfriend.y = 30, -90
+		enemy.x, enemy.y = -380, -110
+		boyfriend.x, boyfriend.y = 260, 100
+
+		addChars()
+
+		local darkskylimit = darksky.x + (darksky.width*darksky.sizeX)
+		local darkskyx = darksky.x
+		local camRight = false
+		onUpdate = function(dt)
+			charBackdrop.x = charBackdrop.x - 150 * dt
+			charBackdrop.y = charBackdrop.y + 150 * dt
+			darksky.x = darksky.x + (40 * 150 * dt)
+			if darksky.x >= darkskylimit then
+				darksky.x = darkskyx
+			end
+			darksky2.x = darksky.x - (darksky.width*darksky.sizeX)
+			freeplayBG.alpha = lerp(freeplayBG.alpha,0,dt*7)
+			charBackdrop.alpha = lerp(charBackdrop.alpha,0,dt*7)
+			for _,v in pairs(alphabets) do
+				v.alpha = lerp(v.alpha, 0,dt*7)
+			end
+			if isRecursed then
+				screenAngle = screenAngle + (dt * 5 * (camRight and 1 or -1))
+				if screenAngle > 8 then
+					camRight = false
+				elseif screenAngle < -8 then
+					camRight = true
+				end
+			else
+				screenAngle = 0
+				screenRadian = 0
+			end
+		end
+		onBeat = function(b)
+			if b % 4 == 0 then
+				freeplayBG.alpha = 0.8
+				charBackdrop.x, charBackdrop.y = -1280/2 + (gridguy:getWidth() * 6)/2, -720/2 - (gridguy:getHeight() * 4)/4
+				charBackdrop.alpha = 0.8
+				for i,v in pairs(alphabets) do
+					v.alpha = 0.4
+				end
+			end
+		end
+		local events = {
+			bambimode = function()
+				charBackdrop:setImage(scrolls.bambiscroll)
+				freeplayBG:setImage(paths.image(bambiBG))
+				freeplayBG.color = {hex2rgb '0xFF00B515'}
+				newAlphabet(bambiSongs)
+			end,
+			tristanmode = function()
+				charBackdrop:setImage(scrolls.tristanscroll)
+				freeplayBG:setImage(paths.image(tristanBG))
+				freeplayBG.color = {hex2rgb '0xFFFF0000'}
+				newAlphabet(tristanSongs)
+			end
+		}
+		weeks.bookmarkEvents = function(n, v)
+			if events[n] then events[n](v) end
+		end
+	end,
 }
 return {
 	enter = function(self, from, songNum, songAppend)
@@ -996,7 +1159,8 @@ return {
 			if table.contains(v, jsonChart.song:lower()) then
 				jsonChart.stage = k
 				davemode = true
-				print 'ENABLING DAVE MODEEEE'
+				print ('ENABLING DAVE MODEEEE', funkin.curSong)
+				break
 			end
 		end
 		if weirdPolygonized then
@@ -1202,7 +1366,10 @@ return {
 	end,
 
 	addSpr = function(self, spr)
-		add(spr)
+		return add(spr)
+	end,
+	removeSpr = function(self, index)
+		return table.remove(sprites, index)
 	end,
 	setOnUpdate = function(self, ou)
 		onUpdate = ou

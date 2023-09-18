@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ------------------------------------------------------------------------------]]
 
+--what the hell this is literally jsut one funciton what the fukcs
 return {
 	playSound = function(sound)
 		sound:stop()

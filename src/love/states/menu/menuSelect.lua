@@ -26,7 +26,6 @@ local logoBl
 
 local lilMenuGuy
 
-local awaitingExploitation
 local curOptText
 local curOptDesc
 
@@ -79,7 +78,7 @@ return {
         canMove = true
 		table.clear(sprites)
         if awaitingExploitation then
-            optionShit = {'freeplay'}
+            optionShit = {'freeplay', 'options'}
 
             redsky = graphics.newImage(paths.image('dave/backgrounds/void/redsky'))
             glitchshader = shaders:GLITCH()
@@ -203,16 +202,17 @@ return {
         love.graphics.translate(graphics.getWidth() / 2, graphics.getHeight() / 2)
 
         if awaitingExploitation then
-            love.graphics.setShader(glitchshader.shader)
-            love.graphics.setColor(0.2, 0.2, 0.2)
+            love.graphics.setShader(glitchshader)
             redsky:draw()
-            love.graphics.setColor(1,1,1)
             love.graphics.setShader()
+            love.graphics.setColor(0,0,0,0.4)
+            love.graphics.rectangle('fill', -1280/2, -720/2, 1280, 720)
+            love.graphics.setColor(1,1,1)
         else
             love.graphics.setColor(rgb255(unpack(bg.color)))
             bg:draw()
             if magenta.color[4] > 0 then
-                love.graphics.setColor(rgb255(unpack(bg.color)))
+                love.graphics.setColor(rgb255(unpack(magenta.color)))
                 magenta:draw()
             end
             love.graphics.setColor(1,1,1)
@@ -229,13 +229,16 @@ return {
             spr:draw()
         end
         local aaa = (optionShit[curSelected] == 'story mode') and 'story' or optionShit[curSelected]
+        if awaitingExploitation and optionShit[curSelected] == 'freeplay' then
+            aaa = 'freeplay_glitch'
+        end
         --print(lm.string['main_'..aaa], 'main_'..aaa)
         fonts('comic', 64)
-        local main = lm.string['main_'..aaa..(awaitingExploitation and '_glitch' or '')]
-        printfOutline(main, -((#main/2) * (64/2)), fromTopLeft(0, 720/2 + 28).y, 9999)
+        local main = lm.string['main_'..aaa]
+        printfOutline(main, -curFont:getWidth(main)/2, fromTopLeft(0, 720/2 + 28).y, 9999)
         fonts('comic', 24)
-        local desc = lm.string['desc_'..aaa..(awaitingExploitation and '_glitch' or '')]
-        printfOutline(desc, -((#desc/2) * (24/2)), fromTopLeft(0, 720 - 58).y, 9999)
+        local desc = lm.string['desc_'..aaa]
+        printfOutline(desc, -curFont:getWidth(desc)/2, fromTopLeft(0, 720 - 58).y, 9999)
         printfOutline('Version '..tostring(version), -1280/2, -720/2 + 16) --..'\nHold start and select to reset data.'
         
 
