@@ -24,4 +24,6 @@ this fixed one crash oops
 - You can now exit the game at any time by holding start and select at the same time
 ### Porting
 - The console (pressing 7 is now replaced by holding all the shoulders and triggers and pressing select)
-- Five Night's at Muko's (the whole game, inside this port, do the 7 thing on kabunga im not lying)
+- Five Night's at Muko's (the whole game, inside this port, do the 7 thing on kabunga im not lying)\
+- Icon bop that is kinda
+- Recursed
