@@ -522,7 +522,7 @@ local stages = {
 	festival = function()
 		girlfriend.x, girlfriend.y = -25, -150
 		enemy.x, enemy.y = -380, 100
-		boyfriend.x, boyfriend.y = 100, 70
+		boyfriend.x, boyfriend.y = 250, 70
 		
 		local sprs = {}
 		local add = add
@@ -611,6 +611,22 @@ local stages = {
 					{'dave', 'idle', 0.8, -295, -120},
 					{'bambi', 'bambi idle', 0.9, 325, -70}
 				}
+			end
+			weeks.bookmarkEvents = function(n)
+				if n == 'coolzoom' then
+					local curZoom = camZoom
+					local time = (stepCrochet / 1000) * 20
+					local z = {camZoom}
+					Timer.tween(time, z, {camZoom+0.4}, nil, {after = function()
+						camZoom = 0.7
+					end, during = function(v)
+						camZoom = z[1]
+					end})
+					overlayColor = {1,1,1,alpha=0}
+					Timer.tween(time, overlayColor, {alpha=1}, nil, function()
+						weeks:flash()
+					end)
+				end
 			end
 		elseif jsonChart.song:lower() == 'interdimensional' then
 			mainChars = {
@@ -1042,7 +1058,7 @@ local stages = {
 			local width = startWidth
 			local row = 0
 			while row < 720 do
-				while width < (1280*2.5) do
+				while width < (1280*2) do
 					for _,curSong in pairs(list) do
 						curSong:gsub('.', function(c)
 							local angvel = love.math.random(300, 500)/10
@@ -1050,7 +1066,7 @@ local stages = {
 							local vel = point(love.math.random(-500, 500)/10, love.math.random(-500, 500)/10)
 							local txt = {
 								draw = function(self)
-									fonts('comic', 72)
+									fonts('comic', 256)
 									printfOutline(c, self.x, self.y, nil, {angle = self.angle, alpha = self.alpha})
 								end,
 								update = function(self, dt)
@@ -1058,7 +1074,7 @@ local stages = {
 									self.x, self.y = self.x + vel.x*dt, self.y + vel.y*dt
 								end,
 								x = love.math.random(-1280, 1280 * 2.5),
-								y = love.math.random(0, love.math.random(0, 720 * 2.5)),
+								y = love.math.random(0, love.math.random(-720, (720 * 2.5) -720)),
 								angle = 0,
 								alpha = 0,
 							}
@@ -1067,11 +1083,11 @@ local stages = {
 							add(txt)
 							--print('inserting', c, 'from', curSong)
 						end)
-						if width > 1280 * 2.5 then break end
+						if width > 1280 * 2 then break end
 					end
 					--print('new width:', width)
 				end
-				row = row + 120
+				row = row + 512
 				width = startWidth
 			end
 		end

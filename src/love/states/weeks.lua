@@ -468,6 +468,9 @@ return {
 		ratingVisibility = {0}
 		combo = 0
 
+		
+		pause:loadAssets()
+
 		enemyObject:dance()
 		boyfriendObject:dance()
 	end,
@@ -1168,11 +1171,11 @@ return {
 		
 		if not shredderMode then
 			if mustHitSection then
-				camPos.x = -(boyfriendObject.sprite.width/2)-boyfriendObject.sprite.x + 100 -- - cam.x
-				camPos.y = -(boyfriendObject.sprite.height/2)-boyfriendObject.sprite.y + 100 -- - cam.y
+				camPos.x = -(boyfriendObject.sprite.width/2)-boyfriendObject.sprite.x+boyfriendObject.sprite.offsetX + 100 -- - cam.x
+				camPos.y = -(boyfriendObject.sprite.height/2)-boyfriendObject.sprite.y+boyfriendObject.sprite.offsetY + 100 -- - cam.y
 			else
-				camPos.x = -(enemyObject.sprite.width/2)-enemyObject.sprite.x - 150 -- - cam.x
-				camPos.y = -(enemyObject.sprite.height/2)-enemyObject.sprite.y + 100 -- - cam.y
+				camPos.x = -(enemyObject.sprite.width/2)-enemyObject.sprite.x+enemyObject.sprite.offsetX - 150 -- - cam.x
+				camPos.y = -(enemyObject.sprite.height/2)-enemyObject.sprite.y+enemyObject.sprite.offsetY + 100 -- - cam.y
 			end
 		end
 

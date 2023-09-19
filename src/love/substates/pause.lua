@@ -163,5 +163,8 @@ return {
 	leave = function(self)
 		pauseMus:stop()
 		weeks:substateClosed()
+	end,
+	loadAssets = function(self)
+		paths.music((funkin.curSong:lower() == 'exploitation') and 'breakfast-ohno' or 'breakfast')
 	end
 }

@@ -1,0 +1,4 @@
+boolean seenWarning true
+boolean found_joke true
+boolean found_recursed true
+boolean found_kabunga true

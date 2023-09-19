@@ -226,7 +226,6 @@ function love.load()
 	}
 
 
-	nickname = (love.getNickname and settings.selfAwareness) and love.getNickname() or 'User'
 
 	--shaders lol
 	shaders = require 'shaders'
@@ -248,6 +247,7 @@ function love.load()
 	paths = require 'paths'
 	graphics = require "modules.graphics"
 	settings = require "settings"
+	nickname = (love.getNickname and settings.selfAwareness) and love.getNickname() or 'User'
 	save = require 'save'
 	Gamestate = require "lib.gamestate"
 	Timer = require "lib.timer"

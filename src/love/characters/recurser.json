@@ -70,10 +70,10 @@
 		197
 	],
 	"camera_position": [
-		20,
-		90
+		-750,
+		-250
 	],
 	"sing_duration": 4,
 	"scale": 1,
-	"positionOffset": [-750, -250]
+	"positionOffset": [750, 250]
 }
