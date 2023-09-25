@@ -20,6 +20,28 @@ local inputList = {
 	"gameRight"
 }
 
+local ExploitationModchartType = {
+	None = 0,
+	Cheating = 1,
+	Figure8 = 2,
+	ScrambledNotes = 3,
+	Cyclone = 4,
+	Unfairness = 5,
+	Jitterwave = 6,
+	PingPong = 7,
+	Sex = 8,
+}
+
+local CharacterFunnyEffect = {
+	None = 1,
+	Dave = 2,
+	Bambi = 3,
+	Tristan = 4,
+	Exbungo = 5,
+	Recurser = 6,
+}
+
+
 local scramble = {4, 1, 2, 3}
 
 local ratingTimers = {}
@@ -37,7 +59,7 @@ local jsonChart
 
 local songEvents = {}
 
-local camPos = point()
+camPos = point()
 
 local colors = {'purple', 'blue', 'green', 'red'}
 
@@ -92,6 +114,10 @@ local goldenShards
 
 local cinbarUp, cinbarDown, cinbars
 
+local modchart, localFunny
+
+local NOTE_WIDTH, NOTE_HEIGHT = 165, 160 --general widths, not exact but close enough!
+
 local function addCharToList(type, char)
 	if type == 1 then
 		print('my dad')
@@ -104,6 +130,7 @@ local function addCharToList(type, char)
 	elseif type == 2 then
 		if not gfs[char] then 
 			gfs[char] = character.new(char) 
+			print('added', char, 'to gf')
 		end
 	else
 		if not boyfriends[char] then 
@@ -119,9 +146,11 @@ local function changeChar(type, char)
 		--print('changing dad to ', char)
 		local pos = point(enemy.x, enemy.y)
 		local col = enemy.color
+		local dontdraw = enemy.dontdraw
 		enemyObject:dance()
 		enemyObject = dads[char]
 		enemy = enemyObject.sprite
+		enemy.dontdraw = dontdraw
 		enemy.x, enemy.y, enemy.color = pos.x, pos.y, col
 		if not stupididiotvariable then
 			enemyIcon:setSheet(paths.image('dave/icons/'..enemyObject.icon))
@@ -131,16 +160,21 @@ local function changeChar(type, char)
 	elseif type == 2 then
 		local pos = point(girlfriend.x, girlfriend.y)
 		local col = girlfriend.color
+		local dontdraw = girlfriend.dontdraw
 		girlfriendObject:dance()
 		girlfriendObject = gfs[char]
 		girlfriend = girlfriendObject.sprite
+		girlfriend.dontdraw = dontdraw
 		girlfriend.x, girlfriend.y, girlfriend.color = pos.x, pos.y, col
 	else
 		local pos = point(boyfriend.x, boyfriend.y)
 		local col = boyfriend.color
+		local dontdraw = boyfriend.dontdraw
 		boyfriendObject:dance()
+		print('swithing to', char, boyfriends[char])
 		boyfriendObject = boyfriends[char]
 		boyfriend = boyfriendObject.sprite
+		boyfriend.dontdraw = dontdraw
 		boyfriend.x, boyfriend.y, boyfriend.color = pos.x, pos.y, col
 		boyfriendIcon:setSheet(paths.image('dave/icons/'..boyfriendObject.icon))
 		boyfriendIcon.image:setFilter(boyfriendObject.is3D and 'nearest' or 'linear', boyfriendObject.is3D and 'nearest' or 'linear')
@@ -236,10 +270,30 @@ local function ratingPopup(ratingAnim, is3D)
 		ratingTimers[i+6] = Timer.tween(0.5, numbers[i], {x = numbers[i].x + love.math.random(-5, 5)}, 'out-quad')
 	end
 end
+local function resetStrumPos()
+	for i=1,4 do
+		boyfriendArrows[i].x = boyfriendArrows[i].baseX
+		boyfriendArrows[i].y = boyfriendArrows[i].baseY
+		enemyArrows[i].x = enemyArrows[i].baseX
+		enemyArrows[i].y = enemyArrows[i].baseY
+	end
+end
 return {
+	--keypressed = function(self, key)
+	--	print(key)
+	--	if key == 'n' then
+	--		resetStrumPos()
+	--		modchart = modchart - 1
+	--	elseif key == 'm' then
+	--		resetStrumPos()
+	--		modchart = modchart + 1
+	--	end
+	--end,
 	enter = function(self)
+		if charOverride == 'bf' then charOverride = nil end
+		modchart = ExploitationModchartType.None
+		localFunny = CharacterFunnyEffect.None
 		nogf = false
-		camPos:set(0, 0)
 		resetOverlays()
 		elapseduitime = 0
 		stageMode = false
@@ -313,22 +367,25 @@ return {
 		timeBarOverlay.sizeY = 1/0.7
 
 		if greetingsCutscene then jsonChart.player2 = 'dave-festival'
-		elseif weirdPolygonized then jsonChart.player2 = 'dave'
+		elseif weirdPolygonized then jsonChart.player2 = 'dave-annoyed'
 		end
 		addCharToList(1, jsonChart.player2 or 'bf')
 		enemyObject = dads[jsonChart.player2 or 'bf']
 		enemy = enemyObject.sprite
 
 		local bf = jsonChart.player1 or 'bf'
+		local gf = jsonChart.gfVersion or 'gf'
 		if bf == 'bf' and charOverride then 
 			bf = charOverride 
 			if not bf:startsWith 'bf' then
 				nogf = true
+			elseif bf == 'bf-3d' then
+				gf = 'gf-3d'
 			end
 		end
 
-		addCharToList(2, jsonChart.gfVersion or 'gf')
-		girlfriendObject = gfs[jsonChart.gfVersion or 'gf']
+		addCharToList(2, gf)
+		girlfriendObject = gfs[gf]
 		girlfriend = girlfriendObject.sprite
 		if nogf then girlfriend.dontdraw = true end
 
@@ -420,6 +477,7 @@ return {
 			"idle",
 			false
 		)
+		enemyIcon.y = healthBarOverlay.y - 125
 		if enemyObject.json.no_antialiasing then enemyIcon.image:setFilter('nearest', 'nearest') end
 		boyfriendIcon = graphics.newSprite(
 			paths.image("dave/icons/"..boyfriendObject.icon),
@@ -434,6 +492,7 @@ return {
 			"idle",
 			false
 		)
+		boyfriendIcon.y = healthBarOverlay.y - 125
 		if boyfriendObject.json.no_antialiasing then boyfriendIcon.image:setFilter('nearest', 'nearest') end
 
 		--boyfriendIcon.y, enemyIcon.y = healthBarOverlay.y + 37.5, healthBarOverlay.y + 37.5
@@ -446,6 +505,7 @@ return {
 		goImg = paths.image('dave/ui/go'..((curSong:lower() == 'overdrive') and '1' or (curSong:lower() == 'exploitation') and '_glitch' or ''))
 		countdown = graphics.newImage(readyImg)
 
+		print(cam.x, cam.y, camPos.x, camPos.y)
 		--print('returning this', jsonChart)
 		return jsonChart --hahfdhjklasjklfhjklsdh
 	end,
@@ -512,7 +572,7 @@ return {
 				{anim = 'off', name = 'arrow'..(dir:upper()), fps = 0},
 				{anim = 'confirm', name = dir..' confirm'},
 				{anim = 'press', name = dir..' press'}
-			}, 'off')
+			}, 'off', false, nil, {center=true})
 			if tex == 'NOTE_assets_3D' then 
 				has3D = true 
 				spr.image:setFilter('nearest', 'nearest')
@@ -533,6 +593,8 @@ return {
 				enemyNotes[i] = {}
 				enemyNoteData[i] = {}
 			end
+			spr.baseX = spr.x
+			spr.baseY = spr.y
 		end
 		if curSong:lower() == 'shredder' then
 			local dirs = {'A', 'B', 'C', 'D', 'E'}
@@ -541,10 +603,12 @@ return {
 					{anim = 'off', name = dirs[i]..' Strum'},
 					{anim = 'confirm', name = dirs[i]..' Confirm', offsets = {-19, -19}},
 					{anim = 'press', name = dirs[i]..' Press'}
-				}, 'off')
+				}, 'off', false, nil, {center=true})
 				spr.alpha = 0
 				spr.x = (-925 + 165 * i) + 500
+				spr.baseX = spr.x
 				spr.y = -300 * (settings.downscroll and -1 or 1)
+				spr.baseY = spr.y
 				ghStrums[i] = spr
 				enemyNotes[5] = {}
 			end
@@ -618,6 +682,9 @@ return {
 		--end
 
 		speed = jsonChart.speed
+		if (curSong:lower() == 'unfairness' or curSong:lower() == 'exploitation') and not randomSpeed then
+			speed = 2.7
+		end
 		events = {}
 		for k,section in pairs(jsonChart.notes) do
 			local eventBpm = section.changeBPM and section.bpm or jsonChart.bpm
@@ -732,7 +799,7 @@ return {
 						tex = 'dave/notes/NOTE_gh' 
 						threedee = false
 					end
-					local noteREAL = graphics:newAnimatedSprite(tex, anims, 'on')
+					local noteREAL = graphics:newAnimatedSprite(tex, anims, 'on', false, nil, {center=true})
 					if noScale then
 						noteREAL.sizeX, noteREAL.sizeY = 1/0.7, 1/0.7
 					end
@@ -768,6 +835,8 @@ return {
 					})
 					if settings.modcharts and curSong:lower() == 'cheating' then
 						noteREAL.orientation = math.pi
+						noteREAL.offsetX = noteREAL.width
+						noteREAL.offsetY = noteREAL.height
 					end
 					--noteREAL.y = note[1] + coolY * 0.6 * speed --actually stupid
 					--fuck this ill fix it later (sustains sometimes play the on animation for no reason and theres no trace of it doing that AGHJKDKLSJHDFJKLSGUHDFIKHDFJKLHDJK:FL)
@@ -781,7 +850,7 @@ return {
 								anims[1].offsets = {-25, 0}
 								anims[2].offsets = {-25, 0}
 							end
-							local sus = graphics:newAnimatedSprite(tex, anims, 'hold')
+							local sus = graphics:newAnimatedSprite(tex, anims, 'hold', false, nil, {center=true})
 							sus.x = strumTable[id].x
 							sus.dontdraw = true
 							--sus.offsetY = -10
@@ -825,13 +894,15 @@ return {
 					{anim = 'off', name = 'arrow'..(dir:upper()), fps = 0},
 					{anim = 'confirm', name = dir..' confirm'},
 					{anim = 'press', name = dir..' press'}
-				}, 'off')
+				}, 'off', false, nil, {center=true})
 				spr.image:setFilter('nearest', 'nearest')
 				spr.alpha = 1
 				i = i - 4
 				shapeArrows[i] = spr
 				shapeArrows[i].x = 100 + 165 * i
+				spr.baseX = spr.x
 				shapeArrows[i].y = -350 * (settings.downscroll and -1 or 1)
+				spr.baseY = spr.y
 			end
 		end
 		local addedSubs = false
@@ -846,8 +917,20 @@ return {
 						value2 = event[3]
 					})
 					--print('adding event', event, value1, value2)
-					if event[1] == 'Change Character' and (not weirdPolygonized or charOverride and event[3] == 'bf') then
-						addCharToList(tonumber(event[2]), event[3])
+					if event[1] == 'Change Character' and not weirdPolygonized then
+						local v1, v2 = event[2], event[3]
+						if v2 == 'bf' and charOverride then
+							v2 = charOverride
+						end
+						if tonumber(v1) == nil or tonumber(v1) == 0 then
+							if funkin.curSong:lower() == 'polygonized' and not (charOverride and charOverride == 'bf' or not charOverride) then
+								print ('doing bullshit', charOverride)
+								if v2 == 'bf-3d' and charOverride == 'dave' then v2 = 'dave-angey' --cool!
+								else v2 = charOverride end
+							end
+						end
+						print('adding char to list', v2)
+						addCharToList(tonumber(v1), v2)
 					elseif event[1] == 'subtitles' and not addedSubs then
 						addedSubs = true
 						local subNames = {
@@ -965,8 +1048,7 @@ return {
 		musicThres = 0
 		musicPos = 0
 
-		mustHitSection = true
-		mustHitSection = not mustHitSection
+		mustHitSection = false
 
 		countingDown = true
 		countdownFade[1] = 0
@@ -1133,7 +1215,9 @@ return {
 		
 		if dsh and ons then ons(curStep) end
 		if dbh then 
-			girlfriendObject:dance()
+			if girlfriendObject:animExists 'danceLeft' or curBeat % 2 == 0 then
+				girlfriendObject:dance()
+			end
 			if funkin.curSong == 'warmup' or curBeat % 2 == 0 then
 				if not enemyObject.sprite:isAnimated() then
 					enemyObject:dance()
@@ -1152,8 +1236,8 @@ return {
 
 			enemyIcon.sizeX = math.lerp(1.3, 1.05, (health/100))/0.7
 			enemyIcon.sizeY = math.lerp(0.35, 0.95, (health/100))/0.7
-			enemyIcon.y = enemyIcon.y - (150/0.7) + (150*enemyIcon.sizeY)
-			enemyIcon.tween = Timer.tween(0.25, enemyIcon, {y = (healthBarOverlay.y + 150/8), sizeX = 1/0.7, sizeY = 1/0.7}, 'out-quad', function()
+			--enemyIcon.y = enemyIcon.y - (150/0.7) + (150*enemyIcon.sizeY)
+			enemyIcon.tween = Timer.tween(0.25, enemyIcon, {sizeX = 1/0.7, sizeY = 1/0.7}, 'out-quad', function()
 				enemyIcon.tween = nil
 			end)
 
@@ -1161,8 +1245,8 @@ return {
 
 			boyfriendIcon.sizeX = -math.lerp(1.3, 1.05, 1-(health/100))/0.7
 			boyfriendIcon.sizeY = math.lerp(0.35, 0.95, 1-(health/100))/0.7
-			boyfriendIcon.y = boyfriendIcon.y - (150/0.7) + (150*boyfriendIcon.sizeY)
-			boyfriendIcon.tween = Timer.tween(0.25, boyfriendIcon, {y = (healthBarOverlay.y + 150/8), sizeX = -1/0.7, sizeY = 1/0.7}, 'out-quad', function()
+			--boyfriendIcon.y = boyfriendIcon.y - (150/0.7) + (150*boyfriendIcon.sizeY)
+			boyfriendIcon.tween = Timer.tween(0.25, boyfriendIcon, {sizeX = -1/0.7, sizeY = 1/0.7}, 'out-quad', function()
 				boyfriendIcon.tween = nil
 			end)
 
@@ -1171,11 +1255,11 @@ return {
 		
 		if not shredderMode then
 			if mustHitSection then
-				camPos.x = -(boyfriendObject.sprite.width/2)-boyfriendObject.sprite.x+boyfriendObject.sprite.offsetX + 100 -- - cam.x
-				camPos.y = -(boyfriendObject.sprite.height/2)-boyfriendObject.sprite.y+boyfriendObject.sprite.offsetY + 100 -- - cam.y
+				camPos.x = -(boyfriendObject.sprite.width/2)-boyfriendObject.sprite.x+boyfriendObject.camPos.x + 100 -- - cam.x
+				camPos.y = -(boyfriendObject.sprite.height/2)-boyfriendObject.sprite.y+boyfriendObject.camPos.y + 100 -- - cam.y
 			else
-				camPos.x = -(enemyObject.sprite.width/2)-enemyObject.sprite.x+enemyObject.sprite.offsetX - 150 -- - cam.x
-				camPos.y = -(enemyObject.sprite.height/2)-enemyObject.sprite.y+enemyObject.sprite.offsetY + 100 -- - cam.y
+				camPos.x = -(enemyObject.sprite.width/2)-enemyObject.sprite.x+enemyObject.camPos.x - 150 -- - cam.x
+				camPos.y = -(enemyObject.sprite.height/2)-enemyObject.sprite.y+enemyObject.camPos.y + 100 -- - cam.y
 			end
 		end
 
@@ -1301,21 +1385,128 @@ return {
 			--end
 
 			if settings.modcharts then
-				elapseduitime = elapseduitime + (dt/10)
-				if curSong:lower() == 'cheating' then
-					boyfriendArrow.x = boyfriendArrow.x + math.sin(elapseduitime) * (((i % 2) == 0) and 2 or -2);
-					boyfriendArrow.x = boyfriendArrow.x - math.sin(elapseduitime) * 1.5;
-
-					enemyArrow.x = enemyArrow.x - math.sin(elapseduitime) * (((i % 2) == 0) and 2 or -2);
-					enemyArrow.x = enemyArrow.x + math.sin(elapseduitime) * 1.5;
+				elapseduitime = elapseduitime + dt
+				local elapsedtime = elapseduitime/5
+				if curSong:lower() == 'cheating' or localFunny == CharacterFunnyEffect.Dave or modchart == ExploitationModchartType.Cheating then 
+					--same situation as the icon bop where its coded entirely differently but it looks similar enough to where i dont think anyone will care
+					boyfriendArrow.x = boyfriendArrow.x + (-256 * math.sin(elapsedtime)) * (1.5 * dt * (((i % 2) == 0) and 1 or 0.5));
+					
+					enemyArrow.x = enemyArrow.x - (-256 * math.sin(elapsedtime)) * 1.5 * dt * (((i % 2) == 0) and 1 or 0.5);
 				elseif curSong:lower() == 'unfairness' then
+					--luckily every modchart from here on out should be more math based and more translatable :)
 					local spr = boyfriendArrow
-					spr.x = (math.sin((elapseduitime + i)) * 400);
-					spr.y = (math.cos((elapseduitime + i)) * 400);
+					spr.x = (math.sin((elapsedtime + i)) * 400);
+					spr.y = (math.cos((elapsedtime + i)) * 400);
 					
 					local spr = enemyArrow
-					spr.x = (math.sin((elapseduitime + i) * 3) * 400);
-					spr.y = (math.cos((elapseduitime + i) * 3) * 400);
+					spr.x = (math.sin((elapsedtime + i) * 3) * 400);
+					spr.y = (math.cos((elapsedtime + i) * 3) * 400);
+				elseif modchart == ExploitationModchartType.Jitterwave then
+					--a lot of these exploitation modcharts are just copy and pasted code witha few adjustments
+					for n=1,2 do
+						local st = (n == 1) and enemyArrows or boyfriendArrows
+						local spr = (n == 1) and enemyArrow or boyfriendArrow
+						if i == 2 then
+							spr.x = st[3].baseX
+						elseif i == 3 then
+							spr.x = st[2].baseX
+						else
+							spr.x = spr.baseX
+						end
+						local i = i - 1
+						--no need to center in the middle when already centered!
+						spr.y = ((math.sin((elapsedtime + i) * (((curBeat % 6) + 1) * 0.6))) * 140) / 0.7;
+					end
+				elseif modchart == ExploitationModchartType.Sex then
+					local spr = boyfriendArrow
+					spr.x = 0;
+					spr.y = 0;
+					if i == 1 then
+						spr.x = spr.x - (NOTE_WIDTH * 2.5);
+					elseif i == 2 then
+						spr.x = spr.x + (NOTE_WIDTH * 0.5);
+						spr.y = spr.y + NOTE_HEIGHT;
+					elseif i == 3 then
+						spr.x = spr.x - (NOTE_WIDTH * 0.5);
+						spr.y = spr.y + NOTE_HEIGHT;
+					elseif i == 4 then
+						spr.x = spr.x + (NOTE_WIDTH * 2.5);
+					end
+					local i = i - 1
+					spr.x = spr.x + (math.sin(elapsedtime * i) * 30);
+					spr.y = spr.y + (math.cos(elapsedtime * i) * 30);
+					spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
+					local spr = enemyArrow
+					spr.x = 0;
+					spr.y = 0;
+					spr.x = spr.x + ((NOTE_WIDTH) * ((i == 3) and 0 or (i == 0) and 3 or (i == 2) and 1 or 2)) - (2 * NOTE_WIDTH) + (NOTE_WIDTH * 0.5);
+					spr.x = spr.x + (math.sin(elapsedtime * i) * -30);
+					spr.y = spr.y + (math.cos(elapsedtime * i) * -30);
+					spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
+				elseif modchart == ExploitationModchartType.Unfairness then --isnt exactly like in the original but close enough
+					local spr = boyfriendArrow
+					local i = i - 1
+					spr.x = (math.sin(((elapsedtime + (i * 2))) * 0.62) * 250);
+					spr.y = (math.cos(((elapsedtime + (i * 0.5))) * 0.62) * 250);
+					spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
+					local spr = enemyArrow
+					spr.x = (math.sin(((elapsedtime + (i * 0.5)) * 2) * 0.62) * 250);
+					spr.y = (math.cos(((elapsedtime + (i * 2)) * 2) * 0.62) * 250);
+					spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
+				elseif modchart == ExploitationModchartType.PingPong then
+					local xx = (math.sin(elapsedtime * 1.2) * 400) * 1.4;
+					local yy = (math.sin(elapsedtime * 1.5) * 200) - 50;
+					local xx2 = (math.cos(elapsedtime) * 400) * 1.4;
+					local yy2 = (math.cos(elapsedtime * 1.4) * 200) - 50;
+					
+					local i = i - 1
+					local spr = boyfriendArrow
+					spr.x = xx - ((i == 0 or i == 2) and NOTE_WIDTH or (i == 1 or i == 3) and -NOTE_WIDTH or 0);
+					spr.y = yy - ((i <= 1) and 0 or NOTE_HEIGHT);
+					spr.x = spr.x + math.sin((elapsedtime + (i * 3)) / 3) * NOTE_WIDTH;
+					spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
+					local spr = enemyArrow
+					spr.x = xx2 - ((i == 0 or i == 2) and NOTE_WIDTH or (i == 1 or i == 3) and -NOTE_WIDTH or 0);
+					spr.y = yy2 - ((i <= 1) and 0 or NOTE_HEIGHT);
+					spr.x = spr.x + (math.sin((elapsedtime + (i * 3)) / 3) * NOTE_WIDTH);
+					spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
+				elseif modchart == ExploitationModchartType.Figure8 then
+					local spr = boyfriendArrow
+					local i = i - 1
+					spr.x = (math.sin((elapsedtime * 0.3) + i + 1) * (1280 * 0.4));
+					spr.y = (math.sin(((elapsedtime * 0.3) + i) * 3) * (720 * 0.2));
+					spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
+					local spr = enemyArrow
+					spr.x = (math.sin((elapsedtime * 0.3) + i + 1.5) * (1280 * 0.4));
+					spr.y = (math.sin((((elapsedtime * 0.3) + i) * -3) + 0.5) * (720 * 0.2));
+					spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
+				elseif modchart == ExploitationModchartType.ScrambledNotes then
+					local spr = boyfriendArrow
+					spr.x = (math.sin(elapsedtime) * (((i-1) % 2) == 0 and 1 or -1)) * (60 * i);
+					spr.x = spr.x + math.sin(elapsedtime - 1) * 40;
+					spr.y = (math.sin(elapsedtime - 69.2) * (((i-1) % 3) == 0 and 1 or -1)) * (67 * i) - 15;
+					spr.y = spr.y + math.cos(elapsedtime - 1) * 40;
+					spr.x = spr.x - 80;
+					local spr = enemyArrow
+					spr.x = (math.cos(elapsedtime - 1) * (((i-1) % 2) == 0 and -1 or 1)) * (60 * i);
+					spr.x = spr.x + math.sin(elapsedtime - 1) * 40;
+					spr.y = (math.sin(elapsedtime - 63.4) * (((i-1) % 3) == 0 and -1 or 1)) * (67 * i) - 15;
+					spr.y = spr.y + math.cos(elapsedtime - 1) * 40;
+					spr.x = spr.x - 80;
+				elseif modchart == ExploitationModchartType.Cyclone then
+					local spr = boyfriendArrow
+					spr.x = (math.sin(i * (elapsedtime * 0.15)) * (65 * i));
+					spr.y = (math.cos(i * (elapsedtime * 0.15)) * (65 * i));
+					spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
+					local spr = enemyArrow
+					spr.x = (math.cos(i * (elapsedtime * 0.15)) * (65 * i));
+					spr.y = (math.sin(i * (elapsedtime * 0.15)) * (65 * i));
+					spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
+				elseif weirdPolygonized then
+					local spr = boyfriendArrow
+					spr.y = spr.baseY + ((math.sin(elapsedtime + (i-1))) * (NOTE_HEIGHT * 0.75));
+					local spr = enemyArrow
+					spr.y = spr.baseY + ((math.sin(elapsedtime + (i+3))) * (NOTE_HEIGHT * 0.75));
 				end
 			end
 
@@ -1685,8 +1876,8 @@ return {
 		--enemyIcon.sizeX, enemyIcon.sizeY = lerp(enemyIcon.sizeX, 1/0.7, dt * 15), lerp(enemyIcon.sizeY, 1/0.7, dt * 15)
 
 		local hw = healthBarOverlay.width*healthBarOverlay.sizeX
-		boyfriendIcon.x = 425 - (hw - 9) * -(1-(health/100)) - 925 - 37.5 + 150
-		enemyIcon.x = 425 - (hw - 9) * -(1-(health/100)) - 925 + 37.5
+		boyfriendIcon.x = 425 - (hw - 9) * -(1-(health/100)) - 850 - 37.5 + (150 * math.abs(boyfriendIcon.sizeX))
+		enemyIcon.x = 425 - (hw - 9) * -(1-(health/100)) - 850 + 37.5 - (150 * enemyIcon.sizeX)
 
 		if curSubtitle and not curSubtitle.finished then
 			curSubtitle.timer = curSubtitle.timer - dt
@@ -1829,8 +2020,8 @@ return {
 			love.graphics.rectangle("fill", timeBarOverlay.x + 5 - tw/2, timeBarOverlay.y - timeBarOverlay.height/2 + 2, (tw - 9) * (musicTime/1000)/inst:getDuration"seconds", th - (8 * timeBarOverlay.sizeY) + 0.1)
 			graphics.setColor(1, 1, 1, hudAlpha[1] * timebarAlpha[1])
 			timeBarOverlay:draw()
-			local hi = formatTime(inst:getDuration"seconds"-(musicTime/1000))
-			printfOutline(hi, (-curFont:getWidth(hi)/2) - 25, timeBarOverlay.y - 32, nil, {size = 48, depth = 0.05, alpha = hudAlpha[1] * timebarAlpha[1]})
+			local hi = formatTime(inst:getDuration"seconds"-(musicTime/1000)):gsub(' ', '')
+			printfOutline(hi, 0, timeBarOverlay.y - 32, nil, {size = 48, depth = 0.05, alpha = hudAlpha[1] * timebarAlpha[1], center = true})
 		end
 		
 		--love.graphics.print("INFO:"..inst:getDuration"seconds"..", "..inst:tell"seconds", 0, 0)
@@ -1850,7 +2041,7 @@ return {
 
 		fonts('comic', 16/0.7)
 		local myY = healthBarOverlay.y + 40
-		local stringy = curSong:gsub('-', '')
+		local stringy = curSong:gsub('-', ' ')
 		if lm.string[curSong:lower()..'_credit'] then
 			myY = myY - 30
 			stringy = stringy..'\n'..lm.string[curSong:lower()..'_credit']
@@ -1937,7 +2128,14 @@ return {
 			flash = function() self:flash() end,
 			['Change Character'] = function()
 				if not weirdPolygonized then
-					if v2 == 'bf' and charOverride then return end
+					if v2 == 'bf' and charOverride then
+						v2 = charOverride
+					end
+					if (not v1 or not tonumber(v1) or tonumber(v1) == 0) and funkin.curSong:lower() == 'polygonized' and charOverride then
+						if v2 == 'bf-3d' and charOverride == 'dave' then v2 = 'dave-angey' --cool!
+						else v2 = charOverride end
+					end
+					print('changing char', v1, v2)
 					changeChar(tonumber(v1), v2)
 				end
 			end,

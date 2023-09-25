@@ -1,5 +1,5 @@
 local repeater, gridguy, curSelected, fadeInAlpha, targetYs, curYs, gridPos, musVol, pauseMus, texts
-local menuItems = {
+local _menuItems = {
 	'Resume',
 	'Restart Song',
 	'Change Character',
@@ -7,7 +7,7 @@ local menuItems = {
 	'Exit to menu',
 	--'End Song' --debug thing
 }
-local funcs = {
+local _funcs = {
 	function()
 		closeSubstate()
 	end,
@@ -19,6 +19,11 @@ local funcs = {
 		switchState(stage)
 	end,
 	function()
+		closeSubstate()
+		Timer.clear()
+		if inst then inst:stop() end
+		if voices then voices:stop() end
+		switchState(charSelect)
 	end,
 	function()
 		closeSubstate()
@@ -43,10 +48,24 @@ local funcs = {
 		skippingSong = true
 	end
 }
+local menuItems, funcs
 local expungedTaunts = {"YOU'RE FUCKED", 'HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA', "YOU CAN'T ESCAPE FROM THE FUN ALREADY", 
 "EXPUNGED'S REIGN IS HERE, YOU'RE FUCKED", "YOU HAVE REACHED THE END OF THE RABBIT HOLE", "YOU'RE WORTHLESS YOU'RE WORTHLESS YOU'RE WORTHLESS YOU'RE WORTHLESS YOU'RE WORTHLESS", }
 return {
 	enter = function(self)
+		menuItems = {}
+		funcs = {}
+		if storyMode then
+			for i,v in pairs(_menuItems) do
+				if i ~= 3 then 
+					table.insert(menuItems, v) 
+					table.insert(funcs, _funcs[i])
+				end
+			end
+		else
+			menuItems = _menuItems
+			funcs = _funcs
+		end
 		texts = {}
 		local name = point(0, -16)
 		name.alpha = 0

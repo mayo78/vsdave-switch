@@ -273,8 +273,9 @@ return {
 			space = paths.sound 'terminal_space'
 		}
 	end,
-	leave = function()
+	leave = function(self)
 		setKeyboard(false)
+		self.keyboardOpened = false
 		Timer.clear()
 	end,
 	draw = function()

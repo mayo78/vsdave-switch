@@ -52,5 +52,6 @@
 		90
 	],
 	"sing_duration": 4,
-	"scale": 1
+	"scale": 1,
+	"playerOffset": [390, 197]
 }

@@ -22,6 +22,8 @@ local nightColor = {135, 135, 135}
 local sunsetColor = {255, 143, 178}
 local zoom
 
+local fullMode
+
 
 local songtostage = {
 	house = {'warmup', 'house', 'insanity', 'supernovae', 'glitch'},
@@ -31,12 +33,15 @@ local songtostage = {
 	desktop = {'expoitation'},
 	backyard = {'rano'},
 	rapWorld = {'vs-dave-rap', 'vs-dave-rap-two'},
-	freeplay = {'recursed'}
+	freeplay = {'recursed'},
+	master = {'master'},
+	roof = {'roofs'},
+	['inside-house'] = {'bonus-song'},
 }
 local playedCutscene
 
 local function newSprite(image, x, y)
-	local spr = graphics.newImage(paths.image(image))
+	local spr = graphics.newImage(paths.image(image), {full=fullMode})
 	spr.x = x or 0
 	spr.y = y or 0
 	if subHalfWidth then
@@ -155,14 +160,14 @@ local stages = {
 
 		--enemy = love.filesystem.load("sprites/week1/daddy-dearest.lua")()
 
-		girlfriend.x, girlfriend.y = 30, -90
-		enemy.x, enemy.y = -380, -110
-		boyfriend.x, boyfriend.y = 260, 100
+		girlfriend.x, girlfriend.y = 400, 130
+		enemy.x, enemy.y = 100, 450
+		boyfriend.x, boyfriend.y = 770, 450
 	end,
 	house = function(dont, skyType, assetType)
 		zoom = 0.8
 		local nighty = {'glitch', 'bonus-song', 'memory'}
-		if table.contains(nighty, jsonChart.song:lower()) then 
+		if table.contains(nighty, jsonChart.song:lower()) or weirdPolygonized then 
 			skyType = 'sky_night'
 			assetType = 'night/'
 		end
@@ -177,33 +182,34 @@ local stages = {
 		end
 		skyType = skyType or 'sky'
 		assetType = assetType or ''
+		fullMode = true
 		local bg = newSprite('dave/backgrounds/shared/'..skyType, -600, -300)
 		bg.scrollFactor = point(0.6, 0.6)
 		addWidth(bg)
 		add(bg)
-		local stageHills = newSprite('dave/backgrounds/dave-house/'..assetType..'hills', -834, -159)
+		local stageHills = newSprite('dave/backgrounds/dave-house/'..assetType..'hills', -834, -200)
 		stageHills.scrollFactor = point(0.7, 0.7)
 		addWidth(stageHills)
 		add(stageHills)
 		local grassbg = newSprite('dave/backgrounds/dave-house/'..assetType..'grass bg', -1205, 580)
 		addWidth(grassbg)
 		add(grassbg)
-		local gate = newSprite('dave/backgrounds/dave-house/'..assetType..'gate', -832, 580)
+		local gate = newSprite('dave/backgrounds/dave-house/'..assetType..'gate', -755, 250)
 		addWidth(gate)
 		add(gate)
-		local stageFront = newSprite('dave/backgrounds/dave-house/'..assetType..'grass', -832, 700)
+		local stageFront = newSprite('dave/backgrounds/dave-house/'..assetType..'grass', -832, 505)
 		addWidth(stageFront)
 		add(stageFront)
 
 		local redsky
 		if jsonChart.song:lower() == 'insanity' then
-			redsky = newSprite('dave/backgrounds/void/redsky_insanity', 2000, 1000)
+			redsky = newSprite('dave/backgrounds/void/redsky_insanity', -600, -200)
 			redsky.shader = shaders:GLITCH()
 			redsky.dontdraw = true
 			redsky.image:setFilter(getAA(false))
 			add(redsky)
 		elseif weirdPolygonized then
-			redsky = newSprite('dave/backgrounds/void/redsky', 2000, 1000)
+			redsky = newSprite('dave/backgrounds/void/redsky', -600, -200)
 			redsky.shader = shaders:GLITCH()
 			redsky.dontdraw = true
 			redsky.image:setFilter(getAA(false))
@@ -219,6 +225,30 @@ local stages = {
 			weeks.bookmarkEvents = function(n, v)
 				if events[n] then events[n](v) end
 			end
+		elseif jsonChart.song:lower() == 'supernovae' then
+			local events = {
+				fly = function()
+					Timer.tween(15, enemyObject.sprite, {x = enemyObject.sprite.x - 25, y = enemyObject.sprite.y - 230})
+				end,
+				nofly = function()
+					Timer.tween(0.6, enemyObject.sprite, {x = enemyObject.sprite.x + 25, y = enemyObject.sprite.y + 230})
+				end
+			}
+			weeks.bookmarkEvents = function(n, v)
+				if events[n] then events[n](v) end
+			end
+		elseif jsonChart.song:lower() == 'glitch' then
+			local events = {
+				fly = function()
+					Timer.tween(20, enemyObject.sprite, {x = enemyObject.sprite.x - 25, y = enemyObject.sprite.y - 230})
+				end,
+				nofly = function()
+					Timer.tween(1, enemyObject.sprite, {x = enemyObject.sprite.x + 25, y = enemyObject.sprite.y + 230})
+				end
+			}
+			weeks.bookmarkEvents = function(n, v)
+				if events[n] then events[n](v) end
+			end
 		end
 
 		eventEvents = function(n, v1)
@@ -229,15 +259,11 @@ local stages = {
 				enemyObject.skipDance = true
 				enemy:setLooping(true)
 			end
-		end
-
-		for _,spr in pairs(sprites) do
-			spr.x = spr.x - 2250
-			spr.y = spr.y - 1000
-		end
-		girlfriend.x, girlfriend.y = 60, -90
-		enemy.x, enemy.y = -380, 100
-		boyfriend.x, boyfriend.y = 300, 100
+		end		
+		local aaa = point(0, 100)
+		girlfriend.x, girlfriend.y = 400 - aaa.x, 130 - aaa.y
+		enemy.x, enemy.y = 100 - aaa.x, 450 - aaa.y
+		boyfriend.x, boyfriend.y = 770 - aaa.x, 450 - aaa.y
 		if not dont then
 			addChars()
 			if skyType == 'sky_night' then
@@ -249,11 +275,12 @@ local stages = {
 		return sprs
 	end,
 	void = function()
+		fullMode = true
 		zoom = 0.8
 		useeyesores = true
-		girlfriend.x, girlfriend.y = 60, -90
-		enemy.x, enemy.y = -380, 100
-		boyfriend.x, boyfriend.y = 300, 100
+		girlfriend.x, girlfriend.y = 400, 130
+		enemy.x, enemy.y = 100, 450
+		boyfriend.x, boyfriend.y = 770, 450
 
 		local voidStuff = {
 			cheating = 'cheater',
@@ -262,19 +289,17 @@ local stages = {
 		}
 		local void = voidStuff[jsonChart.song:lower()] or 'redsky'
 
-		local bg = newSprite('dave/backgrounds/void/'..void, 2000, 1000)
+		local bg = newSprite('dave/backgrounds/void/'..void, 2085, 1205)
 		bg.shader = shaders:GLITCH()
 		bg:getImage():setFilter('nearest', 'nearest')
 		add(bg)
+		print('fudfs', fullMode)
 
 		local alphaThing = {value = 0}
 		local meAlpha = {value = 0}
 		local songStuff = {
 			polygonized = function()
 				houseStage = getStage('house', true, 'sky_night', 'night/')
-				for _,spr in pairs(houseStage) do
-					spr.x, spr.y = spr.x - 2250, spr.y - 1000
-				end
 				local events = {
 					finaly = function()
 						weeks:flash(0.25)
@@ -324,12 +349,57 @@ local stages = {
 		if songStuff[jsonChart.song:lower()] then songStuff[jsonChart.song:lower()]() end
 
 		addChars()
+
+		
+		--local moveSpr = boyfriend
+		--local dxy = point()
+		--onUpdate = function(dt)
+		--	local mult = 1
+		--	if controls.down.gameFive then mult = 5 
+		--	else mult = 1 
+		--	end
+		--	if controls.down.left then 
+		--		moveSpr.x = moveSpr.x - (1*mult)
+		--		dxy.x = dxy.x - (1*mult)
+		--	elseif controls.down.right then 
+		--		moveSpr.x = moveSpr.x + (1*mult)
+		--		dxy.x = dxy.x + (1*mult)
+		--	end
+		--	if controls.down.down then 
+		--		moveSpr.y = moveSpr.y + (1*mult)
+		--		dxy.y = dxy.y + (1*mult)
+		--	elseif controls.down.up then 
+		--		moveSpr.y = moveSpr.y - (1*mult)
+		--		dxy.y = dxy.y - (1*mult)
+		--	end
+		--	if controls.pressed.confirm then
+		--		print('MY POS:', dxy.x, dxy.y)
+		--	end
+		--end
+		
+		--local moveSpr = bg
+		--onUpdate = function(dt)
+		--	local mult = 1
+		--	if controls.down.gameFive then mult = 2 
+		--	else mult = 1 
+		--	end
+		--	if controls.down.left then moveSpr.x = moveSpr.x - mult
+		--	elseif controls.down.right then moveSpr.x = moveSpr.x + mult
+		--	end
+		--	if controls.down.down then moveSpr.y = moveSpr.y + mult
+		--	elseif controls.down.up then moveSpr.y = moveSpr.y - mult
+		--	end
+		--	if controls.pressed.confirm then
+		--		print('MY POS:', moveSpr.x, moveSpr.y)
+		--	end
+		--end
 	end,
 	farm = function()
 		zoom = 0.8
-		girlfriend.x, girlfriend.y = -25, -150
-		enemy.x, enemy.y = -380, 100
-		boyfriend.x, boyfriend.y = 100, 70
+		local aaa = point(750, 600)
+		girlfriend.x, girlfriend.y = 400 - aaa.x, 130 - aaa.y
+		enemy.x, enemy.y = 100 - aaa.x, 450 - aaa.y
+		boyfriend.x, boyfriend.y = 770 - aaa.x, 450 - aaa.y
 		local skyType = jsonChart.stage == 'farm-night' and 'sky_night' or jsonChart.stage == 'farm-sunset' and 'sky_sunset' or 'sky'
 		--skyType = 'sky_sunset'
 		local nighty = {'splitathon', 'mealie'}
@@ -500,11 +570,11 @@ local stages = {
 			--if controls.down.gameFive then mult = 2 
 			--else mult = 1 
 			--end
-			--if controls.down.left then moveSpr.x = moveSpr.x - (5*mult)
-			--elseif controls.down.right then moveSpr.x = moveSpr.x + (5*mult)
+			--if controls.down.left then moveSpr.x = moveSpr.x - mult
+			--elseif controls.down.right then moveSpr.x = moveSpr.x + mult
 			--end
-			--if controls.down.down then moveSpr.y = moveSpr.y + (5*mult)
-			--elseif controls.down.up then moveSpr.y = moveSpr.y - (5*mult)
+			--if controls.down.down then moveSpr.y = moveSpr.y + mult
+			--elseif controls.down.up then moveSpr.y = moveSpr.y - mult
 			--end
 			--if controls.pressed.confirm then
 			--	print('MY POS:', moveSpr.x, moveSpr.y)
@@ -652,14 +722,14 @@ local stages = {
 
 		local corn = graphics:newAnimatedSprite('dave/backgrounds/festival/corn', {
 			{anim = 'corn', name = 'idle', fps = 5}
-		}, 'corn')
+		}, 'corn', false, nil, {center=true})
 		corn.scrollFactor = point(0.85, 0.85)
 		corn:setPosition(-500, -120)
 		add(corn)
 
 		local cornGlow = graphics:newAnimatedSprite('dave/backgrounds/festival/cornGlow', {
 			{anim = 'cornGlow', name = 'idle', fps = 5, loops = true}
-		}, 'cornGlow')
+		}, 'cornGlow', false, nil, {center=true})
 		cornGlow.scrollFactor = point(0.85, 0.85)
 		cornGlow.blendMode = 'add'
 		cornGlow:setPosition(-500, -120)
@@ -671,7 +741,7 @@ local stages = {
 
 		local crowd = graphics:newAnimatedSprite('dave/backgrounds/festival/crowd', {
 			{anim = 'idle', name = 'crowdDance', loops = true}
-		}, 'idle')
+		}, 'idle', false, nil, {center=true})
 		crowd.scrollFactor = point(0.85, 0.85)
 		crowd:setPosition(-165, -270)
 		add(crowd)
@@ -681,7 +751,7 @@ local stages = {
 			for _,chary in pairs(mainChars) do
 				local char = graphics:newAnimatedSprite('dave/backgrounds/festival/mainCrowd/'..chary[1], {
 					{anim = 'idle', name = chary[2]}
-				}, 'idle')
+				}, 'idle', false, nil, {center=true})
 				char.scrollFactor = point(0.85, 0.85)
 				char.sizeX, char.sizeY = chary[3], chary[3]
 				print(chary[4], chary[5])
@@ -698,9 +768,9 @@ local stages = {
 
 		local generalGlow = graphics:newAnimatedSprite('dave/backgrounds/festival/generalGlow', {
 			{anim = 'glow', name = 'idle', fps = 5, loops = true}
-		}, 'glow')
+		}, 'glow', false, nil, {center=true})
 		generalGlow.blendMode = 'add'
-		generalGlow:setPosition(-825, 340)
+		generalGlow:setPosition(-425, 340)
 		add(generalGlow)
 
 		onBeat = function(b)
@@ -717,11 +787,11 @@ local stages = {
 		--	if controls.down.gameFive then mult = 2 
 		--	else mult = 1 
 		--	end
-		--	if controls.down.left then moveSpr.x = moveSpr.x - (5*mult)
-		--	elseif controls.down.right then moveSpr.x = moveSpr.x + (5*mult)
+		--	if controls.down.left then moveSpr.x = moveSpr.x - mult
+		--	elseif controls.down.right then moveSpr.x = moveSpr.x + mult
 		--	end
-		--	if controls.down.down then moveSpr.y = moveSpr.y + (5*mult)
-		--	elseif controls.down.up then moveSpr.y = moveSpr.y - (5*mult)
+		--	if controls.down.down then moveSpr.y = moveSpr.y + mult
+		--	elseif controls.down.up then moveSpr.y = moveSpr.y - mult
 		--	end
 		--	if controls.pressed.confirm then
 		--		print('MY POS:', moveSpr.x, moveSpr.y)
@@ -919,11 +989,11 @@ local stages = {
 			--if controls.down.gameFive then mult = 2 
 			--else mult = 1 
 			--end
-			--if controls.down.left then moveSpr.x = moveSpr.x - (5*mult)
-			--elseif controls.down.right then moveSpr.x = moveSpr.x + (5*mult)
+			--if controls.down.left then moveSpr.x = moveSpr.x - mult
+			--elseif controls.down.right then moveSpr.x = moveSpr.x + mult
 			--end
-			--if controls.down.down then moveSpr.y = moveSpr.y + (5*mult)
-			--elseif controls.down.up then moveSpr.y = moveSpr.y - (5*mult)
+			--if controls.down.down then moveSpr.y = moveSpr.y + mult
+			--elseif controls.down.up then moveSpr.y = moveSpr.y - mult
 			--end
 			--if controls.pressed.confirm then
 			--	print('MY POS:', moveSpr.x, moveSpr.y)
@@ -990,11 +1060,11 @@ local stages = {
 		--	if controls.down.gameFive then mult = 2 
 		--	else mult = 1 
 		--	end
-		--	if controls.down.left then moveSpr.x = moveSpr.x - (5*mult)
-		--	elseif controls.down.right then moveSpr.x = moveSpr.x + (5*mult)
+		--	if controls.down.left then moveSpr.x = moveSpr.x - mult
+		--	elseif controls.down.right then moveSpr.x = moveSpr.x + mult
 		--	end
-		--	if controls.down.down then moveSpr.y = moveSpr.y + (5*mult)
-		--	elseif controls.down.up then moveSpr.y = moveSpr.y - (5*mult)
+		--	if controls.down.down then moveSpr.y = moveSpr.y + mult
+		--	elseif controls.down.up then moveSpr.y = moveSpr.y - mult
 		--	end
 		--	if controls.pressed.confirm then
 		--		print('MY POS:', moveSpr.x, moveSpr.y)
@@ -1155,14 +1225,121 @@ local stages = {
 			if events[n] then events[n](v) end
 		end
 	end,
+	master = function()
+		zoom = 0.4
+		local space = graphics.newImage(paths.image'dave/backgrounds/shared/sky_space', {full=true})
+		space.scrollFactor = point(1.2, 1.2)
+		space.sizeX, space.sizeY = 10, 10
+		space.x, space.y = 2000, 1000
+		space.image:setFilter(getAA(false))
+		add(space)
+
+		local land = graphics.newImage(paths.image'dave/backgrounds/dave-house/land', {full=true})
+		land.scrollFactor = point(0.9, 0.9)
+		land.x, land.y = 675, 555
+		add(land)
+
+		
+		girlfriend.x, girlfriend.y = 15, -390
+		enemy.x, enemy.y = -enemy.width + 150, 150 -enemy.height
+		boyfriend.x, boyfriend.y = 300, -150
+
+		addChars()
+
+		paths.sounds 'dead'
+		eventEvents = function(n)
+			if n:lower() == 'play animation' then
+				paths.sounds 'dead':play()
+			end
+		end
+	end,
+	roof = function()
+		zoom = 0.8
+		local roof = graphics.newImage(paths.image'dave/backgrounds/gm_house5', {full=true})
+		roof.x, roof.y = 2629, 1672
+		roof.sizeX, roof.sizeY = 2, 2
+		add(roof)
+
+		girlfriend.x, girlfriend.y = -74.5 + 250, -174 + 300
+		enemy.x, enemy.y = -825 + 250, 132 + 125
+		boyfriend.x, boyfriend.y = 759, 343
+
+		addChars()
+		--local moveSpr = enemy
+		--onUpdate = function(dt)
+		--	local mult = 1
+		--	if controls.down.gameFive then mult = 2 
+		--	else mult = 1 
+		--	end
+		--	if controls.down.left then moveSpr.x = moveSpr.x - mult
+		--	elseif controls.down.right then moveSpr.x = moveSpr.x + mult
+		--	end
+		--	if controls.down.down then moveSpr.y = moveSpr.y + mult
+		--	elseif controls.down.up then moveSpr.y = moveSpr.y - mult
+		--	end
+		--	if controls.pressed.confirm then
+		--		print('MY POS:', moveSpr.x, moveSpr.y)
+		--	end
+		--end
+		
+	end,
+	['inside-house'] = function()
+		local aaa = point(775, 500)
+		girlfriend.x, girlfriend.y = 400 - aaa.x, 130 - aaa.y
+		enemy.x, enemy.y = 100 - aaa.x, 450 - aaa.y
+		boyfriend.x, boyfriend.y = 770 - aaa.x, 450 - aaa.y
+		zoom = 0.6
+
+		local bg = graphics.newImage(paths.image'dave/backgrounds/inside_house')
+		bg.y = -50
+		add(bg)
+
+		local moveSpr = boyfriend
+		local dx = point()
+		onUpdate = function(dt)
+			if update then update(dt) end
+			for _,spr in pairs(sprites) do
+				spr.color = globalColor
+				--print('this spr color should be global color lol!')
+			end
+			enemy.color = globalColor
+			boyfriend.color = globalColor
+			girlfriend.color = globalColor
+			local mult = 1
+			if controls.down.gameFive then mult = 2 
+			else mult = 1 
+			end
+			if controls.down.left then 
+				moveSpr.x = moveSpr.x - mult
+				dx.x = dx.x - mult
+			elseif controls.down.right then 
+				moveSpr.x = moveSpr.x + mult
+				dx.x = dx.x + mult
+			end
+			if controls.down.down then 
+				moveSpr.y = moveSpr.y + mult
+				dx.y = dx.y + mult
+			elseif controls.down.up then 
+				moveSpr.y = moveSpr.y - mult
+				dx.y = dx.y - mult
+			end
+			if controls.pressed.confirm then
+				print('MY POS:', table.concat({dx.x, -dx.y}, ', '))
+			end
+		end
+
+		addChars()
+	end,
 }
 return {
 	enter = function(self, from, songNum, songAppend)
+		fullMode = false
 		stopthisnow = false
 		hudShader = nil
 		jsonChart = weeks:enter()
 		bambcon = nil
 		print(jsonChart)
+		zoom = nil
 
 		song = songNum
 		difficulty = songAppend
@@ -1187,15 +1364,11 @@ return {
 		else
 			stages.stage()
 		end
-		boyfriend.x, boyfriend.y = boyfriend.x - boyfriend.width/2, boyfriend.y - boyfriend.height/2
-		enemy.x, enemy.y = enemy.x - enemy.width/2, enemy.y - enemy.height/2
-		girlfriend.x, girlfriend.y = girlfriend.x - girlfriend.width/2, girlfriend.y - girlfriend.height/2
-		if zoom then
-			--print('setting the zoom toooo', zoom)
-			camZoom = zoom
-			curCamZoom = zoom
-			origZoom = zoom
-		end
+		zoom = zoom or 1
+		--print('setting the zoom toooo', zoom)
+		camZoom = zoom
+		curCamZoom = zoom
+		origZoom = zoom
 		if useeyesores then
 			eyesore = shaders:EYESORE()
 		end
@@ -1213,6 +1386,9 @@ return {
 		else
 			weeks:setupCountdown()
 		end
+		cam.x = -(girlfriendObject.sprite.width/2)-girlfriendObject.sprite.x+girlfriendObject.camPos.x
+		cam.y = -(girlfriendObject.sprite.height/2)-girlfriendObject.sprite.y+girlfriendObject.camPos.x
+		camPos:fromPoint(cam)
 	end,
 
 	initUI = function(self)
@@ -1272,7 +1448,7 @@ return {
 				completeScore = (completeScore or 0) + score
 				playedCutscene = false
 				if songIndex == 3 and curWeek == '_WEEK2' then
-					switchState(mazeCutscene)
+					switchState(layeredCutscene, false, 'mazeCutscene', 'break_phone', 24, {0.75, 1.5, 0.75, 2.67})
 				else
 					switchState(stage)
 				end
@@ -1284,6 +1460,7 @@ return {
 					local curHighscore = save.highscores[funkin.curSong:lower()] or -99999999
 					if score > curHighscore then
 						save.highscores[funkin.curSong:lower()] = score
+						save.highscoreChars[funkin.curSong:lower()] = charOverride or 'bf'
 						save:writeSave()
 					end
 				else
@@ -1291,6 +1468,7 @@ return {
 					completeScore = (completeScore or 0) + score
 					if completeScore > curHighscore then
 						save.highscores[curWeek] = completeScore
+						save.highscoreChars[funkin.curSong:lower()] = charOverride or 'bf'
 						save:writeSave()
 						completeScore = nil
 					end
@@ -1327,6 +1505,10 @@ return {
 					whatever = true
 					myBallsJustBlewUp = false
 					switchState(recurserState)
+				elseif funkin.curSong:lower() == 'bonus-song' then
+					save.save.unlocked_dave = true
+				elseif funkin.curSong:lower() == 'cheating' then
+					save.save['unlocked_bambi-3d'] = true
 				end
 				noMissMode = false
 			end

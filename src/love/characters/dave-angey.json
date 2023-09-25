@@ -58,8 +58,8 @@
 	],
 	"no_antialiasing": true,
 	"image": "dave/dave/characters/Dave_3D",
-	"position": [
-		37, 90
+	"positionOffset": [
+		0, 275
 	],
 	"healthicon": "dave-angey-pixel",
 	"flip_x": false,
@@ -70,8 +70,13 @@
 	],
 	"camera_position": [
 		0,
-		100
+		335
+	],
+	"pcamera_position": [
+		-200,
+		0
 	],
 	"sing_duration": 4,
-	"scale": 0.78
+	"scale": 0.78,
+	"playerOffset": [0,0]
 }

@@ -1,6 +1,7 @@
 
 local deadOver, bopTimer, fade, deadSong, noDeadAnims
-local confirmed = false
+local confirmed
+local tweened
 local function bopLoop()
 	if not confirmed then
 		deadBF:playAnim 'deathLoop'
@@ -11,6 +12,8 @@ return {
 	enter = function(self)
 		fade = {v = 1}
 		deathBop = false
+		confirmed = false
+		tweened = false
 		if inst then inst:setVolume(0) end
 		if voices then voices:setVolume(0) end
 		noDeadAnims = false
@@ -57,7 +60,8 @@ return {
 				end)
 			end)
 		end			
-		if deadBF.sprite:getAnimName() == 'firstDeath' and deadBF.sprite:getFrame() == 12 then
+		if deadBF.sprite:getAnimName() == 'firstDeath' and deadBF.sprite:getFrame() >= 12 and not tweened then
+			tweened = true
 			Timer.tween(2, cam, {x = -deadBF.sprite.x + 100 - deadBF.sprite.width/2, y = -deadBF.sprite.y + 100 - deadBF.sprite.height/2}, 'out-expo')
 		end
 	end,

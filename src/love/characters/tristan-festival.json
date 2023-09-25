@@ -18,7 +18,7 @@
 			],
 			"loop": false,
 			"fps": 24,
-			"anim": "singRIGHT",
+			"anim": "singLEFT",
 			"indices": [],
 			"name": "BF NOTE LEFT0"
 		},
@@ -51,7 +51,7 @@
 			],
 			"loop": false,
 			"fps": 24,
-			"anim": "singLEFT",
+			"anim": "singRIGHT",
 			"indices": [],
 			"name": "BF NOTE RIGHT0"
 		}
@@ -70,7 +70,7 @@
 		15
 	],
 	"camera_position": [
-		-500,
+		0,
 		0
 	],
 	"sing_duration": 4,

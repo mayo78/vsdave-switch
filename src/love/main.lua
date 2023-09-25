@@ -110,10 +110,23 @@ function love.load()
 		end
 	end
 	function point(x, y)
-		return {x = x or 0, y = y or 0, set = function(self, x, y) 
-			self.x = x or 0 
-			self.y = y or 0
-		end}
+		return {x = x or 0, y = y or 0, 
+			set = function(self, x, y) 
+				self.x = x or 0 
+				self.y = y or 0
+				return self
+			end,
+			fromArray = function(self, a)
+				print(a[1], a[2], 'from Array')
+				return self:set(a[1], a[2])
+			end,
+			copy = function(self)
+				return point(self.x, self.y)
+			end,
+			fromPoint = function(self, p)
+				return self:set(p.x, p.y)
+			end,
+		}
 	end
 	function string:split(sep)
 		if sep == nil then
@@ -134,27 +147,29 @@ function love.load()
 	printf = love.graphics.printf
 	function printfOutline(text, x, y, limit, extra)
 		extra = extra or {}
+		if extra.alpha and extra.alpha <= 0 then return end
 		if extra.font or extra.size then
 			fonts(extra.font or 'comic', extra.size or 24)
 		end
+		if extra.center then x = x - curFont:getWidth(text)/2 end
 		extra.color = extra.color or {1, 1, 1}
 		extra.size = extra.size or 24
 		extra.depth = extra.depth or 0.1 --non ints make a cool outline
-		if extra.alpha == 0 then return end
 		
 		--theres a bettter way to d othis right
 		love.graphics.push()
 		love.graphics.setColor(0, 0, 0, extra.alpha or 1)
-		printf(text, x - extra.depth * extra.size, y, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
-		printf(text, x - extra.depth * extra.size, y - extra.depth * extra.size, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
-		printf(text, x, y - extra.depth * extra.size, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
-		printf(text, x + extra.depth * extra.size, y - extra.depth * extra.size, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
-		printf(text, x + extra.depth * extra.size, y, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
-		printf(text, x + extra.depth * extra.size, y + extra.depth * extra.size, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
-		printf(text, x, y + extra.depth * extra.size, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
-		printf(text, x - extra.depth * extra.size, y + extra.depth * extra.size, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
+		local limit, alignment, angle = limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0
+		printf(text, x - extra.depth * extra.size, y, limit, alignment, angle)
+		printf(text, x - extra.depth * extra.size, y - extra.depth * extra.size, limit, alignment, angle)
+		printf(text, x, y - extra.depth * extra.size, limit, alignment, angle)
+		printf(text, x + extra.depth * extra.size, y - extra.depth * extra.size, limit, alignment, angle)
+		printf(text, x + extra.depth * extra.size, y, limit, alignment, angle)
+		printf(text, x + extra.depth * extra.size, y + extra.depth * extra.size, limit, alignment, angle)
+		printf(text, x, y + extra.depth * extra.size, limit, alignment, angle)
+		printf(text, x - extra.depth * extra.size, y + extra.depth * extra.size, limit, alignment, angle)
 		love.graphics.setColor(extra.color[1], extra.color[2], extra.color[3], extra.alpha or 1)
-		printf(text, x, y, limit or 9999, extra.align or 'left', extra.angle and (extra.angle * DEGREE_TO_RADIAN) or 0)
+		printf(text, x, y, limit, alignment, angle)
 		love.graphics.setColor(1, 1, 1, 1)
 		love.graphics.pop()
 	end
@@ -293,7 +308,7 @@ function love.load()
 		http = require 'socket.http'
 
 		versionTable = require 'version'
-		version = versionTable:new(0, 2, 0)
+		version = versionTable:new(1, 0, 0)
 		--local ssl = require 'ssl'
 		--local body, code, headers, status = http.request("https://raw.githubusercontent.com/mayo78/vsdave-switch/main/version.txt")
 		--print(code, status, body)
@@ -315,9 +330,8 @@ function love.load()
 		menuCredits = require 'states.menu.menuCredits'
 		menuOst = require 'states.menu.menuOst'
 		weeks = require "states.weeks"
-		videoState = require 'states.video'
 		endings = require 'states.ending'
-		mazeCutscene = require 'states.mazeCutscene'
+		layeredCutscene = require 'states.layeredCutscene'
 		charSelect = require 'states.charSelect'
 		terminalState = require 'states.terminalState'
 		recurserState = require 'states.recurserState'
@@ -404,6 +418,7 @@ function love.load()
 		--switchState(mukoTitle)
 		--switchState(terminalState)
 		--switchState(debugMenu)
+		local scale = 1280/1920
 		
 		--local testChar = character.new 'bf'
 
@@ -427,6 +442,7 @@ function love.keypressed(key)
 		switchState(debugMenu)
 	else
 		Gamestate.keypressed(key)
+		--weeks:keypressed(key)
 	end
 	if terminalState.keyboardOpened then
 		terminalState:keyInput(key)

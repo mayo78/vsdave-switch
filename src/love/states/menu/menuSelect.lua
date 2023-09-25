@@ -141,7 +141,7 @@ return {
             spr.x = fromTopLeft(1280 * 1.6).x
             spr.sizeX = 128/204
             spr.sizeY = spr.sizeX
-            spr.y = 130 + 64
+            spr.y = 130
             local targetX = fromTopLeft((1280 / 2) - 450 + ((i-1) * 160)).x
             if not beenInTitle then
                 Timer.tween(1 + (i * 0.25), spr, {x = targetX}, 'in-out-expo')
@@ -151,7 +151,7 @@ return {
             add(spr)
             table.insert(icons, spr)
         end
-        bigIcons = graphics:newAnimatedSprite('dave/title/menu_big_icons', anims, 'story mode')
+        bigIcons = graphics:newAnimatedSprite('dave/title/menu_big_icons', anims, 'story mode', false, nil, {center=true})
         bigIcons:animate('story mode', false)
         bigIcons.image:setFilter('nearest', 'nearest')
         bigIcons.y = -720/2 + 352/2
