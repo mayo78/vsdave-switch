@@ -18,7 +18,7 @@ note: this version uses a new version of love.elf, so donwload it from the new s
 # v0.1.2
 this fixed one crash oops
 
-# v0.2.0 (wip)
+# v1.0.0 (wip)
 ### Gameplay
 - Character dances are 100% on beat now
 - You can now exit the game at any time by holding start and select at the same time
@@ -27,6 +27,8 @@ this fixed one crash oops
 ### Porting
 - The console (pressing 7 is now replaced by holding all the shoulders and triggers and pressing select)
 - Five Night's at Muko's (the whole game, inside this port, do the 7 thing on kabunga im not lying)\
-- Icon bop that works differently but looks the same
-- Recursed
-- 
+- Icon bop that is kinda
+- Recursed (kinda wip)
+- More accurate stages (wip)
+- Bonus songs (wip)
+- Character select screen (wip)

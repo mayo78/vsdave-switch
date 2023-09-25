@@ -313,7 +313,6 @@ return {
 	end,
 	leave = function()
 		keyboard.active = false
-		Timer.clear()
 	end,
 	draw = function()
 		if eyeMode then

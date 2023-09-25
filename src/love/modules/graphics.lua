@@ -151,17 +151,17 @@ return {
 				anim.indices = v.indices
 			end
 			if #anim.frames == 0 then
-				print '--------------------ERROR IMBOUND!!------------------------'
-				for k,v in pairs(anim.frames) do print(k,v) end
 				print('couldnt find this guy.. '..v.name..', '..v.anim)
+			else
+				anims[v.anim] = anim
 			end
-			anims[v.anim] = anim
 		end
 		options.loopers = loopers
 		return self.newSprite(manualimage or paths.image(imagePth), xml, anims, defaultAnim, anims[defaultAnim] and anims[defaultAnim].loops or false, options), anims, xml
 	end,
 
 	newSprite = function(imageData, frameData, animData, animName, loopAnim, optionsTable)
+		optionsTable = optionsTable or {}
 		local sheet, sheetWidth, sheetHeight
 
 		local frames = {}
@@ -349,7 +349,7 @@ return {
 			getFrame = function(self)
 				return frame
 			end,
-			draw = function(self)
+			draw = function(self, centerRotate)
 				local negativeX, negativeY = self.sizeX < 0, self.sizeY < 0
 				if isAnimated then
 					if anim.indices then
@@ -393,9 +393,11 @@ return {
 						x = (framey.frameX or 0),
 						y = (framey.frameY or 0),
 					}
-					if not (optionsTable and optionsTable.smartOffsets) then
+					if optionsTable and optionsTable.center then
 						drawData.x = drawData.x + drawData.width/2
 						drawData.y = drawData.y + drawData.height/2
+						drawData.width = math.floor(drawData.width/2)
+						drawData.height = math.floor(drawData.height/2)
 					end
 				end
 				if negativeX then x = -x end
@@ -406,13 +408,13 @@ return {
 					love.graphics.draw(
 						drawData.sheet,
 						drawData.frame,
-						x - drawData.x + self.width - anim.offsetX - (self.offsetX or 0),
-						y - drawData.y + self.height - anim.offsetY - (self.offsetY or 0),
+						x - drawData.x - anim.offsetX - (self.offsetX or 0) + (optionsTable.center and drawData.width or 0),
+						y - drawData.y - anim.offsetY - (self.offsetY or 0) + (optionsTable.center and drawData.height or 0),
 						self.orientation,
 						math.abs(self.sizeX),
 						math.abs(self.sizeY),
-						drawData.width,
-						drawData.height,
+						optionsTable.center and drawData.width or 0, --WHAT THE FUCK IS WRONG WITH THE FUNKIN REWRITTEN DEV
+						optionsTable.center and drawData.height or 0,
 						self.shearX,
 						self.shearY
 					)

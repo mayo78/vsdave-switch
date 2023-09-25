@@ -24,7 +24,7 @@ function c.new (character, isPlayer)
 	o.singTimer = 0
 	o.playingAnim = false
 	local anims
-	o.sprite, anims = graphics:newAnimatedSprite(o.json.image, o.json.animations, 'idle', false, nil, {smartOffsets = true})
+	o.sprite, anims = graphics:newAnimatedSprite(o.json.image, o.json.animations, 'idle')
 	o.is3D = table.contains(threedees, character)
 	o.deadChar = o.json.deadChar
 	for i,v in ipairs(deadChars) do --im lazy
@@ -36,10 +36,17 @@ function c.new (character, isPlayer)
 
 	if o.json.no_antialiasing then o.sprite.image:setFilter('nearest', 'nearest') end
 
+	--print(character, o.json.camera_position[1] or 0, o.json.camera_position[2] or 0, o.camPos.x, o.camPos.y)
+
 	o.sprite.sizeX, o.sprite.sizeY = o.json.scale, o.json.scale
 	if o.json.flip_x then o.sprite.sizeX = o.sprite.sizeX * -1 end
 	if isPlayer then o.sprite.sizeX = o.sprite.sizeX * -1 end --no or because bf is flipped within the json so that they can be unflipped here
 
+
+	o.camPos = ((o.sprite.sizeX < 0) and o.json.pcamera_position) and point():fromArray(o.json.pcamera_position) or point():fromArray(o.json.camera_position)
+	print('AAAAAAAAAAAAAAA', character, o.json.pcamera_position and o.json.pcamera_position[2], (o.sprite.sizeX < 0), o.sprite.sizeX)
+
+	print('my cam pos', o.camPos.x, o.camPos.y)
 	--o.sprite.onAnimComplete = function(anim) 
 	--	if anim ~= 'idle' and anim ~= 'danceLeft' and anim ~= 'danceRight' then 
 	--		o:dance()
@@ -54,6 +61,9 @@ function c.new (character, isPlayer)
 	function o:playAnim(animName, loopAnim)
 		self.sprite.color2 = nil
 		if self.skipOtherAnims then return end
+		if animName:startsWith 'singLEFT' and (o.sprite.sizeX < 0) then animName = 'singRIGHT'..animName:sub(9)
+		elseif animName:startsWith 'singRIGHT' and (o.sprite.sizeX < 0) then animName = 'singLEFT'..animName:sub(10)
+		end
 		lastAnim = animName
 		if not self:animExists(animName) then
 			print('Animation not found: '..tostring(animName), character, timerID)
@@ -87,14 +97,14 @@ function c.new (character, isPlayer)
 	function o:animExists(anim)
 		return anims[anim]
 	end	
-	if anims['danceLeft'] then 
+	if anims.danceLeft then 
 		o.hasDanceAnims = true
 	end
 	local elapsedtime = 0
 	local canFloat = true
 	local positionOffset = ((o.sprite.sizeX < 0) and o.json.playerOffset or o.json.positionOffset) or {0,0}
-	o.sprite.x = o.sprite.x + positionOffset[1]
-	o.sprite.y = o.sprite.y + positionOffset[2]
+	o.sprite.offsetX = positionOffset[1]
+	o.sprite.offsetY = positionOffset[2]
 	function o:update(dt)
 		elapsedtime = elapsedtime + dt
 		self.sprite:update(dt)
@@ -103,13 +113,13 @@ function c.new (character, isPlayer)
 		end
 		--welcome to 3d (character) sinning avenue
 		if curStep and (self.curCharacter:lower() == 'recurser' or self.curCharacter:lower() == 'expunged') then
-			local tox = (-100 - math.sin((curStep / 9.5) * 2) * 30 * 5) + positionOffset[1]
-			local toy = (-330 - math.cos((curStep / 9.5)) * 100) + positionOffset[2]
+			local tox = (-100 - math.sin((curStep / 9.5) * 2) * 30 * 5)
+			local toy = (-330 - math.cos((curStep / 9.5)) * 100)
 			if self.curCharacter:lower() == 'recurser' then
 				toy = 100 - math.sin((elapsedtime) * 2) * 300;
 				tox = -400 - math.cos((elapsedtime)) * 200;
-				self.sprite.x = self.sprite.x + (tox - self.sprite.x) + positionOffset[1]
-				self.sprite.y = self.sprite.y + (toy - self.sprite.y) + positionOffset[2]
+				self.sprite.x = self.sprite.x + (tox - self.sprite.x)
+				self.sprite.y = self.sprite.y + (toy - self.sprite.y)
 			end
 			if self.is3D and canFloat then
 				if self.curCharacter:lower() == 'expunged' then

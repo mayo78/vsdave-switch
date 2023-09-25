@@ -113,9 +113,9 @@
 	],
 	"no_antialiasing": false,
 	"image": "dave/dave/characters/dave_sheet",
-	"position": [
+	"positionOffset": [
 		0,
-		-170
+		170
 	],
 	"healthicon": "dave",
 	"flip_x": false,
@@ -126,8 +126,13 @@
 	],
 	"camera_position": [
 		50,
-		25
+		200
+	],
+	"pcamera_position": [
+		0,
+		200
 	],
 	"sing_duration": 4,
-	"scale": 1
+	"scale": 1,
+	"playerOffset": [390, 197]
 }

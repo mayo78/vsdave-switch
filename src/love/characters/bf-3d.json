@@ -58,9 +58,9 @@
 	],
 	"no_antialiasing": true,
 	"image": "dave/characters/3d_bf",
-	"position": [
-		-100,
-		90
+	"positionOffset": [
+		0,
+		309
 	],
 	"healthicon": "bf",
 	"flip_x": true,
@@ -70,7 +70,7 @@
 		209
 	],
 	"camera_position": [
-		10,
+		-25,
 		130
 	],
 	"sing_duration": 4,

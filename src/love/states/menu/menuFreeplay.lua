@@ -227,7 +227,7 @@ return {
 								for _,week in pairs(cat) do
 									for _,song in ipairs(week.songs) do
 										--song[4] = nil
-										if not song[4] or save.save[song[4]] then
+										if not song[4] or save.save[song[4]] or true then
 											song[3] = _G.colors[song[3] or week.color] or (song[3] or week.color)
 											table.insert(songs, song)
 											local icon = graphics.newSprite(

@@ -44,7 +44,6 @@ local function changeChar(how)
 	updatePortrait()
 end
 
---notused but could be!
 local function changeForm(how)
 	formIndex = formIndex + how
 	if formIndex > #characters[charIndex].forms then formIndex = 1
@@ -68,7 +67,7 @@ return {
 				})
 			end
 		end
-		portrait = graphics:newAnimatedSprite('switch/portraits', anims, anims[1].anim)
+		portrait = graphics:newAnimatedSprite('switch/portraits', anims, anims[1].anim, false, nil, {center=true})
 		changeChar(0)
 	end,
 	leave = function()

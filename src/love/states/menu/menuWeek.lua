@@ -113,7 +113,7 @@ return {
 			charOverride = nil
 			scoreMultiplier = {1, 1, 1, 1}
 			if curWeek == '_WEEK1' then
-				switchState(videoState, 'daveCutscene', 30)
+				switchState(layeredCutscene, true, 'daveCutscene', 'cutscenes/daveCutscene', 30, {scale, scale, scale, scale, scale, scale}, {[4] = point(626.3)}, true)
 			else
 				switchState(stage)
 			end
