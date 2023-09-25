@@ -25,6 +25,8 @@ screenAngle = 0
 screenRadian = 0
 
 local printBuffer = {}
+
+errorData = ''
 --debugMode = true
 function love.load()
 	--https://love2d.org/forums/viewtopic.php?t=77272
@@ -314,6 +316,7 @@ function love.load()
 		--print(code, status, body)
 		onlineVersion = versionTable:fromString((http.request 'https://www.mayo78.com/vsdaveswitch-version.txt' or '-99.-99.-99'):gsub('v', ''))
 
+		floatingKeyboard = require 'floatingkeyboard'
 
 		hitbox = require 'states.muko.hitbox'
 		-- Load states
@@ -443,9 +446,6 @@ function love.keypressed(key)
 	else
 		Gamestate.keypressed(key)
 		--weeks:keypressed(key)
-	end
-	if terminalState.keyboardOpened then
-		terminalState:keyInput(key)
 	end
 end
 
@@ -662,7 +662,7 @@ function love.errorhandler(msg)
 A copy of this crash log has been saved in your NSO folder!
 Please report this error on www.github.com/mayo78/vsdave-switch
 Press any button to close the game
-	]]
+	]]..errorData
 
 	return function()
 		love.event.pump()

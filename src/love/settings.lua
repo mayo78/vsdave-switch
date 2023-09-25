@@ -51,14 +51,14 @@ function settings:reset()
 			if type(v) == 'function' or i == 'metadata' then
 				clean[i] = nil
 				v = nil
-				print('getting rid of', i)
-			else
-				print('keeping', i)
+				--print('getting rid of', i)
+			--else
+			--	print('keeping', i)
 			end
 		end
 		local raw = json.encode(clean)
 		love.filesystem.write('settings.json', raw)
-		print ('saved this', raw)
+		--print ('saved this', raw)
 		return raw
 	end
 	--settings:save()
