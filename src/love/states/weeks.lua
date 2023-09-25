@@ -768,6 +768,7 @@ return {
 					end
 					--noteREAL.y = note[1] + coolY * 0.6 * speed --actually stupid
 					--fuck this ill fix it later (sustains sometimes play the on animation for no reason and theres no trace of it doing that AGHJKDKLSJHDFJKLSGUHDFIKHDFJKLHDJK:FL)
+					-- ^^^^^ this has been fixed since the first version lol
 					if note[3] > 0 then
 						for susNote = 71 / speed, note[3], 71 / speed do
 							local anims = {
@@ -1575,7 +1576,7 @@ return {
 							end
 							if boyfriendNoteData[noteMissed].textNote then
 								--recursed miss
-								print 'recursed miss!'
+								--print 'recursed miss!'
 								if not isRecursed then
 									recursedMissCount = recursedMissCount + 1
 									local cover = graphics.newImage(paths.image'dave/recursed/recursedX')

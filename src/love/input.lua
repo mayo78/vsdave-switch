@@ -26,7 +26,9 @@ return function()
 		a = {"button:b", "key:a"}, --lol!
 		b = {"button:a", "key:b"},
 	} do
-		controlList[i] = v
+		if not controlList[i] then --if you know what you are doing then you can remap stuff like directions if you wanted to for some reason
+			controlList[i] = v
+		end
 	end
 	--print('FUCK', controlList.gameFive, controlList.gameFive[3])
 	for _,control in pairs(bindableKeys) do controlList[control] = {control} end

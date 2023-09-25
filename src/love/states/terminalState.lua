@@ -1,9 +1,5 @@
 local keyBuffer, curText
 local keySounds
-local function setKeyboard(what)
-	keyBuffer = ''
-	love.keyboard.setTextInput(what)
-end
 local commands = {}
 local function makeCommand(command, help, func, showInHelp, oneCommand)
 	if showInHelp == nil then showInHelp = true end
@@ -33,7 +29,7 @@ local function loadSong(song)
 end
 local glitchSpr, expungedMode, expungedEye
 local function expungedReignStarts()
-	setKeyboard(false)
+	keyboard.active = false
 	expungedMode = true
 	local stuff = {
 		'TAKING OVER....',
@@ -219,7 +215,7 @@ makeCommand('help', getAwesome('term_help_ins'), function(...)
 	--DIEDIEDEID(false)
 	local awesomeText = ''
 	for k,v in pairs(commands) do
-		if v.showInHelp then
+		if v.showInHelp and v.help then
 			awesomeText = awesomeText..(k..' - '..v.help..'\n')
 		end
 	end
@@ -251,9 +247,51 @@ makeCommand('secret mod leak', getAwesome('term_leak_ins'), function(...)
 	--print('entering secret leak!')
 end, false, true)
 
-
+local keyboard
 return {
 	enter = function(self)
+		keyboard = floatingKeyboard()
+		keyboard.x = 25
+		keyboard.y = 720
+		keyboard.onKey = function(keything, shift)
+			local key = shift and keything.alt or keything.name
+			if expungedMode or eyeMode then return end
+			if key == 'enter' then
+				curText = curText..'\n>'..keyBuffer
+				if #keyBuffer > 0 then
+					if keyBuffer == 'secret mod leak' then
+						commands['secret mod leak'].func({})
+						return
+					end
+					local split = keyBuffer:split' '
+					if commands[split[1]] then
+						local new = {}
+						for k,v in pairs(split) do if k ~= 1 then table.insert(new, v) end end
+						commands[split[1]].func(unpack(new))
+					else
+						curText = curText..'\n>Command not found: '..split[1]
+					end
+					keyBuffer = ''
+				else
+					updateText ''
+				end
+				keyboard.active = false
+				Timer.tween(0.25, keyboard, {y = 720}, 'in-expo')
+			elseif key == '<==' then
+				keySounds.back:stop()
+				keySounds.back:play()
+				keyBuffer = keyBuffer:sub(1, #keyBuffer - 1)
+			elseif key == 'space' or #key == 1 then
+				keyBuffer = keyBuffer..key
+				if key == ' ' then
+					keySounds.space:stop()
+					keySounds.space:play()
+				else
+					keySounds.type:stop()
+					keySounds.type:play()
+				end
+			end
+		end
 		expungedMode = false
 		eyeMode = false
 		glitchSpr = graphics:newAnimatedSprite('dave/glitch', {
@@ -274,7 +312,7 @@ return {
 		}
 	end,
 	leave = function()
-		setKeyboard(false)
+		keyboard.active = false
 		Timer.clear()
 	end,
 	draw = function()
@@ -318,49 +356,16 @@ return {
 		end
 		local printer = curText..'\n>>'..keyBuffer
 		love.graphics.printf(printer, 0, y, 1280)
+		keyboard:draw()
 		love.graphics.pop()
 	end,
 	update = function(self, dt)
 		if expungedMode or eyeMode then
 			glitchSpr:update(dt)
+		elseif controls.pressed.confirm and not keyboard.active then
+			keyboard.active = true
+			Timer.tween(0.25, keyboard, {y = 300}, 'out-expo')
 		end
+		keyboard:update()
 	end,
-	keyInput = function(self, key)
-		if expungedMode or eyeMode then return end
-		if key == 'return' then
-			curText = curText..'\n>'..keyBuffer
-			if #keyBuffer > 0 then
-				if keyBuffer == 'secret mod leak' then
-					commands['secret mod leak'].func({})
-					return
-				end
-				local split = keyBuffer:split' '
-				if commands[split[1]] then
-					local new = {}
-					for k,v in pairs(split) do if k ~= 1 then table.insert(new, v) end end
-					commands[split[1]].func(unpack(new))
-				else
-					curText = curText..'\n>Command not found: '..split[1]
-				end
-				keyBuffer = ''
-			else
-				updateText ''
-			end
-		elseif key == 'backspace' then
-			keySounds.back:stop()
-			keySounds.back:play()
-			keyBuffer = keyBuffer:sub(1, #keyBuffer - 1)
-		elseif key == 'space' or #key == 1 then
-			if key == 'space' then key = ' ' end
-			if love.keyboard.isDown 'lshift' and #key == 1 then key = key:upper() end
-			keyBuffer = keyBuffer..key
-			if key == ' ' then
-				keySounds.space:stop()
-				keySounds.space:play()
-			else
-				keySounds.type:stop()
-				keySounds.type:play()
-			end
-		end
-	end
 }
