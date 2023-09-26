@@ -181,7 +181,7 @@ return {
 			{anim = 'idle', name = 'speech bubble normal0', loops = true, fps = 12},
 			{anim = 'loud', name = 'AHH speech bubble'},
 			{anim = 'loudOpen', name = 'speech bubble loud open'}
-		}, 'open')
+		}, 'open', false, nil, {center=true})
 		scaredDave = graphics:newAnimatedSprite('dave/dialogue/dave/dave_scared', {
 			{anim = 'scared', name = 'post insanity'}
 		}, 'scared')

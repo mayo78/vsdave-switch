@@ -204,7 +204,7 @@ return {
 				switchState(menuSelect)
 			elseif controls.pressed.confirm and not noCat then
 				noCat = true
-				audio.playSound(confirmSound)
+				love.audio.play(confirmSound)
 				Timer.after(0.1, function()
 					cats[catIndex].alpha = 1
 					Timer.tween(1, cats[catIndex], {alpha = 0, y = -720}, 'out-expo', function()

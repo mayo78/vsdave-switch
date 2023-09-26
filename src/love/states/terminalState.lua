@@ -367,12 +367,17 @@ return {
 		love.graphics.pop()
 	end,
 	update = function(self, dt)
+		if drawTransition then return end
 		if expungedMode or eyeMode then
 			glitchSpr:update(dt)
 		elseif controls.pressed.confirm and not keyboard.active then
 			keyboard.active = true
 			Timer.tween(0.25, keyboard, {y = 300}, 'out-expo')
 		end
+
+		--if controls.pressed.gameFive then
+		--	keyBuffer = 'admin grant recurser.dat'
+		--end
 		keyboard:update()
 	end,
 }

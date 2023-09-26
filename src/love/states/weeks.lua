@@ -118,27 +118,32 @@ local modchart, localFunny
 
 local NOTE_WIDTH, NOTE_HEIGHT = 165, 160 --general widths, not exact but close enough!
 
+local isFiveNights
+
 local function addCharToList(type, char)
 	if type == 1 then
 		print('my dad')
 		if not dads[char] then 
-			dads[char] = character.new(char)
+			dads[char] = character:new(char)
 			dads[char].onIdle = function()
 				if not mustHitSection then camOffset = point() end
 			end
 		end
+		return dads[char]
 	elseif type == 2 then
 		if not gfs[char] then 
-			gfs[char] = character.new(char) 
+			gfs[char] = character:new(char) 
 			print('added', char, 'to gf')
 		end
+		return gfs[char]
 	else
 		if not boyfriends[char] then 
-			boyfriends[char] = character.new(char, true) 
+			boyfriends[char] = character:new(char, true) 
 			boyfriends[char].onIdle = function()
 				if mustHitSection then camOffset = point() end
 			end
 		end
+		return boyfriends[char]
 	end
 end
 local function changeChar(type, char)
@@ -350,6 +355,7 @@ return {
 		self.jsonChart = jsonChart
 		randomSpeed = settings.modcharts and (curSong:lower() == 'unfairness' or curSong:lower() == 'exploitation')
 		--eventChart = paths.event(curSong)
+		isFiveNights = curSong:lower() == 'five-nights'
 
 		local healths = {
 			exploitation = 'ui/HELLthBar',
@@ -369,8 +375,7 @@ return {
 		if greetingsCutscene then jsonChart.player2 = 'dave-festival'
 		elseif weirdPolygonized then jsonChart.player2 = 'dave-annoyed'
 		end
-		addCharToList(1, jsonChart.player2 or 'bf')
-		enemyObject = dads[jsonChart.player2 or 'bf']
+		enemyObject = addCharToList(1, jsonChart.player2 or 'bf')
 		enemy = enemyObject.sprite
 
 		local bf = jsonChart.player1 or 'bf'
@@ -383,15 +388,14 @@ return {
 				gf = 'gf-3d'
 			end
 		end
+		if isFiveNights then nogf = true end
 
-		addCharToList(2, gf)
-		girlfriendObject = gfs[gf]
+		girlfriendObject = addCharToList(2, gf)
 		girlfriend = girlfriendObject.sprite
 		if nogf then girlfriend.dontdraw = true end
 
 		--bf = 'exclusive-bf'
-		addCharToList(0, bf)
-		boyfriendObject = boyfriends[bf]
+		boyfriendObject = addCharToList(0, bf)
 		boyfriend = boyfriendObject.sprite
 		--boyfriend.debug = true
 		if boyfriendObject.deadChar then 
@@ -1053,13 +1057,13 @@ return {
 
 		countingDown = true
 		countdownFade[1] = 0
-		audio.playSound(sounds.countdown.three)
+		love.audio.play(sounds.countdown.three)
 		Timer.after(
 			(60 / bpm),
 			function()
 				mustHitSection = not mustHitSection
 				countdownFade[1] = 1
-				audio.playSound(sounds.countdown.two)
+				love.audio.play(sounds.countdown.two)
 				Timer.tween(
 					(60 / bpm),
 					countdownFade,
@@ -1069,7 +1073,7 @@ return {
 						mustHitSection = not mustHitSection
 						countdown:setImage(setImg)
 						countdownFade[1] = 1
-						audio.playSound(sounds.countdown.one)
+						love.audio.play(sounds.countdown.one)
 						Timer.tween(
 							(60 / bpm),
 							countdownFade,
@@ -1079,7 +1083,7 @@ return {
 								mustHitSection = not mustHitSection
 								countdown:setImage(goImg)
 								countdownFade[1] = 1
-								audio.playSound(sounds.countdown.go)
+								love.audio.play(sounds.countdown.go)
 								Timer.tween(
 									(60 / bpm),
 									countdownFade,
@@ -1102,7 +1106,7 @@ return {
 													Timer.after(0.5, function() Timer.tween(0.5, songHeader, {x = songHeader.x - (songHeader.width * songHeader.sizeX)}, 'in-back') end)
 												end)
 											end
-											if table.contains({'polygonized', 'interdimensional', 'five-nights'}, curSong:lower()) then
+											if table.contains({'polygonized', 'interdimensional', 'five-nights'}, curSong:lower()) and not weirdPolygonized then
 												local img = paths.image((curSong:lower() == 'five-nights') and 'dave/ui/doorWarning' or 'dave/ui/shapeNoteWarning')
 												local hi = graphics.newImage(img)
 												hi.x = hi.width - ((1280/2)/0.7)
@@ -1289,9 +1293,9 @@ return {
 			openSubstate(pause, true)
 		end
 
-		if not switching and controls.down['button:leftshoulder'] and controls.down['axis:triggerleft+'] and 
+		if not switching and (controls.down['button:leftshoulder'] and controls.down['axis:triggerleft+'] and 
 			controls.down['axis:triggerright+'] and controls.down['button:rightshoulder'] and 
-			controls.down.select then
+			controls.down.select or love.keyboard.isDown '7') then
 			
 				local cheater = {
 					supernovae = 'cheating',
@@ -1566,6 +1570,10 @@ return {
 					else
 						enemyArrow:animate("confirm", false)
 					end
+
+					if isFiveNights and not enemyNoteData[j].isSustain then
+						ratingPopup((love.math.random(1,5) == 1) and 'good' or 'sick', true)
+					end
 					
 					local speed = speed
 					local healthToLower = 0.5
@@ -1671,7 +1679,9 @@ return {
 						--	ratingAnim = "shit"
 						--	--print('reqwarffding NOTHGIN YOU ARE SHIT', i)
 						--end
-						ratingPopup(ratingAnim, boyfriendNoteData[i].is3D)
+						if not isFiveNights then
+							ratingPopup(ratingAnim, boyfriendNoteData[i].is3D)
+						end
 					
 
 						if shapeArrows and strumsAreShapes then
@@ -1744,11 +1754,11 @@ return {
 				notMissed[noteNum] = false
 				if not noMissMode then
 					if curSong == 'overdrive' then
-						audio.playSound(paths.sound 'bad_disc')
+						love.audio.play(paths.sound 'bad_disc')
 					elseif curSong == 'vs-dave-rap' or curSong == 'vs-dave-rap-two' then
-						audio.playSound(paths.sound 'deathbell')
+						love.audio.play(paths.sound 'deathbell')
 					else
-						audio.playSound(sounds.miss[love.math.random(3)])
+						love.audio.play(sounds.miss[love.math.random(3)])
 					end
 					--if combo >= 5 then girlfriendObject:playAnim('sad', true) end
 					if noteMissed and boyfriendNoteData[noteMissed] and boyfriendNotes[noteMissed] then
@@ -2001,6 +2011,7 @@ return {
 
 		if curSong:lower() ~= 'exploitation' then
 			local hw = healthBarOverlay.width*healthBarOverlay.sizeX
+			if isFiveNights then hw = -hw end
 			local hh = healthBarOverlay.height*healthBarOverlay.sizeY
 			graphics.setColor(boyfriendObject.healthbarColors[1], boyfriendObject.healthbarColors[2], boyfriendObject.healthbarColors[3], hudAlpha[1])
 			love.graphics.rectangle("fill", healthBarOverlay.x + 5 - hw/2, healthBarOverlay.y - healthBarOverlay.height/2 + 2, hw - 9, hh - (8 * healthBarOverlay.sizeY) + 0.1)
@@ -2009,6 +2020,22 @@ return {
 			graphics.setColor(1, 1, 1, hudAlpha[1])
 		end
 		healthBarOverlay:draw()
+
+		graphics.setColor(1, 1, 1, hudAlpha[1])
+
+		if isFiveNights then
+			love.graphics.push()
+			love.graphics.scale(-1, 1)
+		end
+
+		boyfriendIcon:draw()
+		if not enemyIcon.dontdraw then enemyIcon:draw() end
+		if bambcon and not bambcon.dontdraw then bambcon:draw() end
+
+		
+		if isFiveNights then
+			love.graphics.pop()
+		end
 
 		local tw = timeBarOverlay.width*timeBarOverlay.sizeX
 		local th = timeBarOverlay.height*timeBarOverlay.sizeY
@@ -2024,14 +2051,6 @@ return {
 			local hi = formatTime(inst:getDuration"seconds"-(musicTime/1000)):gsub(' ', '')
 			printfOutline(hi, 0, timeBarOverlay.y - 32, nil, {size = 48, depth = 0.05, alpha = hudAlpha[1] * timebarAlpha[1], center = true})
 		end
-		
-		--love.graphics.print("INFO:"..inst:getDuration"seconds"..", "..inst:tell"seconds", 0, 0)
-
-		graphics.setColor(1, 1, 1, hudAlpha[1])
-
-		boyfriendIcon:draw()
-		if not enemyIcon.dontdraw then enemyIcon:draw() end
-		if bambcon and not bambcon.dontdraw then bambcon:draw() end
 
 		accuracy = math.floor((notesHit/totalNotes)*1000)/1000
 		--print(totalNotes, notesHit)

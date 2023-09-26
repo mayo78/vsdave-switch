@@ -28,7 +28,7 @@ end
 
 return {
 	enter = function(self, previous)
-		bf = character.new ('bf', true)
+		bf = character ('bf', true)
 		bf.skipDance = true
 	end,
 

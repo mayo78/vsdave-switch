@@ -1,3 +1,4 @@
+--a bit messy and i think there can only be one of each shader at a time but there never needs to be more
 local s = {}
 local shaders = {} --not the module btw
 local GLITCH_FRAG = [[

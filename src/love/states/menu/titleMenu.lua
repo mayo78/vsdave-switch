@@ -160,7 +160,7 @@ return {
 				else
 					finish()
 					canMove = false
-					audio.playSound(confirmSound)
+					love.audio.play(confirmSound)
 
 					titleEnter:animate("pressed", false)
 

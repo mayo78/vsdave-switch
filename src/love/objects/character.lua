@@ -139,5 +139,4 @@ function c.new (character, isPlayer)
 	o.sprite.color = {255,255,255,alpha=1}
 	return o
 end
-c.threedees = threedees
 return c

@@ -56,7 +56,7 @@ local function change(how)
     end
     for i,icon in pairs(icons) do icon:animate((i == curSelected) and 'select' or 'idle', true) end
     bigIcons:animate(optionShit[curSelected], false)
-    if how ~= 0 then audio.playSound(selectSound) end
+    if how ~= 0 then love.audio.play(selectSound) end
 end
 
 beenInTitle = false
@@ -172,7 +172,7 @@ return {
         --crashmygame:now()
 		if canMove then
             --if input:pressed("back") then
-			--	audio.playSound(selectSound)
+			--	love.audio.play(selectSound)
 
 			--	switchState(titleMenu)
 			--end
@@ -182,7 +182,7 @@ return {
                 change(1)
             end
             if controls.pressed.confirm then
-                audio.playSound(confirmSound)
+                love.audio.play(confirmSound)
                 canMove = false
                 flickerLoop()
                 Timer.after(1.5, function()

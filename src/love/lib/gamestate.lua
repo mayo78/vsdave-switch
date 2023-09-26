@@ -75,24 +75,22 @@ function switchState(...)
 			initState = false
 			transition.x = 1280/2
 			Timer.tween(0.5, transition, {x = 1280 + 2164/2}, nil, {after = onComplete, during = snapTransition})
-			status.setLoading(true)
 			GS.switch(...)
-			status.setLoading(false)
 			return
 		end
 		local hi = {...}
 		transition.x = -2146 + 2164/2
 		Timer.tween(0.5, transition, {x = 1280/2}, nil, {after = function()
 			transition.x = 1280/2
+			isLoading = true
 			Timer.after(0.000001, function() --make sure the screen is entirely covered
+				isLoading = false
 				paths.clearing = true --im going to do it
-				status.setLoading(true)
 				paths.clearCache()
 				shaders:clear()
 				if substate then closeSubstate() end
 				GS.switch(unpack(hi)) 
 				Timer.tween(0.5, transition, {x = 1280 + 2164/2}, nil, {after = onComplete, during = snapTransition})
-				status.setLoading(false)
 				paths.clearing = false
 			end)
 		end, during = snapTransition})

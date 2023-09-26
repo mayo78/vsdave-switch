@@ -27,6 +27,8 @@ screenRadian = 0
 local printBuffer = {}
 
 errorData = ''
+
+isLoading = true
 --debugMode = true
 function love.load()
 	--https://love2d.org/forums/viewtopic.php?t=77272
@@ -280,9 +282,8 @@ function love.load()
 		end
 	end
 
+	loadFont = love.graphics.newFont(64)
 	-- Load modules
-	status = require "modules.status"
-	audio = require "modules.audio"
 	Timer.after(0.05, function() --let the loading text draw :)
 		funkin = require 'funkin'
 		
@@ -372,21 +373,12 @@ function love.load()
 		lovesize.set(1280, 720)
 
 		-- Variables
-		local fuckyou = require 'fonts'
-		fonts = fuckyou[1]
-		font = fuckyou[2]
+		fonts = require 'fonts'
+		
+		font = fonts('comic', 24)
 		--for k,v in ipairs(fonts.comic) do print(k, v) end
 		--font = fonts.comic[24]
 
-
-		weekNum = 1
-		songDifficulty = 2
-
-		spriteTimers = {
-			0, -- Girlfriend
-			0, -- Enemy
-			0 -- Boyfriend
-		}
 
 		storyMode = false
 		countingDown = false
@@ -411,39 +403,38 @@ function love.load()
 
 		--print(tostring(version), tostring(onlineVersion))
 
-		if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
-			switchState(versionState)
-		else
-			print(save.save.seenWarning)
-			switchState(settings.language and (save.save.seenWarning and titleMenu or flashingState) or languageState)
-		end
+		--if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
+		--	switchState(versionState)
+		--else
+		--	print(save.save.seenWarning)
+		--	switchState(settings.language and (save.save.seenWarning and titleMenu or flashingState) or languageState)
+		--end
 
 		--switchState(charSelect)
 		--switchState(mukoTitle)
 		--switchState(terminalState)
 		--switchState(debugMenu)
+		switchState(menuFreeplay)
 		local scale = 1280/1920
 		
-		--local testChar = character.new 'bf'
-
-		finishedLoading = true
+		--local testChar = character 'bf'
+		
+		isLoading = false
 		--print(font)
 	end)
 end
 
 function love.resize(width, height)
-	if not finishedLoading then return end
+	if isLoading then return end
 	lovesize.resize(width, height)
 end
 
 function love.keypressed(key)
-	if not finishedLoading then return end
+	if isLoading then return end
 	if key == "6" then
 		love.filesystem.createDirectory("screenshots")
 
 		love.graphics.captureScreenshot("screenshots/" .. os.time() .. ".png")
-	elseif key == "7" then
-		switchState(debugMenu)
 	else
 		Gamestate.keypressed(key)
 		--weeks:keypressed(key)
@@ -451,7 +442,7 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
-	if finishedLoading then
+	if not isLoading then
 		Gamestate.mousepressed(x, y, button, istouch, presses)
 	end
 end
@@ -462,7 +453,7 @@ function love.update(dt)
 	end
 	if gamePaused then return end
 	dt = math.min(dt, 1 / 30)
-	if not finishedLoading then
+	if isLoading then
 		Timer.update(dt)
 		return
 	end
@@ -470,18 +461,7 @@ function love.update(dt)
 	input:update()
 	if substate then substate:update(dt) end --so if the state is closed the main state also updates!
 	if not statePaused then
-		if status.getNoResize() then
-			Gamestate.update(dt)
-		else
-			--print(font)
-			love.graphics.setFont(font)
-			graphics.screenBase(lovesize.getWidth(), lovesize.getHeight())
-			graphics.setColor(1, 1, 1) -- Fade effect on
-			Gamestate.update(dt)
-			love.graphics.setColor(1, 1, 1) -- Fade effect off
-			graphics.screenBase(love.graphics.getWidth(), love.graphics.getHeight())
-			love.graphics.setFont(font)
-		end
+		Gamestate.update(dt)
 		Timer.update(dt)
 	end
 	if afterSubstateLeft then
@@ -501,7 +481,14 @@ function love.update(dt)
 	end
 end
 local function drawWhatever()
-	if finishedLoading then
+end
+function love.draw()
+	
+	if not isLoading then
+		love.graphics.setCanvas(shaderCanvas)
+		love.graphics.clear()
+		graphics.screenBase(lovesize.getWidth(), lovesize.getHeight())
+		lovesize.begin()
 		love.graphics.setFont(font)
 		graphics.setColor(1, 1, 1) -- Fade effect on
 		Gamestate.draw()
@@ -523,45 +510,33 @@ local function drawWhatever()
 		fonts('comic', 16)
 		love.graphics.print(" FPS: ".. love.timer.getFPS()) --..'\n ≈RAM:'..math.floor((love.graphics.getStats().texturememory + collectgarbage 'count')/1048576) .. 'MB', 0, 0, 9999)
 		fonts('comic', 24)
-	end
-	if not finishedLoading then
-		love.graphics.setColor(1, 1, 1)
-		love.graphics.scale(5, 5)
-		love.graphics.print("Loading...", 0, 0)
-	end
-	--if settings.showDebug then
-	--	love.graphics.print(status.getDebugStr(settings.showDebug), 5, 5, nil, 0.5, 0.5)
-	--end
-end
-function love.draw()
-	love.graphics.setCanvas(shaderCanvas)
-	love.graphics.clear()
-	if status.getNoResize() then
-		drawWhatever()
-	else
-		graphics.screenBase(lovesize.getWidth(), lovesize.getHeight())
-		lovesize.begin()
-		drawWhatever()
+		
 		lovesize.finish()
-	end
-	if not finishedLoading then return end
-	love.graphics.setCanvas()
-	if globalShader then
-		love.graphics.setShader(globalShader)
-	end
-	if screenRadian == 0 then
-		love.graphics.draw(shaderCanvas, 0, 0, 0)
-	else
-		love.graphics.draw(shaderCanvas, 1280/2, 720/2, screenRadian, 1, 1, 1280/2, 720/2)
-	end
-	graphics.screenBase(love.graphics.getWidth(), love.graphics.getHeight())
-	love.graphics.setShader()
-	if finishedLoading then
+		love.graphics.setCanvas()
+		if globalShader then
+			love.graphics.setShader(globalShader)
+		end
+		if screenRadian == 0 then
+			love.graphics.draw(shaderCanvas, 0, 0, 0)
+		else
+			love.graphics.draw(shaderCanvas, 1280/2, 720/2, screenRadian, 1, 1, 1280/2, 720/2)
+		end
+		graphics.screenBase(love.graphics.getWidth(), love.graphics.getHeight())
+		love.graphics.setShader()
+
+		
 		fonts('comic', 16)
 		for i,v in pairs(printBuffer) do
 			love.graphics.print(v.print, 0, (i + 1) * 18)
 		end
+	else
+		love.graphics.setColor(1, 1, 1)
+		love.graphics.setFont(loadFont)
+		love.graphics.print("Loading...", (1280/2) - (loadFont:getWidth 'Loading...'/2), (720/2) - loadFont:getHeight())
 	end
+	--if settings.showDebug then
+	--	love.graphics.print(status.getDebugStr(settings.showDebug), 5, 5, nil, 0.5, 0.5)
+	--end
 end
 
 local utf8 = require("utf8")

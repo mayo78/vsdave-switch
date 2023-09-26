@@ -492,14 +492,14 @@ local stages = {
 				end)
 			end,
 			splitathon = function()
-				local bambi = character.new 'bambi-splitathon'
+				local bambi = character 'bambi-splitathon'
 				bambi.sprite.x = enemy.x - 450
 				bambi.sprite.y = enemy.y + 25
 				bambi.skipDance = true
 				bambi.sprite.dontdraw = true
 				bambi.sprite.dontupdate = true
 				add(bambi.sprite)
-				local dave = character.new 'dave-splitathon'
+				local dave = character 'dave-splitathon'
 				dave.sprite.x = enemy.x - 450
 				dave.sprite.y = enemy.y + 25
 				dave.skipDance = true
@@ -590,9 +590,10 @@ local stages = {
 		--end)
 	end,
 	festival = function()
-		girlfriend.x, girlfriend.y = -25, -150
-		enemy.x, enemy.y = -380, 100
-		boyfriend.x, boyfriend.y = 250, 70
+		local aaa = point(750, 600)
+		girlfriend.x, girlfriend.y = 400 - aaa.x, 130 - aaa.y
+		enemy.x, enemy.y = 100 - aaa.x, 450 - aaa.y
+		boyfriend.x, boyfriend.y = 770 - aaa.x, 450 - aaa.y
 		
 		local sprs = {}
 		local add = add
@@ -924,9 +925,10 @@ local stages = {
 	end,
 	backyard = function()
 		zoom = 0.7
-		girlfriend.x, girlfriend.y = -355, -350
-		enemy.x, enemy.y = -1070, -180
-		boyfriend.x, boyfriend.y = -300, -70
+		local aaa = point(900, 900)
+		girlfriend.x, girlfriend.y = 400 - aaa.x, 130 - aaa.y
+		enemy.x, enemy.y = -200 - aaa.x, 250 - aaa.y
+		boyfriend.x, boyfriend.y = 770 - aaa.x, 450 - aaa.y
 
 		
 		local sunrise, sky
@@ -1165,7 +1167,7 @@ local stages = {
 
 		girlfriend.x, girlfriend.y = 30, -90
 		enemy.x, enemy.y = -380, -110
-		boyfriend.x, boyfriend.y = 260, 100
+		boyfriend.x, boyfriend.y = 400, 200
 
 		addChars()
 
@@ -1398,6 +1400,7 @@ return {
 	end,
 
 	update = function(self, dt)
+		if drawTransition then return end
 		--if song == 1 and musicThres ~= oldMusicThres and math.fmod(absMusicTime + 500, 480000 / bpm) < 100 then
 		--	weeks:safeAnimate(boyfriend, "hey", false, 3)
 		--end

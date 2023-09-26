@@ -32,3 +32,5 @@ this fixed one crash oops
 - More accurate stages (wip)
 - Bonus songs (wip)
 - Character select screen (wip)
+## Other
+- You can exit the error screen if it ever occurs now

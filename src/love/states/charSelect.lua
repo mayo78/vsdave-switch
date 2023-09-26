@@ -35,16 +35,17 @@ local strum3D
 
 local accepted
 
-local sky, bg, glitchshader
-local icon
-local guide, arrowLeft, arrowRight
-local strumLine
 local animList = {
 	"left",
 	"down",
 	"up",
 	"right"
 }
+
+local sky, bg, glitchshader
+local icon
+local guide, arrowLeft, arrowRight
+local strumLine
 
 local niceTween
 local function strumTween()
@@ -81,11 +82,12 @@ return {
 	enter = function()
 		strumLine = {}
 		strum3D = false
-		if awaitingExploitation then            
+		if funkin.curSong:lower() == 'exploitation' then            
 			sky = graphics.newImage(paths.image 'dave/backgrounds/void/redsky')
             glitchshader = shaders:GLITCH()
 		else
 			sky = graphics.newImage(paths.image 'dave/backgrounds/shared/sky_night')
+			glitchshader = nil
 		end
 		sky.sizeX, sky.sizeY = 1.2, 1.2
 		bg = graphics.newImage(paths.image 'dave/charSelect')
@@ -103,7 +105,7 @@ return {
 			end
 		end
 		portrait = graphics:newAnimatedSprite('switch/portraits', anims, anims[1].anim, false, nil, {center=true})
-		paths.music(awaitingExploitation and 'badending' or 'goodending'):play()
+		paths.music((funkin.curSong:lower() == 'exploitation') and 'badending' or 'goodending'):play()
 		icon = graphics.newSprite(
 			paths.image("dave/icons/face"),
 			{{x = 0, y = 0, width = 150, height = 150}, {x = 0, y = 0, width = 150, height = 150}}, 
@@ -149,6 +151,7 @@ return {
 	leave = function()
 	end,
 	update = function(self, dt)
+		if drawTransition then return end
 		portrait:update(dt)
 		if not accepted then
 			if controls.pressed.left then 
@@ -170,6 +173,9 @@ return {
 				changeForm(1)
 			end
 			if controls.pressed.confirm then
+				if funkin.curSong:lower() == 'exploitation' then
+					love.window.showMessageBox('Error', 'Attempt to index nil value "deleteExpunged"')
+				end
 				accepted = true
 				charOverride = characters[charIndex].forms[formIndex].char
 				scoreMultiplier = characters[charIndex].scoreMultiplier
@@ -180,7 +186,9 @@ return {
 	draw = function()
 		love.graphics.push()
 		love.graphics.translate(1280/2, 720/2)
+		if glitchshader then love.graphics.setShader(glitchshader) end
 		sky:draw()
+		if glitchshader then love.graphics.setShader() end
 		bg:draw()
 		love.graphics.scale(2, 2)
 		portrait:draw()
@@ -206,5 +214,7 @@ return {
 			love.graphics.translate(154, 0)
 		end
 		love.graphics.pop()
+		fonts('comic', 64)
+		printfOutline(characters[charIndex].forms[formIndex].print, 1280/2 - curFont:getWidth(characters[charIndex].forms[formIndex].print)/2, 450)
 	end,
 }
