@@ -1,6 +1,17 @@
 local keyBuffer, curText
 local keySounds
 local commands = {}
+local height, updateHeight, eyeMode
+
+
+local keyboard
+
+local function updateText(txt)
+	curText = curText..txt
+	updateHeight = true
+end
+
+
 local function makeCommand(command, help, func, showInHelp, oneCommand)
 	if showInHelp == nil then showInHelp = true end
 	commands[command] = {
@@ -9,11 +20,6 @@ local function makeCommand(command, help, func, showInHelp, oneCommand)
 		showInHelp = showInHelp,
 		oneCommand = oneCommand == true, --uhhh i dont know why id idn this in my psych port but oim doing ti here :)
 	}
-end
-local height, updateHeight, eyeMode
-local function updateText(txt)
-	curText = curText..txt
-	updateHeight = true
 end
 
 --compatability stuff for psych
@@ -246,8 +252,6 @@ makeCommand('secret mod leak', getAwesome('term_leak_ins'), function(...)
 	switchState(stage)
 	--print('entering secret leak!')
 end, false, true)
-
-local keyboard
 return {
 	enter = function(self)
 		keyboard = floatingKeyboard()
@@ -275,6 +279,10 @@ return {
 				else
 					updateText ''
 				end
+				keyboard.active = false
+				Timer.tween(0.25, keyboard, {y = 720}, 'in-expo')
+			elseif key == 'escape' then
+				keyBuffer = ''
 				keyboard.active = false
 				Timer.tween(0.25, keyboard, {y = 720}, 'in-expo')
 			elseif key == '<==' then

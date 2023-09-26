@@ -418,6 +418,7 @@ function love.load()
 			switchState(settings.language and (save.save.seenWarning and titleMenu or flashingState) or languageState)
 		end
 
+		--switchState(charSelect)
 		--switchState(mukoTitle)
 		--switchState(terminalState)
 		--switchState(debugMenu)
@@ -660,16 +661,39 @@ function love.errorhandler(msg)
 	p = p..[[
 
 A copy of this crash log has been saved in your NSO folder!
+
 Please report this error on www.github.com/mayo78/vsdave-switch
-Press any button to close the game
+
+Press B/A/Start or tap to close the game
 	]]..errorData
 
 	return function()
 		love.event.pump()
-
 		for e, a, b, c in love.event.poll() do
 			if e == "quit" then
 				return 1
+			elseif e == "keypressed" and a == "escape" then
+				return 1
+			elseif e == "keypressed" and a == "c" and love.keyboard.isDown("lctrl", "rctrl") then
+				copyToClipboard()
+			elseif e == "gamepadpressed" and love._os == "NX" and (b == "b" or b == "a" or "start") then
+				return 1
+			elseif e == "touchpressed" then
+				if love._os == "NX" then
+					return 1
+				end
+				local name = love.window.getTitle()
+				if #name == 0 or name == "Untitled" then name = "Game" end
+				local buttons = {"OK", "Cancel"}
+				if love.system then
+					buttons[3] = "Copy to clipboard"
+				end
+				local pressed = love.window.showMessageBox("Quit "..name.."?", "", buttons)
+				if pressed == 1 then
+					return 1
+				elseif pressed == 3 then
+					copyToClipboard()
+				end
 			end
 		end
 

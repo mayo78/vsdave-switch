@@ -203,9 +203,26 @@ return function()
 	local lastKey
 	local lastactive = false
 	local pressed
-	local canjustpressed
+	local canjustpressed = true
 	local justpressed
+	local permashift = false
 	return {
+		pressKey = function(self, key)
+			if curKey.id == SHIFT then
+				if permashift then 
+					permashift = false
+					shiftMode = false
+				elseif shiftMode then permashift = true
+				else shiftMode = not shiftMode
+				end
+			else
+				if self.onKey then self.onKey(curKey, shiftMode) end
+				if not permashift then
+					shiftMode = false
+				end
+			end
+			--print('pressed key', curKey.name)
+		end,
 		active = false,
 		update = function(self)
 			if self.active ~= lastactive then
@@ -231,16 +248,11 @@ return function()
 				curKey, lastKey = lastKey, curKey
 			end
 			if controls.pressed.confirm then
-				if curKey.id == SHIFT then
-					shiftMode = not shiftMode
-				else
-					if self.onKey then self.onKey(curKey, shiftMode) end
-				end
-				print('pressed key', curKey.name)
+				self:pressKey(curKey)
 			elseif controls.pressed.back then
-				self.onKey(keys.BACKSPACE)
+				self:pressKey(keys.BACKSPACE)
 			elseif controls.pressed['button:y'] then
-				self.onKey(keys.SPACE)
+				self:pressKey(keys.SPACE)
 			end
 			justpressed = false
 			local md = love.mouse.isDown(1)
@@ -248,6 +260,28 @@ return function()
 				canjustpressed = true
 			end
 			pressed = md
+			if pressed and canjustpressed then
+				canjustpressed = false
+				local mx, my = love.mouse.getPosition()
+				local x,y = self.x,self.y
+				local lastKey
+				for i,v in pairs(layout) do
+					if v == NEWLINE then
+						local t = (lastKey and transforms[keyIdMap[lastKey].NAMEID]) or transforms.default
+						y = y + ((KEYSIZE*t.scale.y)+2) + t.offset.y
+						x = self.x
+					else
+						local t = transforms[keyIdMap[v].NAMEID] or transforms.default
+						x = x + ((KEYSIZE*t.scale.x)+2) + t.offset.x
+						local width,height = KEYSIZE*t.scale.x, KEYSIZE*t.scale.y
+						if mx > x and mx < x + width and my > y and my < y + height then
+							curKey = keyIdMap[v]
+							self:pressKey(curKey)
+						end
+						lastKey = v
+					end
+				end
+			end
 		end,
 		x = 0,
 		y = 0,
@@ -265,7 +299,9 @@ return function()
 				else
 					local t = transforms[keyIdMap[v].NAMEID] or transforms.default
 					x = x + ((KEYSIZE*t.scale.x)+2) + t.offset.x
-					if v == curKey.id then
+					if v == SHIFT and permashift then
+						love.graphics.setColor(0.4,0.4,0.4, 0.75)
+					elseif v == curKey.id then
 						love.graphics.setColor(0.7,0.7,0.7, 0.75)
 					else
 						love.graphics.setColor(1,1,1, 0.75)

@@ -31,9 +31,35 @@ local portrait
 
 local charIndex, formIndex
 
+local strum3D
+
+local accepted
+
+local sky, bg, glitchshader
+local icon
+local guide, arrowLeft, arrowRight
+local strumLine
+local animList = {
+	"left",
+	"down",
+	"up",
+	"right"
+}
+
+local niceTween
+local function strumTween()
+	if niceTween then Timer.cancel(niceTween) end
+	strumLine.alpha = 0
+	niceTween = Timer.tween(0.25, strumLine, {alpha = 1}, nil, function() niceTween = nil end)
+end
 local function updatePortrait()
 	portrait:animate(characters[charIndex].forms[formIndex].char)
-	portrait.image:setFilter(getAA(characters[charIndex].forms[formIndex].note ~= '3D'))
+	local is3D = characters[charIndex].forms[formIndex].note == '3D'
+	if is3D and not strum3D or not is3D and strum3D then
+		strum3D = not strum3D
+		strumTween()
+	end
+	portrait.image:setFilter(getAA(not is3D))
 end
 
 local function changeChar(how)
@@ -51,10 +77,19 @@ local function changeForm(how)
 	updatePortrait()
 end
 
-local accepted = false
-
 return {
 	enter = function()
+		strumLine = {}
+		strum3D = false
+		if awaitingExploitation then            
+			sky = graphics.newImage(paths.image 'dave/backgrounds/void/redsky')
+            glitchshader = shaders:GLITCH()
+		else
+			sky = graphics.newImage(paths.image 'dave/backgrounds/shared/sky_night')
+		end
+		sky.sizeX, sky.sizeY = 1.2, 1.2
+		bg = graphics.newImage(paths.image 'dave/charSelect')
+		bg.sizeX, bg.sizeY = 1.2, 1.2
 		accepted = false
 		charIndex, formIndex = 1, 1
 		local anims = {}
@@ -68,18 +103,71 @@ return {
 			end
 		end
 		portrait = graphics:newAnimatedSprite('switch/portraits', anims, anims[1].anim, false, nil, {center=true})
+		paths.music(awaitingExploitation and 'badending' or 'goodending'):play()
+		icon = graphics.newSprite(
+			paths.image("dave/icons/face"),
+			{{x = 0, y = 0, width = 150, height = 150}, {x = 0, y = 0, width = 150, height = 150}}, 
+			{idle = {start = 1, stop = 2, speed = 0, offsetX = 0, offsetY = 0}},
+			"idle",
+			false,
+			{smartOffsets = true}
+		)
+		local full = {full=true}
+		guide = graphics.newImage(paths.image 'dave/title/charSelectGuide', full)
+		guide.x, guide.y = 300, 300
+		guide.sizeX, guide.sizeY = 1.5, 1.5
+		
+		arrowLeft = graphics.newImage(paths.image 'dave/title/ArrowLeft_Idle', full)
+		arrowLeft.x = 150
+		paths.image 'dave/title/ArrowLeft_Pressed'
+		arrowRight = graphics.newImage(paths.image 'dave/title/ArrowRight_Idle', full)
+		arrowRight.x = (1280/0.75) - arrowRight.width
+		paths.image 'dave/title/ArrowRight_Pressed'
 		changeChar(0)
+
+		strumLine.alpha = 0
+		strumLine.normals = {}
+		strumLine.threedees = {}
+		for i=1,4 do
+			local dir = animList[i]
+			local strum = graphics:newAnimatedSprite('dave/notes/note_assets', {
+				{anim = 'off', name = 'arrow'..(dir:upper()), fps = 0},
+			}, 'off', false, nil, {center=true})
+			strumLine.normals[i] = strum
+			strum:update(0)
+			
+			local dir = animList[i]
+			local strum = graphics:newAnimatedSprite('dave/notes/note_assets_3d', {
+				{anim = 'off', name = 'arrow'..(dir:upper()), fps = 0},
+			}, 'off', false, nil, {center=true})
+			strum.image:setFilter(getAA(false))
+			strumLine.threedees[i] = strum
+			strum:update(0)
+		end
+		strumTween()
 	end,
 	leave = function()
 	end,
 	update = function(self, dt)
 		portrait:update(dt)
 		if not accepted then
-			if controls.pressed.left then changeChar(-1)
-			elseif controls.pressed.right then changeChar(1)
+			if controls.pressed.left then 
+				changeChar(-1)
+				arrowLeft:setImage(paths.image 'dave/title/ArrowLeft_Pressed')
+			elseif controls.pressed.right then 
+				changeChar(1)
+				arrowRight:setImage(paths.image 'dave/title/ArrowRight_Pressed')
 			end
-			if controls.pressed.up then changeForm(-1)
-			elseif controls.pressed.down then changeForm(1)
+			if controls.released.left then
+				arrowLeft:setImage(paths.image 'dave/title/ArrowLeft_Idle')
+			end
+			if controls.released.right then
+				arrowRight:setImage(paths.image 'dave/title/ArrowRight_Idle')
+			end
+			if controls.pressed.up then 
+				changeForm(-1)
+			elseif controls.pressed.down then 
+				changeForm(1)
 			end
 			if controls.pressed.confirm then
 				accepted = true
@@ -92,8 +180,31 @@ return {
 	draw = function()
 		love.graphics.push()
 		love.graphics.translate(1280/2, 720/2)
+		sky:draw()
+		bg:draw()
 		love.graphics.scale(2, 2)
 		portrait:draw()
+		love.graphics.pop()
+		love.graphics.push()
+		love.graphics.scale(0.75, 0.75)
+		love.graphics.translate(-(1280 * .75 - 1280)/2, -(720 * .75 - 720)/2)
+		guide:draw()
+		love.graphics.translate(0, 720/2 + 200)
+		arrowLeft:draw()
+		arrowRight:draw()
+		love.graphics.translate(475, -500)
+		fonts('comic', 32)
+		for i=1,4 do
+			love.graphics.setColor(1,1,1,1-strumLine.alpha)
+			local badstrum = (not strum3D) and strumLine.threedees[i] or strumLine.normals[i]
+			badstrum:draw()
+			love.graphics.setColor(1,1,1,strumLine.alpha)
+			local strum = strum3D and strumLine.threedees[i] or strumLine.normals[i]
+			strum:draw()
+			local hi = tostring(characters[charIndex].scoreMultiplier[i])
+			printfOutline(hi, -curFont:getWidth(hi)/2, -curFont:getHeight()/2)
+			love.graphics.translate(154, 0)
+		end
 		love.graphics.pop()
 	end,
 }
