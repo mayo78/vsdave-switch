@@ -3,7 +3,7 @@ local c = {}
 --precachedChars = {}
 local threedees = {'dave-angey', 'bambi-3d', 'expunged', 'bambi-unfair', 'exbungo', 'dave-festival-3d', 'dave-3d-recursed', 'bf-3d'}
 local deadChars = {'dave', 'bambi', 'tristan-golden', 'tristan'}
-function c.new (character, isPlayer)
+function c:new (character, isPlayer)
 	
 	--if precachedChars[character] then return table.copy(precachedChars[character]) end
 	local lastColor
@@ -27,10 +27,12 @@ function c.new (character, isPlayer)
 	o.sprite, anims = graphics:newAnimatedSprite(o.json.image, o.json.animations, 'idle')
 	o.is3D = table.contains(threedees, character)
 	o.deadChar = o.json.deadChar
-	for i,v in ipairs(deadChars) do --im lazy
-		if character:startsWith(v) then
-			o.deadChar = v..'-death'
-			break;
+	if not o.is3D then
+		for i,v in ipairs(deadChars) do --im lazy
+			if character:startsWith(v) then
+				o.deadChar = v..'-death'
+				break;
+			end
 		end
 	end
 

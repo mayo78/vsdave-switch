@@ -149,9 +149,10 @@ return {
 		strumTween()
 	end,
 	leave = function()
+		love.audio.stop()
 	end,
 	update = function(self, dt)
-		if drawTransition then return end
+		if transOut then return end
 		portrait:update(dt)
 		if not accepted then
 			if controls.pressed.left then 

@@ -415,6 +415,12 @@ return {
 				recursedSkin = bf..'-recursed'
 				if bf == 'tristan-golden' then
 					recursedSkin = 'tristan-recursed'
+				elseif bf == 'bf-3d' then
+					recursedSkin = 'bf-recursed'
+				elseif bf == 'bambi-new' then
+					recursedSkin = 'bambi-recursed'
+				elseif bf == 'dave-angey' then
+					recursedSkin = 'dave-3d-recursed'
 				end
 				addCharToList(0, recursedSkin)
 			end

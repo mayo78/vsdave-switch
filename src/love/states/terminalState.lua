@@ -367,7 +367,7 @@ return {
 		love.graphics.pop()
 	end,
 	update = function(self, dt)
-		if drawTransition then return end
+		if transOut then return end
 		if expungedMode or eyeMode then
 			glitchSpr:update(dt)
 		elseif controls.pressed.confirm and not keyboard.active then

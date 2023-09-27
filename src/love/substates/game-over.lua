@@ -8,15 +8,23 @@ local function bopLoop()
 		bopTimer = Timer.after(0.57, bopLoop)
 	end
 end
+local tween3D
+local function camTween()
+	Timer.tween(2, cam, {
+		x = -(boyfriendObject.sprite.width/2)-boyfriendObject.sprite.x+boyfriendObject.camPos.x + 100,
+		y = -(boyfriendObject.sprite.height/2)-boyfriendObject.sprite.y+boyfriendObject.camPos.y + 100,
+	}, 'out-expo')
+end
 return {
 	enter = function(self)
+		tween3D = false
 		fade = {v = 1}
 		deathBop = false
 		confirmed = false
 		tweened = false
 		if inst then inst:setVolume(0) end
 		if voices then voices:setVolume(0) end
-		noDeadAnims = false
+		noDeadAnims = boyfriendObject.is3D
 		if not deadBF and not boyfriendObject.curCharacter:startsWith 'bf' then
 			deadBF = boyfriendObject
 			noDeadAnims = true
@@ -31,6 +39,7 @@ return {
 		deadSong:setLooping(true)
 		deadOver = paths.music('gameoverend'..(funkin.curSong == 'exploitation' and '-ohno' or ''))
 		Timer.clear()
+		deadBF.sprite.x, deadBF.sprite.y = boyfriendObject.sprite.x, boyfriendObject.sprite.y
 		if not noDeadAnims then
 			deadBF.skipDance = true
 			deadBF:playAnim 'firstDeath'
@@ -41,6 +50,21 @@ return {
 				end
 			end
 		else
+			local angle = 0
+			local spr = deadBF.sprite
+			tween3D = true
+			deadBF.sprite.alpha = 1
+			spr:setCentered(true)
+			spr.x, spr.y = spr.x - (spr.width/2), spr.y + (spr.height/2)
+			Timer.tween(2, spr, {alpha = 0, sizeX = 0.05, sizeY = 0.05}, 'in-out-expo', {
+				after = function()
+					
+				end,
+				during = function(dt)
+					angle = angle + (dt/100) * 2.5
+					spr.orientation = angle * RADIAN_TO_DEGREE
+				end,
+			})
 		end
 	end,
 
@@ -62,7 +86,7 @@ return {
 		end			
 		if deadBF.sprite:getAnimName() == 'firstDeath' and deadBF.sprite:getFrame() >= 12 and not tweened then
 			tweened = true
-			Timer.tween(2, cam, {x = -deadBF.sprite.x + 100 - deadBF.sprite.width/2, y = -deadBF.sprite.y + 100 - deadBF.sprite.height/2}, 'out-expo')
+			camTween()
 		end
 	end,
 
@@ -70,7 +94,7 @@ return {
 		love.graphics.push()
 		graphics.setColor(0, 0, 0)
 		love.graphics.rectangle("fill", 0, 0, 1280, 720)
-		graphics.setColor(fade.v, fade.v, fade.v)
+		graphics.setColor(fade.v, fade.v, fade.v, deadBF.sprite.alpha or 1)
 		love.graphics.translate(cam.x + (graphics.getWidth() / 2), cam.y + (graphics.getHeight() / 2))
 		love.graphics.scale(curCamZoom, curCamZoom)
 		deadBF.sprite:draw()

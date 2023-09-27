@@ -83,6 +83,7 @@ local function drawTable(sprites)
 		if not spr.dontdraw and alpha > 0 then
 			local color = spr.color
 			if spr.color2 then
+				if not spr.color then spr.color = {255, 255, 255} end
 				color = {
 					spr.color[1] * spr.color2[1], 
 					spr.color[2] * spr.color2[2], 
@@ -634,8 +635,8 @@ local stages = {
 					shredderHighway.alpha = 1
 					boyfriend.alpha = 0
 					shredderMode = true
-					boyfriend.x, boyfriend.y = 700 - boyfriend.width/2, -50 - boyfriend.height/2
-					enemy.x, enemy.y = fromTopLeft(-21/0.7 - enemy.width/2, -10/0.7 - enemy.height/2)
+					boyfriend.x, boyfriend.y = 700 - (411/2), -50 - (414/2)
+					enemy.x, enemy.y = fromTopLeft(-21/0.7 - enemy.width/2, -10/0.7 - enemy.height/2 - 50)
 					bambispot.alpha = 1
 					--addHalfWidth(enemy)
 					for i=1,4 do
@@ -664,8 +665,8 @@ local stages = {
 					shredderHighway.alpha = 0
 					bambispot.alpha = 0
 					bfspot.alpha = 0
-					enemy.x, enemy.y = -380, 100
-					boyfriend.x, boyfriend.y = 100, 70
+					enemy.x, enemy.y = 100 - aaa.x, 450 - aaa.y
+					boyfriend.x, boyfriend.y = 770 - aaa.x, 450 - aaa.y
 				end
 			}
 			weeks.bookmarkEvents = function(n)
@@ -1400,7 +1401,7 @@ return {
 	end,
 
 	update = function(self, dt)
-		if drawTransition then return end
+		if transOut then return end
 		--if song == 1 and musicThres ~= oldMusicThres and math.fmod(absMusicTime + 500, 480000 / bpm) < 100 then
 		--	weeks:safeAnimate(boyfriend, "hey", false, 3)
 		--end

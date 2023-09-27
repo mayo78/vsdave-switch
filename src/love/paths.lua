@@ -4,8 +4,6 @@ local imageCache = {}
 local audioCache = {}
 local dumpExclude = {
 	['music/menu/menu'] = true,
-	['sounds/menu/select'] = true,
-	['sounds/menu/confirm'] = true,
 	['images/blank'] = true,
 	['dave/title/transition'] = true,
 }

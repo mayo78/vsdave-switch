@@ -102,9 +102,14 @@
 		255
 	],
 	"camera_position": [
+		50,
+		200
+	],
+	"pcamera_position": [
 		0,
-		0
+		200
 	],
 	"sing_duration": 4,
-	"scale": 1
+	"scale": 1,
+	"playerOffset": [390, 197]
 }

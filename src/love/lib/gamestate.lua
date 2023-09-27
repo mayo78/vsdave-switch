@@ -70,6 +70,7 @@ function switchState(...)
 		drawTransition = true
 		local function onComplete()
 			drawTransition = false 
+			transIn = false
 		end
 		if initState then
 			initState = false
@@ -80,10 +81,13 @@ function switchState(...)
 		end
 		local hi = {...}
 		transition.x = -2146 + 2164/2
+		transOut = true
 		Timer.tween(0.5, transition, {x = 1280/2}, nil, {after = function()
+			transOut = false
 			transition.x = 1280/2
 			isLoading = true
 			Timer.after(0.000001, function() --make sure the screen is entirely covered
+				transIn = true
 				isLoading = false
 				paths.clearing = true --im going to do it
 				paths.clearCache()

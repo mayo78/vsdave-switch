@@ -349,6 +349,9 @@ return {
 			getFrame = function(self)
 				return frame
 			end,
+			setCentered = function(self, what)
+				optionsTable.center = what
+			end,
 			draw = function(self, centerRotate)
 				local negativeX, negativeY = self.sizeX < 0, self.sizeY < 0
 				if isAnimated then

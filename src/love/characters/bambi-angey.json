@@ -103,9 +103,15 @@
 		55
 	],
 	"camera_position": [
-		20,
-		90
+		0,
+		-100
+	],
+	"pcamera_position": [
+		-50,
+		0
 	],
 	"sing_duration": 4,
-	"scale": 1
+	"scale": 1,
+	"playerOffset": [394, -24],
+	"positionOffset": [-37, -90]
 }

@@ -349,16 +349,6 @@ function love.load()
 		mukoGame = require 'states.muko.game'
 		mukoEnd = require 'states.muko.end'
 
-		-- Load week data
-		--weekData = {
-		--	require "weeks.tutorial",
-		--	require "weeks.week1",
-		--	require "weeks.week2",
-		--	require "weeks.week3",
-		--	require "weeks.week4",
-		--	require "weeks.week5",
-		--	require "weeks.week6"
-		--}
 		scoreMultiplier = {1, 1, 1, 1}
 
 		stage = require 'stage'
@@ -399,22 +389,22 @@ function love.load()
 		musicTime = 0
 		health = 0
 		
-		character = require 'objects.character'
+		character = require 'character'
 
 		--print(tostring(version), tostring(onlineVersion))
 
-		--if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
-		--	switchState(versionState)
-		--else
-		--	print(save.save.seenWarning)
-		--	switchState(settings.language and (save.save.seenWarning and titleMenu or flashingState) or languageState)
-		--end
+		if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
+			switchState(versionState)
+		else
+			print(save.save.seenWarning)
+			switchState(settings.language and (save.save.seenWarning and titleMenu or flashingState) or languageState)
+		end
 
 		--switchState(charSelect)
 		--switchState(mukoTitle)
 		--switchState(terminalState)
 		--switchState(debugMenu)
-		switchState(menuFreeplay)
+		--switchState(menuFreeplay)
 		local scale = 1280/1920
 		
 		--local testChar = character 'bf'
