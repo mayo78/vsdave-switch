@@ -121,7 +121,7 @@ function love.load()
 				return self
 			end,
 			fromArray = function(self, a)
-				print(a[1], a[2], 'from Array')
+				--print(a[1], a[2], 'from Array')
 				return self:set(a[1], a[2])
 			end,
 			copy = function(self)
@@ -275,7 +275,7 @@ function love.load()
 	local printer = print
 	function print(...)
 		printer(...)
-		if settings.showDebug then
+		if settings.showDebug or true then
 			local hi = {...}
 			for k,v in pairs(hi) do hi[k] = tostring(v) end
 			table.insert(printBuffer, {print = table.concat(hi, ', '), time = 3})
@@ -318,6 +318,8 @@ function love.load()
 		onlineVersion = versionTable:fromString((http.request 'https://www.mayo78.com/vsdaveswitch-version.txt' or '-99.-99.-99'):gsub('v', ''))
 
 		floatingKeyboard = require 'floatingkeyboard'
+
+		--scripts = require 'scripts'
 
 		hitbox = require 'states.muko.hitbox'
 		-- Load states
@@ -393,12 +395,14 @@ function love.load()
 
 		--print(tostring(version), tostring(onlineVersion))
 
-		if onlineVersion and versionTable:greaterThan(onlineVersion, version) then
-			switchState(versionState)
-		else
+		--if onlineVersion and version and versionTable:greaterThan(onlineVersion, version) then
+		--	switchState(versionState)
+		--else
 			print(save.save.seenWarning)
 			switchState(settings.language and (save.save.seenWarning and titleMenu or flashingState) or languageState)
-		end
+		--end
+
+		print('the save:', love.filesystem.getSaveDirectory())
 
 		--switchState(charSelect)
 		--switchState(mukoTitle)
@@ -520,9 +524,9 @@ function love.draw()
 			love.graphics.print(v.print, 0, (i + 1) * 18)
 		end
 	else
-		love.graphics.setColor(1, 1, 1)
+		love.graphics.setColor(.4, .4, .4)
 		love.graphics.setFont(loadFont)
-		love.graphics.print("Loading...", (1280/2) - (loadFont:getWidth 'Loading...'/2), (720/2) - loadFont:getHeight())
+		love.graphics.print("Loading...", 1280 - loadFont:getWidth 'Loading...', 720 - loadFont:getHeight())
 	end
 	--if settings.showDebug then
 	--	love.graphics.print(status.getDebugStr(settings.showDebug), 5, 5, nil, 0.5, 0.5)

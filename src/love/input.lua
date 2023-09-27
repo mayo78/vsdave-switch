@@ -1,9 +1,9 @@
 bindableKeys = { --bindable keys
-"axis:leftx-", "button:dpleft", "axis:triggerleft+",
-"axis:lefty+", "button:dpdown", "button:leftshoulder",
-"axis:lefty-", "button:dpup", "button:rightshoulder",
-"axis:leftx+", "button:dpright", "axis:triggerright+",
-"button:a", "button:b", "button:x", "button:y"
+	"axis:leftx-", "button:dpleft", "axis:triggerleft+",
+	"axis:lefty+", "button:dpdown", "button:leftshoulder",
+	"axis:lefty-", "button:dpup", "button:rightshoulder",
+	"axis:leftx+", "button:dpright", "axis:triggerright+",
+	"button:a", "button:b", "button:x", "button:y"
 }
 return function()
 	switchController = love.joystick.getJoysticks()[1]

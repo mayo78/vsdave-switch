@@ -22,15 +22,22 @@ this fixed one crash oops
 ### Gameplay
 - Character dances are 100% on beat now
 - You can now exit the game at any time by holding start and select at the same time
-- Adjusted input system slightly
+- Adjusted input system
 - Offsets finally cross compatible with flixel fnf engines
+- Some states no longer do anything while transitioning out
+- Saves are now jsons and more easibly editable
 ### Porting
 - The console (pressing 7 is now replaced by holding all the shoulders and triggers and pressing select)
 - Five Night's at Muko's (the whole game, inside this port, do the 7 thing on kabunga im not lying)\
 - Icon bop that is kinda
-- Recursed (kinda wip)
+- Recursed
+- Character select screen
+- Terminal usable on switch
+- Terminal secrets (wip)
 - More accurate stages (wip)
 - Bonus songs (wip)
-- Character select screen (wip)
+- Exploitation (wip)
+- Better game over
+- Cleaner loading text
 ## Other
 - You can exit the error screen if it ever occurs now

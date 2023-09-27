@@ -1392,6 +1392,9 @@ return {
 		cam.x = -(girlfriendObject.sprite.width/2)-girlfriendObject.sprite.x+girlfriendObject.camPos.x
 		cam.y = -(girlfriendObject.sprite.height/2)-girlfriendObject.sprite.y+girlfriendObject.camPos.x
 		camPos:fromPoint(cam)
+		if scripts then
+			scripts:call 'onCreatePost'
+		end
 	end,
 
 	initUI = function(self)
@@ -1428,6 +1431,9 @@ return {
 
 		if houseStage then updateTable(houseStage, dt) end
 		updateTable(sprites, dt)
+		if scripts then
+			scripts:call('onUpdate', dt)
+		end
 	end,
 	songEnd = function(self)
 		if storyMode and songFinished and paths.dialogue(funkin.curSong..'-endDialogue') and not cutscene then
@@ -1549,6 +1555,9 @@ return {
 		love.graphics.pop()
 		if not cutscene then
 			weeks:drawUI()
+		end
+		if scripts then
+			scripts:call 'draw'
 		end
 	end,
 

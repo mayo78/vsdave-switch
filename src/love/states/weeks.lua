@@ -295,6 +295,13 @@ return {
 	--	end
 	--end,
 	enter = function(self)
+		if scripts then
+			if love.filesystem.getInfo 'scripts' and love.filesystem.getInfo 'scripts'.type == 'directory' then
+				for _,file in pairs(love.filesystem.getDirectoryItems 'scripts') do
+					scripts:runScript('scripts/'..file)
+				end
+			end
+		end
 		if charOverride == 'bf' then charOverride = nil end
 		modchart = ExploitationModchartType.None
 		localFunny = CharacterFunnyEffect.None
@@ -517,6 +524,9 @@ return {
 
 		print(cam.x, cam.y, camPos.x, camPos.y)
 		--print('returning this', jsonChart)
+		if scripts then
+			scripts:call 'onEnterPost'
+		end
 		return jsonChart --hahfdhjklasjklfhjklsdh
 	end,
 
@@ -2058,11 +2068,11 @@ return {
 			printfOutline(hi, 0, timeBarOverlay.y - 32, nil, {size = 48, depth = 0.05, alpha = hudAlpha[1] * timebarAlpha[1], center = true})
 		end
 
-		accuracy = math.floor((notesHit/totalNotes)*1000)/1000
+		accuracy = notesHit/totalNotes
 		--print(totalNotes, notesHit)
 		if totalNotes == 0 then accuracy = 0 end
 		fonts('comic', 32)
-		local txt = "Score: " .. score..' | Misses: '..misses..' | Accuracy: '..(math.floor(accuracy*1000)/10)..'%'
+		local txt = lm.string.play_score..' ' .. score..' | '..lm.string.play_miss..' '..misses..' | '..lm.string.play_accuracy..': '..(math.floor(accuracy*1000)/10)..'%'
 		printfOutline(txt, -curFont:getWidth(txt)/2, healthBarOverlay.y + 25, nil, {alpha = hudAlpha[1]})
 
 		fonts('comic', 16/0.7)
