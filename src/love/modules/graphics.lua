@@ -94,8 +94,8 @@ return {
 						self.orientation,
 						self.sizeX,
 						self.sizeY,
-						nwidth,
-						nheight,
+						options.full and 0 or nwidth,
+						options.fulll and 0 or nheight,
 						self.shearX,
 						self.shearY
 					)
@@ -107,8 +107,8 @@ return {
 						self.orientation,
 						self.sizeX,
 						self.sizeY,
-						nwidth,
-						nheight,
+						options.full and 0 or nwidth,
+						options.full and 0 or nheight,
 						self.shearX,
 						self.shearY
 					)

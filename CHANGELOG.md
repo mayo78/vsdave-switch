@@ -33,11 +33,11 @@ this fixed one crash oops
 - Recursed
 - Character select screen
 - Terminal usable on switch
-- Terminal secrets (wip)
-- More accurate stages (wip)
-- Bonus songs (wip)
-- Exploitation (wip)
+- More accurate stages
 - Better game over
 - Cleaner loading text
+- Terminal secrets (wip)
+- Bonus songs (wip)
+- Exploitation (wip)
 ## Other
 - You can exit the error screen if it ever occurs now

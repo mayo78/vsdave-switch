@@ -37,6 +37,7 @@ local songtostage = {
 	master = {'master'},
 	roof = {'roofs'},
 	['inside-house'] = {'bonus-song'},
+	desert = {'escape-from-california'},
 }
 local playedCutscene
 
@@ -143,21 +144,21 @@ local function sectionStartTime(section)
 end
 local stages = {
 	stage = function()
-		stageBack = newSprite"week1/stage-back"
+		fullMode = true
+		stageBack = newSprite("week1/stage-back", -600, -200)
 		stageBack.scrollFactor = point(0.9, 0.9)
 		add(stageBack)
-		stageFront = newSprite"week1/stage-front"
+		stageFront = newSprite("week1/stage-front", -650, 600)
 		stageFront.scrollFactor = point(0.9, 0.9)
+		stageFront.sizeX, stageFront.sizeY = 1.1, 1.1
 		add(stageFront)
 
 		addChars()
 
-		curtains = newSprite"week1/curtains"
-		curtains.scrollFactor = point(1.1, 1.1)
+		curtains = newSprite("week1/curtains", -500, -300)
+		curtains.scrollFactor = point(1.3, 1.3)
+		curtains.sizeX, curtains.sizeY = 0.9, 0.9
 		add(curtains)
-
-		stageFront.y = 400
-		curtains.y = -100
 
 		--enemy = love.filesystem.load("sprites/week1/daddy-dearest.lua")()
 
@@ -167,6 +168,7 @@ local stages = {
 	end,
 	house = function(dont, skyType, assetType)
 		zoom = 0.8
+		
 		local nighty = {'glitch', 'bonus-song', 'memory'}
 		if table.contains(nighty, jsonChart.song:lower()) or weirdPolygonized then 
 			skyType = 'sky_night'
@@ -186,20 +188,20 @@ local stages = {
 		fullMode = true
 		local bg = newSprite('dave/backgrounds/shared/'..skyType, -600, -300)
 		bg.scrollFactor = point(0.6, 0.6)
-		addWidth(bg)
+		--addWidth(bg)
 		add(bg)
 		local stageHills = newSprite('dave/backgrounds/dave-house/'..assetType..'hills', -834, -200)
 		stageHills.scrollFactor = point(0.7, 0.7)
-		addWidth(stageHills)
+		--addWidth(stageHills)
 		add(stageHills)
 		local grassbg = newSprite('dave/backgrounds/dave-house/'..assetType..'grass bg', -1205, 580)
-		addWidth(grassbg)
+		--addWidth(grassbg)
 		add(grassbg)
 		local gate = newSprite('dave/backgrounds/dave-house/'..assetType..'gate', -755, 250)
-		addWidth(gate)
+		--addWidth(gate)
 		add(gate)
 		local stageFront = newSprite('dave/backgrounds/dave-house/'..assetType..'grass', -832, 505)
-		addWidth(stageFront)
+		--addWidth(stageFront)
 		add(stageFront)
 
 		local redsky
@@ -262,9 +264,9 @@ local stages = {
 			end
 		end		
 		local aaa = point(0, 100)
-		girlfriend.x, girlfriend.y = 400 - aaa.x, 130 - aaa.y
-		enemy.x, enemy.y = 100 - aaa.x, 450 - aaa.y
-		boyfriend.x, boyfriend.y = 770 - aaa.x, 450 - aaa.y
+		girlfriend.x, girlfriend.y = 300, -60
+		enemy.x, enemy.y = 50, 270
+		boyfriend.x, boyfriend.y = 843, 270
 		if not dont then
 			addChars()
 			if skyType == 'sky_night' then
@@ -279,22 +281,19 @@ local stages = {
 		fullMode = true
 		zoom = 0.8
 		useeyesores = true
-		girlfriend.x, girlfriend.y = 400, 130
-		enemy.x, enemy.y = 100, 450
-		boyfriend.x, boyfriend.y = 770, 450
 
 		local voidStuff = {
 			cheating = 'cheater',
 			unfairness = 'scarybg',
-			expoitation = 'exploit/creepyRoom'
+			exploitation = 'exploit/creepyRoom' --will probably be moved to its own stage like interdimensional soon
 		}
 		local void = voidStuff[jsonChart.song:lower()] or 'redsky'
 
-		local bg = newSprite('dave/backgrounds/void/'..void, 2085, 1205)
+		local bg = newSprite('dave/backgrounds/void/'..void, -600, -200)
 		bg.shader = shaders:GLITCH()
 		bg:getImage():setFilter('nearest', 'nearest')
 		add(bg)
-		print('fudfs', fullMode)
+		--print('fudfs', fullMode)
 
 		local alphaThing = {value = 0}
 		local meAlpha = {value = 0}
@@ -320,8 +319,8 @@ local stages = {
 				end
 			end,
 			unfairness = function()
+				bg.x, bg.y = 0, 200
 				bg.sizeX, bg.sizeY = 3, 3
-				bg.x, bg.y = bg.x - 2500, bg.y - 1500
 				local aaa = {
 					slowfade = function()
 						for i=1,4 do
@@ -344,63 +343,26 @@ local stages = {
 				end
 			end,
 			cheating = function()
-				bg.x, bg.y = bg.x - 2000, bg.y - 1000
-			end
+				bg.x, bg.y = -700, -350
+				bg.sizeX, bg.sizeY = 2, 2
+			end,
 		}
 		if songStuff[jsonChart.song:lower()] then songStuff[jsonChart.song:lower()]() end
 
 		addChars()
 
-		
-		--local moveSpr = boyfriend
-		--local dxy = point()
-		--onUpdate = function(dt)
-		--	local mult = 1
-		--	if controls.down.gameFive then mult = 5 
-		--	else mult = 1 
-		--	end
-		--	if controls.down.left then 
-		--		moveSpr.x = moveSpr.x - (1*mult)
-		--		dxy.x = dxy.x - (1*mult)
-		--	elseif controls.down.right then 
-		--		moveSpr.x = moveSpr.x + (1*mult)
-		--		dxy.x = dxy.x + (1*mult)
-		--	end
-		--	if controls.down.down then 
-		--		moveSpr.y = moveSpr.y + (1*mult)
-		--		dxy.y = dxy.y + (1*mult)
-		--	elseif controls.down.up then 
-		--		moveSpr.y = moveSpr.y - (1*mult)
-		--		dxy.y = dxy.y - (1*mult)
-		--	end
-		--	if controls.pressed.confirm then
-		--		print('MY POS:', dxy.x, dxy.y)
-		--	end
-		--end
-		
-		--local moveSpr = bg
-		--onUpdate = function(dt)
-		--	local mult = 1
-		--	if controls.down.gameFive then mult = 2 
-		--	else mult = 1 
-		--	end
-		--	if controls.down.left then moveSpr.x = moveSpr.x - mult
-		--	elseif controls.down.right then moveSpr.x = moveSpr.x + mult
-		--	end
-		--	if controls.down.down then moveSpr.y = moveSpr.y + mult
-		--	elseif controls.down.up then moveSpr.y = moveSpr.y - mult
-		--	end
-		--	if controls.pressed.confirm then
-		--		print('MY POS:', moveSpr.x, moveSpr.y)
-		--	end
-		--end
+		--aftger the stuff since housestage overrides the pos so this overrides the overisde that was a really bad explanation sorry
+		girlfriend.x, girlfriend.y = 400, 130
+		enemy.x, enemy.y = 100, 450
+		boyfriend.x, boyfriend.y = 770, 450
 	end,
 	farm = function()
 		zoom = 0.8
-		local aaa = point(750, 600)
-		girlfriend.x, girlfriend.y = 400 - aaa.x, 130 - aaa.y
-		enemy.x, enemy.y = 100 - aaa.x, 450 - aaa.y
-		boyfriend.x, boyfriend.y = 770 - aaa.x, 450 - aaa.y
+		fullMode = true
+		girlfriend.x, girlfriend.y = 400, 130
+		enemy.x, enemy.y = 100, 450
+		boyfriend.x, boyfriend.y = 770, 450
+		enemy.x = enemy.x + 100
 		local skyType = jsonChart.stage == 'farm-night' and 'sky_night' or jsonChart.stage == 'farm-sunset' and 'sky_sunset' or 'sky'
 		--skyType = 'sky_sunset'
 		local nighty = {'splitathon', 'mealie'}
@@ -409,55 +371,55 @@ local stages = {
 		local tweenTime = sectionStartTime(25) / 1000
 		--local globalColorController = 
 		if jsonChart.song:lower() == 'maze' then
-			nightBG = newSprite('dave/backgrounds/shared/sky_night', -600/4, -300)
+			nightBG = newSprite('dave/backgrounds/shared/sky_night', -600, -200)
 			nightBG.alphaMult = 1
 			nightBG.scrollFactor = point(0.65, 0.65)
 			add(nightBG)
-			sunsetBG = newSprite('dave/backgrounds/shared/sky_sunset', -600/4, -300)
+			sunsetBG = newSprite('dave/backgrounds/shared/sky_sunset', -600, -200)
 			sunsetBG.alphaMult = 1
 			sunsetBG.scrollFactor = point(0.65, 0.65)
 			add(sunsetBG)
 			globalColor = {255, 255, 255}
 		end
-		local bg = newSprite('dave/backgrounds/shared/'..skyType, -600/4, -300)
+		local bg = newSprite('dave/backgrounds/shared/'..skyType, -600, -200)
 		bg.alphaMult = 1
 		bg.scrollFactor = point(0.65, 0.65)
 		add(bg)
 
-		local flatgrass = newSprite('dave/backgrounds/farm/gm_flatgrass', -317.5,  -385)
+		local flatgrass = newSprite('dave/backgrounds/farm/gm_flatgrass', 350, 75)
 		flatgrass.sizeX, flatgrass.sizeY = 0.34, 0.34
 		flatgrass.scrollFactor = point(0.65, 0.65)
 		add(flatgrass)
 
-		local hills = newSprite('dave/backgrounds/farm/orangey hills', -88.2, -75)
+		local hills = newSprite('dave/backgrounds/farm/orangey hills', -173, 100)
 		hills.scrollFactor = point(0.65, 0.65)
 		add(hills)
 
-		local farmHouse = newSprite('dave/backgrounds/farm/funfarmhouse', 340, -155)
+		local farmHouse = newSprite('dave/backgrounds/farm/funfarmhouse', 100, 125)
 		farmHouse.scrollFactor = point(0.7, 0.7)
 		farmHouse.sizeX, farmHouse.sizeY = 0.9, 0.9
 		add(farmHouse)
 
-		local grassLand = newSprite('dave/backgrounds/farm/grass lands', -10, 305)
+		local grassLand = newSprite('dave/backgrounds/farm/grass lands', -600, 500)
 		add(grassLand)
 
-		local cornFence = newSprite('dave/backgrounds/farm/cornFence', -830, -150)
+		local cornFence = newSprite('dave/backgrounds/farm/cornFence', -400, 200)
 		add(cornFence)
 
-		local cornFence2 = newSprite('dave/backgrounds/farm/cornFence2', 815, -150)
+		local cornFence2 = newSprite('dave/backgrounds/farm/cornFence2', 1100, 200)
 		add(cornFence2)
 
 		local picnic
 		if jsonChart.song:lower() == 'splitathon' then
-			picnic = newSprite('dave/backgrounds/farm/picnic_towel_thing', 545, 175)
+			picnic = newSprite('dave/backgrounds/farm/picnic_towel_thing', 1050, 650)
 			add(picnic)
 		end
 
 		local bagType = (love.math.random(0, 1000) == 0) and 'popeye' or 'cornbag'
-		local cornBag = newSprite('dave/backgrounds/farm/'..bagType, 545, 80)
+		local cornBag = newSprite('dave/backgrounds/farm/'..bagType, 1200, 550)
 		add(cornBag)
 
-		local sign = newSprite('dave/backgrounds/farm/sign', -25 - 700, 340 - 350)
+		local sign = newSprite('dave/backgrounds/farm/sign', 0, 350)
 		add(sign)
 
 		if skyType == 'sky_night' then
@@ -591,10 +553,10 @@ local stages = {
 		--end)
 	end,
 	festival = function()
-		local aaa = point(750, 600)
-		girlfriend.x, girlfriend.y = 400 - aaa.x, 130 - aaa.y
-		enemy.x, enemy.y = 100 - aaa.x, 450 - aaa.y
-		boyfriend.x, boyfriend.y = 770 - aaa.x, 450 - aaa.y
+		local aaa = point(0, 0)
+		girlfriend.x, girlfriend.y = 200, 130
+		enemy.x, enemy.y = 100, 450
+		boyfriend.x, boyfriend.y = 570, 450
 		
 		local sprs = {}
 		local add = add
@@ -614,8 +576,8 @@ local stages = {
 		end
 		if jsonChart.song:lower() == 'shredder' then
 			mainChars = {
-				{'dave', 'idle', 0.8, -295, -120},
-				{'tristan', 'bop', 0.4, 400, -45}
+				{'dave', 'idle', 0.8, 175, 100},
+				{'tristan', 'bop', 0.4, 800, 325}
 			}
 			shredderHighway = newSprite('dave/festival/shredder/ch_highway')
 			shredderHighway.image:setFilter(getAA(false))
@@ -675,13 +637,13 @@ local stages = {
 		elseif jsonChart.song:lower() == 'greetings' then
 			if greetingsCutscene then
 				mainChars = {
-					{'bambi', 'bambi idle', 0.9, 325, -70},
-					{'tristan', 'bop', 0.4, -510, -65}
+					{'bambi', 'bambi idle', 0.9, 400, 350},
+					{'tristan', 'bop', 0.4, 800, 325}
 				}
 			else
 				mainChars = {
-					{'dave', 'idle', 0.8, -295, -120},
-					{'bambi', 'bambi idle', 0.9, 325, -70}
+					{'dave', 'idle', 0.8, 175, 100},
+					{'bambi', 'bambi idle', 0.9, 700, 350}
 				}
 			end
 			weeks.bookmarkEvents = function(n)
@@ -703,49 +665,51 @@ local stages = {
 		elseif jsonChart.song:lower() == 'interdimensional' then
 			mainChars = {
 				{'bambi', 'bambi idle', 0.9, 400, 350},
-				{'tristan', 'bop', 0.4, -510, -65}
+				{'tristan', 'bop', 0.4, 800, 325}
 			}
 		end
+		
+		fullMode = true
 		local bg = newSprite('dave/backgrounds/shared/sky_festival', -600, -230)
 		bg.scrollFactor = point(0.6, 0.6)
 		add(bg)
 
-		local flatGrass = newSprite('dave/backgrounds/festival/gm_flatgrass', 430, -475)
+		local flatGrass = newSprite('dave/backgrounds/festival/gm_flatgrass', 800, -100)
 		flatGrass.scrollFactor = point(0.7, 0.7)
 		add(flatGrass)
 
-		local farmHouse = newSprite('dave/backgrounds/festival/farmHouse', -785, -480)
+		local farmHouse = newSprite('dave/backgrounds/festival/farmHouse', -300, -150)
 		farmHouse.scrollFactor = point(0.7, 0.7)
 		add(farmHouse)
 
-		local hills = newSprite('dave/backgrounds/festival/hills', -5, -85)
+		local hills = newSprite('dave/backgrounds/festival/hills', -1000, -100)
 		hills.scrollFactor = point(0.7, 0.7)
 		add(hills)
 
 		local corn = graphics:newAnimatedSprite('dave/backgrounds/festival/corn', {
 			{anim = 'corn', name = 'idle', fps = 5}
-		}, 'corn', false, nil, {center=true})
+		}, 'corn')
 		corn.scrollFactor = point(0.85, 0.85)
-		corn:setPosition(-500, -120)
+		corn:setPosition(-1000, 120)
 		add(corn)
 
 		local cornGlow = graphics:newAnimatedSprite('dave/backgrounds/festival/cornGlow', {
 			{anim = 'cornGlow', name = 'idle', fps = 5, loops = true}
-		}, 'cornGlow', false, nil, {center=true})
+		}, 'cornGlow')
 		cornGlow.scrollFactor = point(0.85, 0.85)
 		cornGlow.blendMode = 'add'
-		cornGlow:setPosition(-500, -120)
+		cornGlow:setPosition(-1000, 120)
 		add(cornGlow)
 
-		local backGrass = newSprite('dave/backgrounds/festival/backGrass', -5, 265)
+		local backGrass = newSprite('dave/backgrounds/festival/backGrass', -1000, 475)
 		backGrass.scrollFactor = point(0.85, 0.85)
 		add(backGrass)
 
 		local crowd = graphics:newAnimatedSprite('dave/backgrounds/festival/crowd', {
 			{anim = 'idle', name = 'crowdDance', loops = true}
-		}, 'idle', false, nil, {center=true})
+		}, 'idle')
 		crowd.scrollFactor = point(0.85, 0.85)
-		crowd:setPosition(-165, -270)
+		crowd:setPosition(-500, -150)
 		add(crowd)
 
 		local crowdChars = {}
@@ -753,7 +717,7 @@ local stages = {
 			for _,chary in pairs(mainChars) do
 				local char = graphics:newAnimatedSprite('dave/backgrounds/festival/mainCrowd/'..chary[1], {
 					{anim = 'idle', name = chary[2]}
-				}, 'idle', false, nil, {center=true})
+				}, 'idle')
 				char.scrollFactor = point(0.85, 0.85)
 				char.sizeX, char.sizeY = chary[3], chary[3]
 				print(chary[4], chary[5])
@@ -763,16 +727,16 @@ local stages = {
 			end
 		end
 		
-		local frontGrass = newSprite('dave/backgrounds/festival/frontGrass', -400, 360) ---1300, 600
+		local frontGrass = newSprite('dave/backgrounds/festival/frontGrass', -1300, 600) ---1300, 600
 		add(frontGrass)
 
 		addChars()
 
 		local generalGlow = graphics:newAnimatedSprite('dave/backgrounds/festival/generalGlow', {
 			{anim = 'glow', name = 'idle', fps = 5, loops = true}
-		}, 'glow', false, nil, {center=true})
+		}, 'glow')
 		generalGlow.blendMode = 'add'
-		generalGlow:setPosition(-425, 340)
+		generalGlow:setPosition(-450, 400)
 		add(generalGlow)
 
 		onBeat = function(b)
@@ -782,34 +746,14 @@ local stages = {
 				end
 			end
 		end
-
-		--local moveSpr = crowdChars[2]
-		--onUpdate = function(dt)
-		--	local mult = 1
-		--	if controls.down.gameFive then mult = 2 
-		--	else mult = 1 
-		--	end
-		--	if controls.down.left then moveSpr.x = moveSpr.x - mult
-		--	elseif controls.down.right then moveSpr.x = moveSpr.x + mult
-		--	end
-		--	if controls.down.down then moveSpr.y = moveSpr.y + mult
-		--	elseif controls.down.up then moveSpr.y = moveSpr.y - mult
-		--	end
-		--	if controls.pressed.confirm then
-		--		print('MY POS:', moveSpr.x, moveSpr.y)
-		--	end
-		--end
 		return sprs
 	end,
 	interdimensional = function()
 		zoom = 0.6
-		girlfriend.x, girlfriend.y = -25, -150
-		enemy.x, enemy.y = -380, 100
-		boyfriend.x, boyfriend.y = 100, 70
 
 		houseStage = getStage 'festival'
 
-		local bg = newSprite('dave/backgrounds/void/interdimensions/interdimensionVoid', 0, 0)
+		local bg = newSprite('dave/backgrounds/void/interdimensions/interdimensionVoid', -700, -350)
 		bg.shader = shaders:GLITCH()
 		bg:getImage():setFilter('nearest', 'nearest')
 		bg.sizeX, bg.sizeY = 1.75, 1.75
@@ -880,12 +824,12 @@ local stages = {
 			function()
 				bg:setImage(voidBg 'spike')
 				bg.sizeX, bg.sizeY = 3, 3
-				bg.x = bg.x - math.abs(-700-200)
+				bg.x, bg.y = -200, 0
 			end,
 			function()
 				bg:setImage(voidBg 'darkSpace')
-				bg.sizeX, bg.sizeY = 2.75, 2.75
-				bg.x = 0
+				bg.sizeX, bg.sizeY = 3, 3
+				bg.x, bg.y = -200, 0
 				Timer.tween(1, colorThing, {0, 0, 255})
 			end,
 			function()
@@ -895,13 +839,14 @@ local stages = {
 			end,
 			function()
 				bg:setImage(voidBg 'nimbi/nimbiVoid')
-				bg.sizeX, bg.sizeY = 2.75, 2.75
+				bg.sizeX, bg.sizeY = 3, 3
 
 				nimbiLand.dontdraw = false
 				nimbiSign.dontdraw = false
 			end,
 			function()
 				bg:setImage(voidBg 'interdimensionVoid')
+				bg.x, bg.y = -700, -350
 				bg.sizeX, bg.sizeY = 1.75, 1.75
 				nimbiLand.dontdraw = true
 				nimbiSign.dontdraw = true
@@ -926,10 +871,10 @@ local stages = {
 	end,
 	backyard = function()
 		zoom = 0.7
-		local aaa = point(900, 900)
-		girlfriend.x, girlfriend.y = 400 - aaa.x, 130 - aaa.y
-		enemy.x, enemy.y = -200 - aaa.x, 250 - aaa.y
-		boyfriend.x, boyfriend.y = 770 - aaa.x, 450 - aaa.y
+		girlfriend.x, girlfriend.y = 500, -100
+		enemy.x, enemy.y = 50, 300
+		boyfriend.x, boyfriend.y = 790, 300
+		fullMode = true
 
 		
 		local sunrise, sky
@@ -938,40 +883,40 @@ local stages = {
 			sky.scrollFactor = point(0.6, 0.6)
 			add(sky)
 
-			sunrise = newSprite('dave/backgrounds/shared/sky_sunrise', -600, -230)
+			sunrise = newSprite('dave/backgrounds/shared/sky_sunrise', -600, -400)
 			sunrise.scrollFactor = point(0.6, 0.6)
 			sunrise.alpha = 1
 			add(sunrise)
 		end
 
-		local bg = newSprite('dave/backgrounds/shared/sky_festival', 450, -580)
+		local bg = newSprite('dave/backgrounds/shared/sky_festival', -600, -400)
 		bg.scrollFactor = point(0.6, 0.6)
 		bg.alpha = 1
 		add(bg)
 
-		local hills = newSprite('dave/backgrounds/backyard/hills', -810, -165)
+		local hills = newSprite('dave/backgrounds/backyard/hills', -1330, -432)
 		hills.scrollFactor = point(0.75, 0.75)
 		add(hills)
 
-		local grass = newSprite('dave/backgrounds/backyard/supergrass', -285, 95)
+		local grass = newSprite('dave/backgrounds/backyard/supergrass', -800, 150)
 		add(grass)
 
-		local gates = newSprite('dave/backgrounds/backyard/gates', -86, -353)
+		local gates = newSprite('dave/backgrounds/backyard/gates', 564, -33)
 		add(gates)
 
 		--thats a bear!
-		--local bear = newSprite('dave/backgrounds/backyard/bearDude', fromTopLeft(-1035, -710))
-		--bear.scrollFactor = point(0.95, 0.95)
-		--add(bear)
+		local bear = newSprite('dave/backgrounds/backyard/bearDude', -1035, -710)
+		bear.scrollFactor = point(0.95, 0.95)
+		add(bear)
 
-		local house = newSprite('dave/backgrounds/backyard/house', -1425, -333)
+		local house = newSprite('dave/backgrounds/backyard/house', -1025, -323)
 		house.scrollFactor = point(0.95, 0.95)
 		add(house)
 
 		
 		addChars()
 		
-		local grill = newSprite('dave/backgrounds/backyard/grill', -1614, 97)
+		local grill = newSprite('dave/backgrounds/backyard/grill', -489, 452)
 		grill.scrollFactor = point(0.95, 0.95)
 		add(grill)
 
@@ -1259,13 +1204,13 @@ local stages = {
 	roof = function()
 		zoom = 0.8
 		local roof = graphics.newImage(paths.image'dave/backgrounds/gm_house5', {full=true})
-		roof.x, roof.y = 2629, 1672
+		roof.x, roof.y = -584, -397
 		roof.sizeX, roof.sizeY = 2, 2
 		add(roof)
 
-		girlfriend.x, girlfriend.y = -74.5 + 250, -174 + 300
-		enemy.x, enemy.y = -825 + 250, 132 + 125
-		boyfriend.x, boyfriend.y = 759, 343
+		girlfriend.x, girlfriend.y = 232, -1
+		enemy.x, enemy.y = -3, 467
+		boyfriend.x, boyfriend.y = 859, 343
 
 		addChars()
 		--local moveSpr = enemy
@@ -1332,6 +1277,69 @@ local stages = {
 		end
 
 		addChars()
+	end,
+	desert = function()
+		zoom = 0.5
+		fullMode = true
+		girlfriend.x, girlfriend.y = 400, 130
+		enemy.x, enemy.y = 100 - 160, 450 - 350
+		boyfriend.x, boyfriend.y = 770 - 275, 450 - 160
+
+		local bg = newSprite('dave/backgrounds/shared/sky', -900, -400)
+		bg.sizeX, bg.sizeY = 2, 2
+		add(bg)
+
+		local sunsetBG = newSprite('dave/backgrounds/shared/sky_sunset', -900, -400)
+		sunsetBG.alpha = 0
+		sunsetBG.sizeX, sunsetBG.sizeY = 2, 2
+		add(sunsetBG)
+
+		local desertBG	= newSprite('dave/backgrounds/wedcape_from_cali_backlground', -786, -500)
+		desertBG.sizeX, desertBG.sizeY = 1.2, 1.2
+		add(desertBG)
+
+		local desertBG2	= newSprite('dave/backgrounds/wedcape_from_cali_backlground', -786 - desertBG.width, -500)
+		desertBG2.sizeX, desertBG.sizeY = 1.2, 1.2
+		add(desertBG2)
+
+		local sign = newSprite('dave/california/leavingCalifornia', 500, 450)
+		add(sign)
+
+		local train = graphics:newAnimatedSprite('dave/california/train', {
+			{name = 'trainRide', anim = 'idle', loops = true, fps = 0}
+		}, 'idle')
+		train.x, train.y = -800, 500
+		train.sizeX, train.sizeY = 2.5, 2.5
+		train.image:setFilter(getAA(false))
+		add(train)
+
+		addChars()
+
+		local signs = {'1500miles', '1000miles', '500miles', 'welcomeToGeorgia', 'georgia'}
+
+		--for _,v in pairs(signs) do paths.image('dave/backgrounds//'v) end
+
+		if funkin.curSong:lower() == 'escape-from-california' then
+			local tweenTime = sectionStartTime(56) / 1000
+			function songStart()
+				enemyObject:playAnim ('helpMe', false, function()
+					enemyObject.skipOtherAnims = false
+				end)
+				enemyObject.skipOtherAnims = true
+			end
+			local trainSpeed = {0}
+			local scrollSpeed = 1000
+			Timer.tween(2, trainSpeed, {1}, nil, {during = function()
+				train:setAnimSpeed(lerp(0, 24, trainSpeed[1]/30))
+			end})
+			onUpdate = function(dt)
+				desertBG.x = desertBG.x - trainSpeed[1] * scrollSpeed * dt
+				if desertBG.x <= -(desertBG.width) + (desertBG.width - 1280) then
+					desertBG.x = desertBG.width - 1280
+				end
+				desertBG2.x = desertBG.x - desertBG.width
+			end
+		end
 	end,
 }
 return {

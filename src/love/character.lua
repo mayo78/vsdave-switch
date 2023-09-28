@@ -60,7 +60,7 @@ function c:new (character, isPlayer)
 		o.healthbarColors[i] = c/255
 	end
 	local lastAnim
-	function o:playAnim(animName, loopAnim)
+	function o:playAnim(animName, loopAnim, after)
 		self.sprite.color2 = nil
 		if self.skipOtherAnims then return end
 		if animName:startsWith 'singLEFT' and (o.sprite.sizeX < 0) then animName = 'singRIGHT'..animName:sub(9)

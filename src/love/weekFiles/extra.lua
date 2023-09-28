@@ -11,11 +11,12 @@ local a = {
       'dave',
       'other'
     },
-    {
-      'Bot-Trot',
-      'playrobot',
-      'A296BC'
-    },
+    -- :(
+    --{
+    --  'Bot-Trot',
+    --  'playrobot',
+    --  'A296BC'
+    --},
     {
       'Escape-From-California',
       'Moldy',

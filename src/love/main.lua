@@ -442,6 +442,7 @@ function love.mousepressed(x, y, button, istouch, presses)
 end
 
 function love.update(dt)
+	lovedt = dt
 	if screenAngle ~= 0 then
 		screenRadian = screenAngle * DEGREE_TO_RADIAN
 	end

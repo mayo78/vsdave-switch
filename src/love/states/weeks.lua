@@ -32,7 +32,7 @@ local ExploitationModchartType = {
 	Sex = 8,
 }
 
-local CharacterFunnyEffect = {
+CharacterFunnyEffect = {
 	None = 1,
 	Dave = 2,
 	Bambi = 3,
@@ -395,7 +395,9 @@ return {
 				gf = 'gf-3d'
 			end
 		end
-		if isFiveNights then nogf = true end
+		if isFiveNights or curSong:lower() == 'escape-from-california' or curSong:lower() == 'memory' or curSong:lower() == 'overdrive' then 
+			nogf = true 
+		end
 
 		girlfriendObject = addCharToList(2, gf)
 		girlfriend = girlfriendObject.sprite
@@ -1167,6 +1169,7 @@ return {
 													openSubstate(dialogue, false, 'greetings-cutscene', true)
 												end)
 											end)
+											if songStart then songStart() end
 										end
 									end
 								)
@@ -2139,6 +2142,7 @@ return {
 		love.graphics.pop()
 	end,
 	leave = function(self)
+		songStart = nil --its GOTTA BE HERE!!
 		resetOverlays()
 		Timer.clear()
 	end,

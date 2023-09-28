@@ -110,23 +110,24 @@ makeCommand('admin', getAwesome('term_admin_ins'), function(...)
 	  if args[1] == 'grant' then
 		local argStuff = {
 		  ['dave.dat'] = function()
-			terminalModChart = 'house'
+			terminalModChart = CharacterFunnyEffect.Dave
 			loadSong 'house'
 		  end,
 		  ['tristan.dat'] = function()
-			terminalModChart = 'tristan'
+			terminalModChart = CharacterFunnyEffect.Tristan
 			loadSong('house', -1)
 		  end,
 		  ['exbungo.dat'] = function()
-			terminalModChart = 'exbungo'
+			terminalModChart = CharacterFunnyEffect.Exbungo
 			songs = {"house","insanity","polygonized","five-nights","splitathon","shredder"}
 			loadSong(songs[getRandomInt(1, #songs)], -1)
 		  end,
 		  ['bambi.dat'] = function()
-			terminalModchart = 'bambi'
+			terminalModchart = CharacterFunnyEffect.Bambi
 			loadSong('shredder', -1)
 		  end,
 		  ['recurser.dat'] = function()
+			terminalModChart = CharacterFunnyEffect.Recurser
 			weirdPolygonized = true
 			loadSong 'polygonized'
 		  end,
