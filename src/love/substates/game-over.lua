@@ -57,9 +57,6 @@ return {
 			spr:setCentered(true)
 			spr.x, spr.y = spr.x - (spr.width/2), spr.y + (spr.height/2)
 			Timer.tween(2, spr, {alpha = 0, sizeX = 0.05, sizeY = 0.05}, 'in-out-expo', {
-				after = function()
-					
-				end,
 				during = function(dt)
 					angle = angle + (dt/100) * 2.5
 					spr.orientation = angle * RADIAN_TO_DEGREE

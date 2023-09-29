@@ -454,7 +454,7 @@ return {
 			)
 		end
 
-		object:animate(animName, loopAnim)
+		object:animate(animName)
 
 		--print('new obj with a width of', object.width)
 

@@ -72,7 +72,7 @@ function c:new (character, isPlayer)
 			return;
 		end
 		o.playingAnim = true
-		self.sprite:animate(animName, after) --idk if nil would mess anything up
+		self.sprite:animate(animName, after)
 		if animName:startsWith 'sing' then
 			o.singTimer = o.singDuration
 		end

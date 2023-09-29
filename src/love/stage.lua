@@ -26,8 +26,8 @@ local fullMode
 
 
 local songtostage = {
-	house = {'warmup', 'house', 'insanity', 'supernovae', 'glitch'},
-	farm = {'blocked', 'corn-theft', 'maze', 'splitathon', 'mealie'},
+	house = {'warmup', 'house', 'insanity', 'supernovae', 'glitch', 'memory'},
+	farm = {'blocked', 'corn-theft', 'maze', 'splitathon', 'mealie', 'indignancy'},
 	festival = {'shredder', 'greetings'},
 	void = {'polygonized', 'cheating', 'unfairness', 'exploitation'},
 	desktop = {'expoitation'},
@@ -366,24 +366,27 @@ local stages = {
 		enemy.x = enemy.x + 100
 		local skyType = jsonChart.stage == 'farm-night' and 'sky_night' or jsonChart.stage == 'farm-sunset' and 'sky_sunset' or 'sky'
 		--skyType = 'sky_sunset'
-		local nighty = {'splitathon', 'mealie'}
+		local nighty = {'splitathon', 'mealie', 'indignancy'}
 		if table.contains(nighty, jsonChart.song:lower()) then skyType = 'sky_night' end
 		local sunsetBG, nightBG, globalColor
 		local tweenTime = sectionStartTime(25) / 1000
 		--local globalColorController = 
 		if jsonChart.song:lower() == 'maze' then
 			nightBG = newSprite('dave/backgrounds/shared/sky_night', -600, -200)
-			nightBG.alphaMult = 1
+			nightBG.alpha = 1
+			nightBG.sky = true
 			nightBG.scrollFactor = point(0.65, 0.65)
 			add(nightBG)
 			sunsetBG = newSprite('dave/backgrounds/shared/sky_sunset', -600, -200)
-			sunsetBG.alphaMult = 1
+			sunsetBG.alpha = 1
+			sunsetBG.sky = true
 			sunsetBG.scrollFactor = point(0.65, 0.65)
 			add(sunsetBG)
 			globalColor = {255, 255, 255}
 		end
 		local bg = newSprite('dave/backgrounds/shared/'..skyType, -600, -200)
-		bg.alphaMult = 1
+		bg.alpha = 1
+		bg.sky = true
 		bg.scrollFactor = point(0.65, 0.65)
 		add(bg)
 
@@ -452,8 +455,8 @@ local stages = {
 					Timer.tween(tweenTime, globalColor, sunsetColor, nil, function()
 						Timer.tween(tweenTime, globalColor, nightColor)
 					end)
-					Timer.tween(tweenTime, bg, {alphaMult = 0}, nil, function()
-						Timer.tween(tweenTime, sunsetBG, {alphaMult = 0})
+					Timer.tween(tweenTime, bg, {alpha = 0}, nil, function()
+						Timer.tween(tweenTime, sunsetBG, {alpha = 0})
 					end)
 				end
 			end,
@@ -526,8 +529,10 @@ local stages = {
 		onUpdate = function(dt)
 			if update then update(dt) end
 			for _,spr in pairs(sprites) do
-				spr.color = globalColor
-				--print('this spr color should be global color lol!')
+				if not spr.sky then
+					spr.color = globalColor
+					--print('this spr color should be global color lol!')
+				end
 			end
 			enemy.color = globalColor
 			boyfriend.color = globalColor
@@ -752,6 +757,7 @@ local stages = {
 		return sprs
 	end,
 	interdimensional = function()
+		fullMode = true
 		zoom = 0.6
 
 		houseStage = getStage 'festival'
@@ -1477,7 +1483,12 @@ local stages = {
 		local powerDrainer = 1
 		local power = 100
 		local doorChanging = false
-		--powerMeter = graphics.newImage()
+		local powerRanOut = false
+		local powerPrint
+		local powerMeter = graphics.newImage(paths.image 'dave/fiveNights/powermeter')
+		powerMeter.x, powerMeter.y = 800, 425
+		local none, full = powerMeter:getImage(), paths.image 'dave/fiveNights/powermeter_2'
+		local sixam = false
 		if funkin.curSong:lower() == 'five-nights' then
 			local me = {
 				swap = function()
@@ -1485,8 +1496,13 @@ local stages = {
 				end,
 				attack = function()
 					print 'nofriend attack'
+					local hi = paths.sounds('fiveNights/run'..love.math.random(1,2))
+					hi:play()
 					enemyObject:playAnim('attack', function()
 						if doorClosed then
+							paths.sounds'fiveNights/slam':stop()
+							paths.sounds'fiveNights/slam':play()
+							hi:stop()
 							enemyObject.skipOtherAnims = false
 							enemyObject:playAnim('fail', function()
 								enemyObject.skipOtherAnims = false
@@ -1497,6 +1513,10 @@ local stages = {
 						end
 					end)
 					enemyObject.skipOtherAnims = true
+				end,
+				['6am'] = function()
+					sixam = true
+					paths.sound 'fiveNights/yay':play()
 				end
 			}
 			weeks.bookmarkEvents = function(n, v)
@@ -1504,11 +1524,53 @@ local stages = {
 				if me[n] then me[n](v) end
 			end
 		end
-		for _,v in pairs{'yay', 'doorInteract', 'error', 'powerOut', 'run1', 'run2', 'scream', 'slam', 'static'} do
+		for _,v in pairs{'yay', 'doorInteract', 'error', 'run1', 'run2', 'scream', 'slam', 'static'} do
 			paths.sounds('fiveNights/'..v)
 		end
-		onUpdate = function()
-			if controls.pressed.gameFive and not doorChanging then
+		local me = paths.sound 'fiveNights/powerOut'
+		local times = {12, 1, 2, 3, 4, 5}
+		local curTime = 12
+		local function deathLoop()
+			Timer.after(love.math.random(2,4), function()
+				if love.math.random(0,4) == 0 then
+					health = 0
+					closeSubstate()
+					openSubstate(gameOverFnaf)
+				else
+					deathLoop()
+				end
+			end)
+		end
+		local poweroutsubstate = {
+			enter = function()
+				love.audio.stop()
+				Timer.clear()
+				me:play()
+				deathLoop()
+			end,
+			draw = function()
+				love.graphics.setColor(0,0,0)
+				love.graphics.rectangle('fill', 0, 0, 1280, 720)
+				love.graphics.setColor(1,1,1)
+				powerMeter:draw()
+			end,
+			update = function(self, dt)
+				Timer.update(dt)
+			end,
+			leave = function()
+			
+			end,
+		}
+		onUpdate = function(dt)
+			curTime = math.max(math.min(math.floor(musicTime / 1000 / (((stepCrochet / 1000) * 1000) / (#times - 1))), #times), 0)
+			local mx, my = love.mouse.getPosition()
+			local x = (doorButton.x + (cam.x + camOffsetPos.x + shakeOffset.x) + 730) * curCamZoom
+			local y = (doorButton.y + (cam.y + camOffsetPos.y + shakeOffset.y) + 340) * curCamZoom
+			local width = doorButton.width * curCamZoom
+			local height = doorButton.height * curCamZoom
+			local overlap = (mx > x and mx < x + width and my > y and my < y + height)
+			--fpsAdd = {x, y, mx, my, tostring(overlap)}
+			if (controls.pressed.gameFive or (love.mouse.isDown(1) and overlap)) and not doorChanging then
 				doorClosed = not doorClosed
 				doorButton:setImage(paths.image(doorClosed and 'dave/fivenights/btn_doorClosed' or 'dave/fivenights/btn_doorOpen'))
 				powerDrainer = doorClosed and 3 or 1
@@ -1516,14 +1578,42 @@ local stages = {
 				door:animate(doorClosed and 'doorOpen' or 'doorShut', function()
 					doorChanging = false
 				end)
+				powerMeter:setImage(doorClosed and full or none)
 				paths.sounds 'fiveNights/doorInteract':stop()
 				paths.sounds 'fiveNights/doorInteract':play()
+			end
+			power = power - (dt / 3) * powerDrainer
+			if power <= 0 and not powerRanOut and curStep < 1088 then
+				powerRanOut = true
+				openSubstate(poweroutsubstate)
+			end
+			--if love.keyboard.isDown 't' then
+			--	power = power - dt * 25
+			--end
+		end
+		extraHud = function()
+			if sixam then
+				love.graphics.setColor(0,0,0)
+				love.graphics.rectangle('fill', -1280/2, -720/2, 1280, 720)
+				love.graphics.setColor(1,1,1)
+				fonts('fnaf', 180)
+				love.graphics.print('6 AM', -curFont:getWidth '6 AM'/2, -curFont:getHeight())
+			else
+				fonts('fnaf', 120)
+				local am = times[curTime + 1]..'AM'
+				printfOutline(am, 150 + ((1175 - 1280/2) - curFont:getWidth(am))/0.7, (24 - (720/2))/0.7, nil, {depth = 0.25})
+				fonts('fnaf', 68)
+				printfOutline('Night 7', 150 + ((1175 - 1280/2) - curFont:getWidth 'Night 7')/0.7, (70 - (720/2))/0.7)
+				local pwer = 'Power Left: '..math.floor(power)..'%'
+				printfOutline(pwer, 150 + ((1100 - 1280/2) - curFont:getWidth(pwer))/0.7, 435)
+				powerMeter:draw()
 			end
 		end
 	end,
 }
 return {
 	enter = function(self, from, songNum, songAppend)
+		extraHud = nil
 		fullMode = false
 		stopthisnow = false
 		hudShader = nil
@@ -1727,10 +1817,10 @@ return {
 		return true
 	end,
 	draw = function(self)
+		love.graphics.setCanvas(gameCanvas)
 		love.graphics.push()
 		love.graphics.translate(graphics.getWidth() / 2, graphics.getHeight() / 2)
 		love.graphics.scale(curCamZoom, curCamZoom)
-		love.graphics.push()
 		
 		--if eyesores then
 		--	print 'DO THEM !!'
@@ -1738,13 +1828,28 @@ return {
 		--end
 		if houseStage then drawTable(houseStage) end
 		drawTable(sprites)
-
-
-		love.graphics.pop()
 		weeks:drawRating(0.9)
 		love.graphics.pop()
+
 		if not cutscene then
+			love.graphics.setCanvas(hudCanvas)
 			weeks:drawUI()
+		end
+
+		love.graphics.setCanvas(globalCanvas)
+		if gameShader then
+			love.graphics.setShader(gameShader)
+		end
+		love.graphics.draw(gameCanvas)
+		if gameShader then
+			love.graphics.setShader()
+		end
+		if hudShader then
+			love.graphics.setShader(hudShader)
+		end
+		love.graphics.draw(hudCanvas)
+		if hudShader then
+			love.graphics.setShader()
 		end
 		if scripts then
 			scripts:call 'draw'

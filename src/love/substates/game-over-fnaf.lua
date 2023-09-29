@@ -1,8 +1,10 @@
 local static, scream, static
 local jumpscareDone
+local fade
 return {
 	enter = function()
 		love.audio.stop()
+		fade = {1}
 		Timer.clear()
 		paths.sounds 'fiveNights/scream':play()
 		jumpscareDone = false
@@ -20,6 +22,11 @@ return {
 			jumpscareDone = true
 			paths.sounds 'fiveNights/scream':stop()
 			paths.sounds 'fiveNights/static':play()
+			Timer.after(2.7, function()
+				Timer.tween(2, fade, {v = 0}, nil, function()
+					switchState(stage)
+				end)
+			end)
 		end
 	end,
 	update = function(self, dt)
@@ -28,13 +35,14 @@ return {
 		else
 			static:update(dt)
 		end
+		Timer.update(dt)
 	end,
 	draw = function()
 		love.graphics.push()
 		love.graphics.setColor(0,0,0)
 		love.graphics.rectangle('fill', 0, 0, 1280, 720)
 		love.graphics.translate(1280/2, 720/2)
-		love.graphics.setColor(1,1,1)
+		love.graphics.setColor(fade[1], fade[1], fade[1])
 		if not jumpscareDone then
 			scream:draw()
 		else

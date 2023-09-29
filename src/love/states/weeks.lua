@@ -120,6 +120,9 @@ local NOTE_WIDTH, NOTE_HEIGHT = 165, 160 --general widths, not exact but close e
 
 local isFiveNights
 
+gameCanvas = love.graphics.newCanvas(1920, 1080)
+hudCanvas = love.graphics.newCanvas(1920, 1080)
+
 local function addCharToList(type, char)
 	if type == 1 then
 		print('my dad')
@@ -309,9 +312,9 @@ return {
 		resetOverlays()
 		elapseduitime = 0
 		stageMode = false
-		globalShader = nil
 		blockedShader = nil
 		hudShader = nil
+		gameShader = nil
 		camShaking = false
 		subtitleIndex = 0
 		table.clear(subtitles)
@@ -585,6 +588,7 @@ return {
 		shapeWarning = nil
 		for i=1,8 do
 			local dir = animList[((i-1)%4)+1]
+			if terminalModChart == CharacterFunnyEffect.Bambi then dir = animList[3] end
 			local tex
 			if i > 4 then tex = boyfriendObject.is3D and 'NOTE_assets_3D' or 'NOTE_assets'
 			else tex = enemyObject.is3D and 'NOTE_assets_3D' or 'NOTE_assets'
@@ -783,6 +787,9 @@ return {
 					local anims = {
 						{anim = 'on', name = (ghNote and colors[note[2]+1]..' Note' or colors[id]..'0'), fps = 0}
 					}				
+					if terminalModChart == CharacterFunnyEffect.Bambi then
+						anims[1].name = (ghNote and colors[3]..' Note' or colors[3]..'0')
+					end
 					if note[4] == 'normal' or note[4] == '' or weirdPolygonized then 
 						note[4] = nil
 					end
@@ -909,7 +916,7 @@ return {
 						end
 						--print ('can we do this please', noteDataTable[id][#noteTable[id]].isSustain)
 						if curSong:lower() ~= 'unfairness' and curSong:lower() ~= 'exploitation' and settings.modcharts or not settings.modcharts then
-							noteTable[id][#noteTable[id]]:animate('end', true)
+							noteTable[id][#noteTable[id]]:animate 'end'
 							if settings.downscroll then noteTable[id][#noteTable[id]].sizeY = -1 end
 						end
 						--print(noteTable[id][#noteTable[id]]:getAnimName(), 'tguis is AFTER GJNDSJKLGJSDGJH')
@@ -1405,6 +1412,9 @@ return {
 			local boyfriendNoteData = boyfriendNoteData[i]
 			local curAnim = animList[i]
 			local curInput = inputList[i]
+			if terminalModChart == CharacterFunnyEffect.Bambi then
+				curInput = inputList[3]
+			end
 
 			local noteNum = i
 
@@ -1592,6 +1602,8 @@ return {
 					--print(enemyArrow, i)
 					if settings.modcharts and curSong:lower() == 'cheating' then
 						enemyArrows[noteNum]:animate('confirm', false)
+					elseif terminalModChart == CharacterFunnyEffect.Bambi then
+						enemyArrows[3]:animate('confirm', false)
 					else
 						enemyArrow:animate("confirm", false)
 					end
@@ -1711,6 +1723,8 @@ return {
 
 						if shapeArrows and strumsAreShapes then
 							shapeArrows[noteNum]:animate 'confirm'
+						elseif terminalModChart == CharacterFunnyEffect.Bambi then
+							boyfriendArrows[3]:animate('confirm')
 						else
 							boyfriendArrow:animate("confirm", false)
 						end
@@ -1971,9 +1985,9 @@ return {
 			graphics.setColor(1, 1, 1, 1)
 		end
 		love.graphics.translate(lovesize.getWidth() / 2, lovesize.getHeight() / 2)
-		if hudShader then
-			love.graphics.setShader(hudShader)
-		end
+		--if hudShader then
+		--	love.graphics.setShader(hudShader)
+		--end
 		
 		if shredderHighway then --whatever
 			if shredderHighway.alpha > 0 then
@@ -2081,7 +2095,7 @@ return {
 		--print(totalNotes, notesHit)
 		if totalNotes == 0 then accuracy = 0 end
 		fonts(hudFont, 32 * hudFontScale)
-		local txt = lm.string.play_score..' ' .. score..' | '..lm.string.play_miss..' '..misses..' | '..lm.string.play_accuracy..': '..(math.floor(accuracy*1000)/10)..'%'
+		local txt = lm.string.play_score..' ' .. score..' | '..lm.string.play_miss..' '..misses..' | '..lm.string.play_accuracy..' '..(math.floor(accuracy*1000)/10)..'%'
 		printfOutline(txt, -curFont:getWidth(txt)/2, healthBarOverlay.y + 25, nil, {alpha = hudAlpha[1]})
 
 		fonts(hudFont, (16/0.7) * hudFontScale)
@@ -2133,9 +2147,10 @@ return {
 			countdown:draw()
 			graphics.setColor(1, 1, 1)
 		end
-		if hudShader then
-			love.graphics.setShader()
-		end
+		if extraHud then extraHud() end
+		--if hudShader then
+		--	love.graphics.setShader()
+		--end
 		love.graphics.pop()
 		love.graphics.push()
 		love.graphics.setColor(0,0,0)
@@ -2260,8 +2275,8 @@ return {
 			end,
 			eyesores = function()
 				if not weirdPolygonized then
-					if settings.eyesores and not globalShader then
-						globalShader = screenShader.shader
+					if settings.eyesores and not gameShader then
+						gameShader = screenShader.shader
 					end
 					if settings.eyesores then
 						screenShaderOn = not screenShaderOn

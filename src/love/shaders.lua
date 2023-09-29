@@ -39,7 +39,9 @@ local GLITCH_FRAG = [[
 	vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
 	{
 		vec2 uv = sineWave(texture_coords);
-		return texture2D(texture, uv);
+		vec4 coolCol = texture2D(texture, uv);
+		coolCol.w *= color.w;
+		return coolCol;
 	}
 
 ]]

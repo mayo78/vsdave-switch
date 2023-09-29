@@ -101,9 +101,9 @@ local function nextDial()
 		speechBubble:animate((curDial.emotion == 'shocked' or curDial.emotion == 'sad') and 'loudOpen' or 'open')
 		speechBubble.onAnimComplete = function(n)
 			if (curDial.emotion == 'shocked' or curDial.emotion == 'sad') then
-				speechBubble:animate('loud', true)
+				speechBubble:animate('loud')
 			else
-				speechBubble:animate('idle', true)
+				speechBubble:animate('idle')
 			end
 			dialLoop()
 			speechBubble.onAnimComplete = nil

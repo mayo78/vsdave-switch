@@ -298,7 +298,7 @@ function love.load()
 		reloadInput = require "input"
 		input = reloadInput()
 		local w,h = love.window.getMode()
-		shaderCanvas = love.graphics.newCanvas(1920, 1080)
+		globalCanvas = love.graphics.newCanvas(1920, 1080)
 
 		controls = {pressed = {}, down = {}, released = {}}
 		for k,t in pairs(controls) do --so you cn do this: controls.pressed.up, controls.down.up, etc
@@ -482,7 +482,7 @@ end
 function love.draw()
 	
 	if not isLoading then
-		love.graphics.setCanvas(shaderCanvas)
+		love.graphics.setCanvas(globalCanvas)
 		love.graphics.clear()
 		graphics.screenBase(lovesize.getWidth(), lovesize.getHeight())
 		lovesize.begin()
@@ -505,7 +505,7 @@ function love.draw()
 		end	
 		
 		fonts('comic', 16)
-		love.graphics.print(" FPS: ".. love.timer.getFPS()) --..'\n ≈RAM:'..math.floor((love.graphics.getStats().texturememory + collectgarbage 'count')/1048576) .. 'MB', 0, 0, 9999)
+		love.graphics.print(" FPS: ".. love.timer.getFPS()) --..'\n ≈RAM:'..math.floor((love.graphics.getStats().texturememory + collectgarbage 'count')/1048576) .. 'MB', 0, 0, 9999
 		fonts('comic', 24)
 		
 		lovesize.finish()
@@ -514,9 +514,9 @@ function love.draw()
 			love.graphics.setShader(globalShader)
 		end
 		if screenRadian == 0 then
-			love.graphics.draw(shaderCanvas, 0, 0, 0)
+			love.graphics.draw(globalCanvas, 0, 0, 0)
 		else
-			love.graphics.draw(shaderCanvas, 1280/2, 720/2, screenRadian, 1, 1, 1280/2, 720/2)
+			love.graphics.draw(globalCanvas, 1280/2, 720/2, screenRadian, 1, 1, 1280/2, 720/2)
 		end
 		graphics.screenBase(love.graphics.getWidth(), love.graphics.getHeight())
 		love.graphics.setShader()
@@ -525,6 +525,11 @@ function love.draw()
 		fonts('comic', 16)
 		for i,v in pairs(printBuffer) do
 			love.graphics.print(v.print, 0, (i + 1) * 18)
+		end
+		if fpsAdd and #fpsAdd > 0 then
+			love.graphics.setColor(1,1,0)
+			love.graphics.print(table.concat(fpsAdd, '\n'), 0, 32)
+			love.graphics.setColor(1,1,1)
 		end
 	else
 		love.graphics.setColor(.4, .4, .4)

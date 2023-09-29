@@ -54,7 +54,7 @@ local function change(how)
     if curSelected <= 0 then curSelected = #optionShit
     elseif curSelected > #optionShit then curSelected = 1
     end
-    for i,icon in pairs(icons) do icon:animate((i == curSelected) and 'select' or 'idle', true) end
+    for i,icon in pairs(icons) do icon:animate((i == curSelected) and 'select' or 'idle') end
     bigIcons:animate(optionShit[curSelected], false)
     if how ~= 0 then love.audio.play(selectSound) end
 end
