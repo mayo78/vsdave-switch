@@ -38,6 +38,7 @@ local songtostage = {
 	roof = {'roofs'},
 	['inside-house'] = {'bonus-song'},
 	desert = {'escape-from-california'},
+	office = {'five-nights'},
 }
 local playedCutscene
 
@@ -447,12 +448,14 @@ local stages = {
 		local update
 		local songStuff = {
 			maze = function()
-				Timer.tween(tweenTime, globalColor, sunsetColor, nil, function()
-					Timer.tween(tweenTime, globalColor, nightColor)
-				end)
-				Timer.tween(tweenTime, bg, {alphaMult = 0}, nil, function()
-					Timer.tween(tweenTime, sunsetBG, {alphaMult = 0})
-				end)
+				songStart = function()
+					Timer.tween(tweenTime, globalColor, sunsetColor, nil, function()
+						Timer.tween(tweenTime, globalColor, nightColor)
+					end)
+					Timer.tween(tweenTime, bg, {alphaMult = 0}, nil, function()
+						Timer.tween(tweenTime, sunsetBG, {alphaMult = 0})
+					end)
+				end
 			end,
 			splitathon = function()
 				local bambi = character 'bambi-splitathon'
@@ -948,15 +951,17 @@ local stages = {
 			--end
 		end
 		if jsonChart.song:lower() == 'rano' then
-			local timey = sectionStartTime(56) / 1000
-			Timer.tween(timey, colory, sunsetColor)
-			Timer.tween(timey, bg, {alpha = 0}, nil, function()
-				Timer.tween(timey, sunrise, {alpha = 0})
-				Timer.tween(timey, colory, {255, 255, 255})
-			end)
-			weeks.bookmarkEvents = function(n)
-				if n == 'dostuffnow' then
-					enemyObject.idleAnim = 'sleepIdle'
+			songStart = function()
+				local timey = sectionStartTime(56) / 1000
+				Timer.tween(timey, colory, sunsetColor)
+				Timer.tween(timey, bg, {alpha = 0}, nil, function()
+					Timer.tween(timey, sunrise, {alpha = 0})
+					Timer.tween(timey, colory, {255, 255, 255})
+				end)
+				weeks.bookmarkEvents = function(n)
+					if n == 'dostuffnow' then
+						enemyObject.idleAnim = 'sleepIdle'
+					end
 				end
 			end
 		end
@@ -1029,13 +1034,13 @@ local stages = {
 
 		local darksky = graphics.newImage(img 'recursed/darksky', full)
 		darksky.sizeX, darksky.sizeY = ((1/zoom) * 2), 1/zoom
-		darksky.x = darksky.x + 2000
-		darksky.y = (darksky.height*darksky.sizeY) / 2
+		darksky.x = -1280*2
+		darksky.y = (720 - (darksky.height*darksky.sizeY)) / 2
 		add(darksky)
 
 		local darksky2 = graphics.newImage(img 'recursed/darksky', full)
 		darksky2.sizeX, darksky2.sizeY = ((1/zoom) * 2), 1/zoom
-		darksky2.y = (darksky2.height*darksky2.sizeY) / 2
+		darksky2.y = darksky.y
 		add(darksky2)
 
 		local freeplayBG = graphics.newImage(paths.image(daveBG))
@@ -1284,23 +1289,49 @@ local stages = {
 		girlfriend.x, girlfriend.y = 400, 130
 		enemy.x, enemy.y = 100 - 160, 450 - 350
 		boyfriend.x, boyfriend.y = 770 - 275, 450 - 160
+		enemyObject.camPos.y = enemyObject.camPos.y - 100
+		boyfriendObject.camPos.y = boyfriendObject.camPos.y - 100
 
-		local bg = newSprite('dave/backgrounds/shared/sky', -900, -400)
+		local nightBG = newSprite('dave/backgrounds/shared/sky_night', -1250, -700)
+		nightBG.alpha = 1
+		nightBG.sizeX, nightBG.sizeY = 2, 2
+		nightBG.sky = true
+		nightBG.scrollFactor = point(0.2, 0.2)
+		add(nightBG)
+
+		local sunsetBG = newSprite('dave/backgrounds/shared/sky_sunset', -1250, -700)
+		sunsetBG.alpha = 1
+		sunsetBG.sizeX, sunsetBG.sizeY = 2, 2
+		sunsetBG.sky = true
+		sunsetBG.scrollFactor = point(0.2, 0.2)
+		add(sunsetBG)
+
+		local bg = newSprite('dave/backgrounds/shared/sky', -1250, -700)
 		bg.sizeX, bg.sizeY = 2, 2
+		bg.alpha = 1
+		bg.sky = true
+		bg.scrollFactor = point(0.2, 0.2)
 		add(bg)
 
-		local sunsetBG = newSprite('dave/backgrounds/shared/sky_sunset', -900, -400)
-		sunsetBG.alpha = 0
-		sunsetBG.sizeX, sunsetBG.sizeY = 2, 2
-		add(sunsetBG)
+		
+
+		
 
 		local desertBG	= newSprite('dave/backgrounds/wedcape_from_cali_backlground', -786, -500)
 		desertBG.sizeX, desertBG.sizeY = 1.2, 1.2
 		add(desertBG)
 
 		local desertBG2	= newSprite('dave/backgrounds/wedcape_from_cali_backlground', -786 - desertBG.width, -500)
-		desertBG2.sizeX, desertBG.sizeY = 1.2, 1.2
+		desertBG2.sizeX, desertBG2.sizeY = 1.2, 1.2
 		add(desertBG2)
+
+		
+		local georgia = newSprite('dave/california/geor gea', 400, -50)
+		georgia.dontdraw = true
+		georgia.sizeX, georgia.sizeY = 2.5, 2.5
+		georgia.color = nightColor
+		georgia.sky = true
+		add(georgia)
 
 		local sign = newSprite('dave/california/leavingCalifornia', 500, 450)
 		add(sign)
@@ -1315,29 +1346,178 @@ local stages = {
 
 		addChars()
 
-		local signs = {'1500miles', '1000miles', '500miles', 'welcomeToGeorgia', 'georgia'}
-
-		--for _,v in pairs(signs) do paths.image('dave/backgrounds//'v) end
+		for _,v in pairs{'1500miles', '1000miles', '500miles', 'welcomeToGeorgia'} do paths.image('dave/california/'..v) end
 
 		if funkin.curSong:lower() == 'escape-from-california' then
-			local tweenTime = sectionStartTime(56) / 1000
-			function songStart()
-				enemyObject:playAnim ('helpMe', false, function()
+			local trainSpeed = {0}
+			local scrollSpeed = 100
+			local tend = false
+			local globalColor = {255, 255, 255}
+			songStart = function()
+				local tweenTime = sectionStartTime(56) / 1000
+				Timer.tween(tweenTime, bg, {alpha = 0}, nil, function()
+					Timer.tween(tweenTime, sunsetBG, {alpha = 0})
+				end)
+				Timer.tween(tweenTime, globalColor, sunsetColor, nil, function()
+					Timer.tween(tweenTime, globalColor, nightColor)
+				end)
+				enemyObject:playAnim ('helpMe', function()
 					enemyObject.skipOtherAnims = false
 				end)
+				Timer.tween(2, trainSpeed, {30}, nil, {during = function()
+					train:setAnimSpeed(lerp(0, 24, trainSpeed[1]/30))
+				end})
 				enemyObject.skipOtherAnims = true
 			end
-			local trainSpeed = {0}
-			local scrollSpeed = 1000
-			Timer.tween(2, trainSpeed, {1}, nil, {during = function()
-				train:setAnimSpeed(lerp(0, 24, trainSpeed[1]/30))
-			end})
 			onUpdate = function(dt)
+				for i,v in pairs(sprites) do
+					if not v.sky then
+						v.color = globalColor
+					end
+				end
 				desertBG.x = desertBG.x - trainSpeed[1] * scrollSpeed * dt
 				if desertBG.x <= -(desertBG.width) + (desertBG.width - 1280) then
 					desertBG.x = desertBG.width - 1280
 				end
 				desertBG2.x = desertBG.x - desertBG.width
+				sign.x = sign.x - trainSpeed[1] * scrollSpeed * dt
+				if tend then
+					georgia.x = georgia.x - trainSpeed[1] * scrollSpeed * dt
+				end
+			end
+			local hi = {
+				wa = function()
+					weeks:setCamShaking(true)
+					overlayColor = {1,1,1,alpha=0}
+					Timer.tween(0.6, overlayColor, {alpha=1}, nil, function()
+						weeks:setCamShaking(false)
+						weeks:flash()
+					end)
+				end,
+				wah = function()
+					weeks:setCamShaking(true)
+					enemyObject:playAnim('waa', function()
+						enemyObject.skipOtherAnims = false
+						weeks:setCamShaking(false)
+					end)
+					enemyObject.skipOtherAnims = true
+				end,
+				changeSign = function(v)
+					sign:setImage(paths.image('dave/california/'..v))
+					if v == 'welcomeToGeorgia' then
+						sign.x = 1000
+					else
+						sign.x = 1280 + sign.width
+					end
+				end,
+				fade = function()
+					Timer.tween((crochet * 8) / 1000, overlayColor, {alpha=1}, nil, function()
+						weeks:flash()
+					end)
+				end,
+				['end'] = function()
+					tend = true
+					weeks.bookmarkEvents('changeSign', 'welcomeToGeorgia')
+					desertBG.dontdraw = true
+					desertBG2.dontdraw = true
+					georgia.dontdraw = false
+					Timer.tween(3, trainSpeed, {0}, 'out-expo', {during = function()
+						train:setAnimSpeed(lerp(0, 24, trainSpeed[1]/30))
+					end})
+				end
+			}
+			weeks.bookmarkEvents = function(n, v)
+				if hi[n] then hi[n](v) end
+			end
+		end
+	end,
+	office = function()
+		hudFont = 'fnaf'
+		hudFontScale = 2
+		zoom = 0.9
+		fullMode = true
+
+		enemy.x, enemy.y = 306, 50
+		boyfriend.x, boyfriend.y = 86, 100
+
+		local backdoor = newSprite('dave/backgrounds/office/backFloor', -500, -130)
+		add(backdoor)
+
+		
+		girlfriend.isChar = 2
+		boyfriend.isChar = 0
+		enemy.isChar = 1
+		add(girlfriend)
+		add(boyfriend)
+
+		local floor = newSprite('dave/backgrounds/office/floor', -689, 525)
+		add(floor)
+
+		local dsa = {}
+		for i=22,11,-1 do table.insert(dsa, i) end
+		local doa = {}
+		for i=11,0,-1 do table.insert(doa, i) end
+		local door = graphics:newAnimatedSprite('dave/backgrounds/office/door', {
+			{anim = 'idle', name = 'doorLOL instance 1', fps = 0, indices = {11}},
+			{anim = 'doorShut', name = 'doorLOL instance 1', indices = dsa},
+			{anim = 'doorOpen', name = 'doorLOL instance 1', indices = doa},
+		}, 'idle')
+		door.x, door.y = 68, -152
+		add(door)
+
+		local frontWall = newSprite('dave/backgrounds/office/frontWall', -716, -381)
+		add(frontWall)
+
+		local doorButton = newSprite('dave/fiveNights/btn_doorOpen', 521, 61)
+		add(doorButton)
+
+		add(enemy)
+		
+		local doorClosed = false
+		local powerDrainer = 1
+		local power = 100
+		local doorChanging = false
+		--powerMeter = graphics.newImage()
+		if funkin.curSong:lower() == 'five-nights' then
+			local me = {
+				swap = function()
+					weeks:switchNoteSide()
+				end,
+				attack = function()
+					print 'nofriend attack'
+					enemyObject:playAnim('attack', function()
+						if doorClosed then
+							enemyObject.skipOtherAnims = false
+							enemyObject:playAnim('fail', function()
+								enemyObject.skipOtherAnims = false
+							end)
+							enemyObject.skipOtherAnims = true
+						else
+							health = 0
+						end
+					end)
+					enemyObject.skipOtherAnims = true
+				end
+			}
+			weeks.bookmarkEvents = function(n, v)
+				print('hi', n, me[n])
+				if me[n] then me[n](v) end
+			end
+		end
+		for _,v in pairs{'yay', 'doorInteract', 'error', 'powerOut', 'run1', 'run2', 'scream', 'slam', 'static'} do
+			paths.sounds('fiveNights/'..v)
+		end
+		onUpdate = function()
+			if controls.pressed.gameFive and not doorChanging then
+				doorClosed = not doorClosed
+				doorButton:setImage(paths.image(doorClosed and 'dave/fivenights/btn_doorClosed' or 'dave/fivenights/btn_doorOpen'))
+				powerDrainer = doorClosed and 3 or 1
+				doorChanging = true
+				door:animate(doorClosed and 'doorOpen' or 'doorShut', function()
+					doorChanging = false
+				end)
+				paths.sounds 'fiveNights/doorInteract':stop()
+				paths.sounds 'fiveNights/doorInteract':play()
 			end
 		end
 	end,
@@ -1349,6 +1529,8 @@ return {
 		hudShader = nil
 		jsonChart = weeks:enter()
 		bambcon = nil
+		hudFont = 'comic'
+		hudFontScale = 1
 		print(jsonChart)
 		zoom = nil
 

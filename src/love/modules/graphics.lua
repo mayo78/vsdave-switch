@@ -190,6 +190,8 @@ return {
 
 		local loopAnims = optionsTable and optionsTable.loopers or {}
 
+		local tempCallback
+
 		local object = {
 			x = 0,
 			y = 0,
@@ -219,7 +221,8 @@ return {
 				return sheet
 			end,
 
-			animate = function(self, animName)
+			animate = function(self, animName, _tempCallback)
+				tempCallback = _tempCallback
 				self.curAnim = animName
 				--print('playing this animation!', animName, loopAnim)
 				calledAnimCallback = false
@@ -342,6 +345,9 @@ return {
 						if not calledAnimCallback and self.onAnimComplete then
 							calledAnimCallback = true
 							self.onAnimComplete(anim.name)
+						end
+						if tempCallback then
+							tempCallback()
 						end
 					end
 				end

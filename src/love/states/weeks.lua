@@ -604,13 +604,21 @@ return {
 				i = i - 4
 				boyfriendArrows[i] = spr
 				_boyfriendArrows[i] = spr --hold for when swapping and stuff
-				boyfriendArrows[i].x = 100 + 165 * i
+				if isFiveNights then
+					boyfriendArrows[i].x = -925 + 165 * i
+				else
+					boyfriendArrows[i].x = 100 + 165 * i
+				end
 				boyfriendArrows[i].y = -350 * (settings.downscroll and -1 or 1)
 				boyfriendNotes[i] = {}
 				boyfriendNoteData[i] = {}
 			else
 				enemyArrows[i] = spr
-				enemyArrows[i].x = -925 + 165 * i
+				if isFiveNights then
+					enemyArrows[i].x = 100 + 165 * i
+				else
+					enemyArrows[i].x = -925 + 165 * i
+				end
 				enemyArrows[i].y = -350 * (settings.downscroll and -1 or 1)
 				enemyNotes[i] = {}
 				enemyNoteData[i] = {}
@@ -939,7 +947,7 @@ return {
 						value1 = event[2],
 						value2 = event[3]
 					})
-					--print('adding event', event, value1, value2)
+					print('adding event', event[1], event[2], event[3], section[1])
 					if event[1] == 'Change Character' and not weirdPolygonized then
 						local v1, v2 = event[2], event[3]
 						if v2 == 'bf' and charOverride then
@@ -1067,8 +1075,6 @@ return {
 		end
 		lastReportedPlaytime = 0
 		musicTime = (240 / bpm) * -1000
-
-		musicThres = 0
 		musicPos = 0
 
 		mustHitSection = false
@@ -1141,6 +1147,7 @@ return {
 												end)
 											end
 											sectionEvent(-999)
+											if songStart then songStart() end
 										else
 											Timer.tween(0.5, hudAlpha, {0})
 											local hi = paths.sound 'rumble'
@@ -1169,7 +1176,6 @@ return {
 													openSubstate(dialogue, false, 'greetings-cutscene', true)
 												end)
 											end)
-											if songStart then songStart() end
 										end
 									end
 								)
@@ -1199,7 +1205,6 @@ return {
 		else
 			shakeOffset.x, shakeOffset.y = 0, 0
 		end
-		oldMusicThres = musicThres
 		if countingDown or love.system.getOS() == "Web" then -- Source:tell() can't be trusted on love.js!
 			musicTime = musicTime + 1000 * dt
 		else
@@ -1225,8 +1230,6 @@ return {
 				end
 			end
 		end
-		absMusicTime = math.abs(musicTime)
-		musicThres = math.floor(absMusicTime / 100) -- Since "musicTime" isn't precise, this is needed
 
 		
 		local dsh, dbh = self:updateStep()
@@ -1295,8 +1298,11 @@ return {
 		camOffsetPos.x, camOffsetPos.y = math.lerp(camOffsetPos.x, -camOffset.x, lerpVal), math.lerp(camOffsetPos.y, -camOffset.y, lerpVal)
 
 		for i,event in pairs(songEvents) do
-			if event.strumTime <= absMusicTime then
-				--print('my event is now', event.strumTime, absMusicTime)
+			--if event.strumTime <= 600 then
+			--	print('checking', event.event, event.value1, event.value2, event.strumTime, absMusicTime)
+			--end
+			if event.strumTime <= musicTime then
+				print('my event is now', event.strumTime, musicTime)
 				self:triggerEvent(event.event, event.value1, event.value2)
 				table.remove(songEvents, i)
 			end
@@ -1889,7 +1895,7 @@ return {
 					switchState(endings, 'rtxx_ending', 'badending')
 				end
 			else
-				openSubstate(gameOver, true)
+				openSubstate(isFiveNights and gameOverFnaf or gameOver, true)
 			end
 		elseif health <= 20 and boyfriendIcon:getAnimName() == "idle" then
 			boyfriendIcon:animate("losing", false)
@@ -2068,17 +2074,17 @@ return {
 			graphics.setColor(1, 1, 1, hudAlpha[1] * timebarAlpha[1])
 			timeBarOverlay:draw()
 			local hi = formatTime(inst:getDuration"seconds"-(musicTime/1000)):gsub(' ', '')
-			printfOutline(hi, 0, timeBarOverlay.y - 32, nil, {size = 48, depth = 0.05, alpha = hudAlpha[1] * timebarAlpha[1], center = true})
+			printfOutline(hi, 0, timeBarOverlay.y - 32, nil, {size = 48 * hudFontScale, depth = 0.05, alpha = hudAlpha[1] * timebarAlpha[1], center = true, font = hudFont})
 		end
 
 		accuracy = notesHit/totalNotes
 		--print(totalNotes, notesHit)
 		if totalNotes == 0 then accuracy = 0 end
-		fonts('comic', 32)
+		fonts(hudFont, 32 * hudFontScale)
 		local txt = lm.string.play_score..' ' .. score..' | '..lm.string.play_miss..' '..misses..' | '..lm.string.play_accuracy..': '..(math.floor(accuracy*1000)/10)..'%'
 		printfOutline(txt, -curFont:getWidth(txt)/2, healthBarOverlay.y + 25, nil, {alpha = hudAlpha[1]})
 
-		fonts('comic', 16/0.7)
+		fonts(hudFont, (16/0.7) * hudFontScale)
 		local myY = healthBarOverlay.y + 40
 		local stringy = curSong:gsub('-', ' ')
 		if lm.string[curSong:lower()..'_credit'] then
@@ -2091,7 +2097,7 @@ return {
 		end
 
 		if curSubtitle and curSubtitle.print and curSubtitle.alpha > 0 then
-			fonts('comic', curSubtitle.size * 1.5)
+			fonts(hudFont, (curSubtitle.size * 1.5) * hudFontScale)
 			printfOutline(curSubtitle.print, -curFont:getWidth(curSubtitle.print)/2, -200, nil, {alpha = curSubtitle.alpha})
 		end
 
@@ -2099,12 +2105,12 @@ return {
 		if songHeaderIcon and not cutscene then songHeaderIcon:draw() end
 		--print(songHeaderIcon.x)
 		if songHeaderTxt then
-			fonts('comic', 30/0.7)
+			fonts(hudFont, (30/0.7) * hudFontScale)
 			printfOutline(songHeaderTxt, songHeader.x - (songHeader.width * songHeader.sizeX/2), songHeader.y - (songHeader.height * songHeader.sizeY/2))
 		end
 
 		if curSong:lower() == 'recursed' and recursedTimeLeft then
-			fonts('comic', 30/0.7)
+			fonts(hudFont, (30/0.7) * hudFontScale)
 			local hi = recursedNotesCount..'/'..recursedNotesAmount
 			printfOutline(hi, -curFont:getWidth(hi)/2 - 200, recursedUiY)
 			recursedUiNote.x = (-curFont:getWidth(hi)/2 - 200) + curFont:getWidth(hi) + 75
@@ -2227,6 +2233,7 @@ return {
 			subtitles = function()
 				--print('changing sub to', subtitles[subtitleIndex])
 				subtitleIndex = subtitleIndex + 1
+				if v2 ~= nil then subtitleIndex = tonumber(v2) end
 				if curSubtitle and curSubtitle.tween then 
 					Timer.cancel(curSubtitle.tween)
 					curSubtitle.tween = nil 
@@ -2296,6 +2303,9 @@ return {
 					Timer.tween((crochet / 1000) / 2, cinbarDown, {y = 860}, 'in-expo')
 				end
 			end,
+			addZoom = function()
+				camZoom = camZoom + tonumber(v1)
+			end,
 		}
 		print('DOING EVENT', n, v1, v2)
 		if eventFuncs[n] then eventFuncs[n]() end
@@ -2321,5 +2331,17 @@ return {
 	end,
 	setCamShaking = function(self, v)
 		camShaking = v
+	end,
+	switchNoteSide = function(self)
+		print 'deay'
+		for i=1,4 do
+			local curEnemy = enemyArrows[i]
+			local curPlayer = boyfriendArrows[i]
+
+			Timer.after(0.01 * (i-1), function()
+				Timer.tween(0.6, curEnemy, {x = curPlayer.x}, 'out-expo')
+				Timer.tween(0.6, curPlayer, {x = curEnemy.x}, 'out-expo')
+			end)
+		end
 	end
 }

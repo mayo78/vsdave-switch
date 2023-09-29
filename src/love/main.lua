@@ -255,40 +255,41 @@ function love.load()
 	local curOS = love.system.getOS()
 
 
-	json = require 'json'
-	xmlparser = require 'modules.xmlparser'
-	files = require 'files'
-
-	-- Load libraries
-	baton = require "lib.baton"
-	ini = require "lib.ini"
-	lovesize = require "lib.lovesize"
-	paths = require 'paths'
-	graphics = require "modules.graphics"
-	settings = require "settings"
-	nickname = (love.getNickname and settings.selfAwareness) and love.getNickname() or 'User'
-	save = require 'save'
-	Gamestate = require "lib.gamestate"
-	Timer = require "lib.timer"
-
 	
-	local printer = print
-	function print(...)
-		printer(...)
-		if settings.showDebug or true then
-			local hi = {...}
-			for k,v in pairs(hi) do hi[k] = tostring(v) end
-			table.insert(printBuffer, {print = table.concat(hi, ', '), time = 3})
-		end
-	end
+	Timer = require "lib.timer"
 
 	loadFont = love.graphics.newFont(64)
 	-- Load modules
 	Timer.after(0.05, function() --let the loading text draw :)
+		json = require 'json'
+		xmlparser = require 'modules.xmlparser'
+		files = require 'files'
+
+		-- Load libraries
+		
+		paths = require 'paths'
+		graphics = require "modules.graphics"
+		Gamestate = require "lib.gamestate"
+		baton = require "lib.baton"
+		ini = require "lib.ini"
+		lovesize = require "lib.lovesize"
+		settings = require "settings"
+		nickname = (love.getNickname and settings.selfAwareness) and love.getNickname() or 'User'
+		save = require 'save'
 		funkin = require 'funkin'
 		
 		lm = require 'gamestrings' --language manager
 		lm:reloadLanguage(settings.language or 'en-US')
+
+		local printer = print
+		function print(...)
+			printer(...)
+			if settings.showDebug then
+				local hi = {...}
+				for k,v in pairs(hi) do hi[k] = tostring(v) end
+				table.insert(printBuffer, {print = table.concat(hi, ', '), time = 3})
+			end
+		end
 
 		
 		mukoUtil = require 'mukoUtil'
@@ -344,6 +345,7 @@ function love.load()
 
 		-- Load substates
 		gameOver = require "substates.game-over"
+		gameOverFnaf = require 'substates.game-over-fnaf'
 		pause = require 'substates.pause'
 		dialogue = require 'substates.dialogue'
 

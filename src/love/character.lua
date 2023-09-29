@@ -1,7 +1,7 @@
 --i think this kinda sucks and is really unoptimized but not my fault totally lol bye
 local c = {}
 --precachedChars = {}
-local threedees = {'dave-angey', 'bambi-3d', 'expunged', 'bambi-unfair', 'exbungo', 'dave-festival-3d', 'dave-3d-recursed', 'bf-3d'}
+local threedees = {'dave-angey', 'bambi-3d', 'expunged', 'bambi-unfair', 'exbungo', 'dave-festival-3d', 'dave-3d-recursed', 'bf-3d', 'nofriend'}
 local deadChars = {'dave', 'bambi', 'tristan-golden', 'tristan'}
 function c:new (character, isPlayer)
 	
@@ -60,7 +60,7 @@ function c:new (character, isPlayer)
 		o.healthbarColors[i] = c/255
 	end
 	local lastAnim
-	function o:playAnim(animName, loopAnim, after)
+	function o:playAnim(animName, after)
 		self.sprite.color2 = nil
 		if self.skipOtherAnims then return end
 		if animName:startsWith 'singLEFT' and (o.sprite.sizeX < 0) then animName = 'singRIGHT'..animName:sub(9)
@@ -72,7 +72,7 @@ function c:new (character, isPlayer)
 			return;
 		end
 		o.playingAnim = true
-		self.sprite:animate(animName, loopAnim) --idk if nil would mess anything up
+		self.sprite:animate(animName, after) --idk if nil would mess anything up
 		if animName:startsWith 'sing' then
 			o.singTimer = o.singDuration
 		end
