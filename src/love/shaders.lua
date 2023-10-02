@@ -45,14 +45,14 @@ local GLITCH_FRAG = [[
 	}
 
 ]]
-shaders.GLITCH = {shader = love.graphics.newShader(GLITCH_FRAG), time = 0}
 function s:GLITCH(waveAmp, waveFreq, waveSpeed)
-	local hi = shaders.GLITCH
+	local hi = {shader = love.graphics.newShader(GLITCH_FRAG), time = 0}
 	hi.shader:send('uSpeed', waveSpeed or 2)
 	hi.shader:send('uFrequency', waveFreq or 5)
 	hi.shader:send('uWaveAmplitude', waveAmp or 0.1)
 	hi.time = 0
 	hi.active = true
+	table.insert(shaders, hi)
 	return hi.shader
 end
 local EYESORE_FRAG = [[
@@ -99,9 +99,8 @@ local EYESORE_FRAG = [[
         return color * sineWave(texture2D(texture, uv),uv);
     }
 ]]
-shaders.EYESORE = {shader = love.graphics.newShader(EYESORE_FRAG), time = 0, enabled = false}
 function s:EYESORE()
-	local hi = shaders.EYESORE
+	local hi = {shader = love.graphics.newShader(EYESORE_FRAG), time = 0, enabled = false}
 	local wtf = 0
 	hi.shader:send('uSpeed', waveSpeed or 1)
 	hi.shader:send('uFrequency', waveFreq or 1)
@@ -121,6 +120,7 @@ function s:EYESORE()
 	function hi:die()
 		hi.shader:send('uampmul', 0)
 	end
+	table.insert(shaders, hi)
 	return hi
 end
 local REPEAT_FRAG = [[
@@ -148,10 +148,10 @@ local REPEAT_FRAG = [[
 		return awesome;
 	}
 ]]
-shaders.REPEAT = {shader = love.graphics.newShader(REPEAT_FRAG), time = 0, enabled = false}
 function s:REPEAT()
-	local hi = shaders.REPEAT
+	local hi = {shader = love.graphics.newShader(REPEAT_FRAG), time = 0, enabled = false}
 	hi.shader:send('uTime', 0)
+	table.insert(shaders, hi)
 	return hi
 end
 local BLOCKED_FRAG = [[
@@ -184,11 +184,11 @@ local BLOCKED_FRAG = [[
 	  return coolCol;
     }
 ]]
-shaders.BLOCKED = {shader = love.graphics.newShader(BLOCKED_FRAG), time = 0, enabled = false}
 function s:BLOCKED(waveAmp, waveFreq, waveSpeed)
-	local hi = shaders.BLOCKED
+	local hi = {shader = love.graphics.newShader(BLOCKED_FRAG), time = 0, enabled = false}
 	hi.time = 0
 	hi.active = true
+	table.insert(shaders, hi)
 	return hi.shader
 end
 function s:update(dt)
@@ -201,12 +201,15 @@ function s:update(dt)
 	end
 end
 function s:clear()
-	for _,shader in pairs(shaders) do
+	for k,shader in pairs(shaders) do
 		shader.active = false
 		shader.time = 0
 		shader.forceUpdate = false
 		shader.shader:send('uTime', 0)
 		if shader.die then shader:die() end
+		shader.shader:release()
+		table.clear(shader)
+		shaders[k] = nil
 	end
 end
 return s;

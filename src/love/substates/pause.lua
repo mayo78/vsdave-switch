@@ -129,7 +129,7 @@ return {
 			fadeInAlpha = fadeInAlpha + dt
 			if fadeInAlpha > 0.5 then fadeInAlpha = 0.5 end
 		end
-		--targetY = -(72 * (-i + curSelected)) + 720/2
+		--targetY = -(72 * (-i + curSelected)) + S_HALF_HEIGHT
 		--curY = lerp(curY, targetY, dt * 15)
 		gridPos.x, gridPos.y = gridPos.x - (gridguy:getWidth()/5) * dt, gridPos.y - (gridguy:getHeight()/5) * dt
 		--print('cur pos is', gridPos.x, gridPos.y)
@@ -146,7 +146,7 @@ return {
 		for i,option in ipairs(menuItems) do
 			targetPos[i][1] = -(50 * (-i + curSelected)) + 200
 			curPos[i][1] = lerp(curPos[i][1], targetPos[i][1], dt * 15)
-			targetPos[i][2] = -(72 * (-i + curSelected)) + 720/2
+			targetPos[i][2] = -(72 * (-i + curSelected)) + S_HALF_HEIGHT
 			curPos[i][2] = lerp(curPos[i][2], targetPos[i][2], dt * 15)
 		end
 		for i,v in pairs(texts) do

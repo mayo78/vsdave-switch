@@ -43,7 +43,9 @@ local killingmyself = {
 local STUPIDNAMES = {
 	['post-maze'] = 'postmaze',
 	festival = 'festival_happy',
-	['festival-3d-scared'] = '3d_festival'
+	['festival-3d-scared'] = '3d_festival',
+	['confused'] = 'upset',
+	['bevelmad'] = 'bevel_mad'
 }
 
 local song
@@ -128,7 +130,12 @@ return {
 		leaving = false
 		if not greetingsCutscene then
 			if weirdPolygonized then song = paths.music 'DaveDialogue'
-			else song = paths.music(mesongs[funkin.curSong] or 'DaveDialogue')
+			else 
+				local wa = mesongs[funkin.curSong] or 'DaveDialogue'
+				if endy and funkin.curSong == 'interdimensional' then
+					wa = 'DaveDialogue'
+				end
+				song = paths.music(wa)
 			end
 			song:setLooping(true)
 			song:setVolume(0)
@@ -162,7 +169,7 @@ return {
 			local dial = {
 				char = split(thing[2], ',')[1],
 				emotion = split(thing[2], ',')[2],
-				dialogue = thing[3],
+				dialogue = thing[3]..' ',
 				effect = thing[1]:gsub(' ', ''),
 				animated = split(thing[2], ',')[2] == 'scared', --lazy but its the only animated guy
 				right = split(thing[2], ',')[1] == 'bf' or split(thing[2], ',')[1] == 'gf'
@@ -179,15 +186,16 @@ return {
 		speechBubble = graphics:newAnimatedSprite('dave/ui/speech_bubble_talking', {
 			{anim = 'open', name = 'speech bubble normal open'},
 			{anim = 'idle', name = 'speech bubble normal0', loops = true, fps = 12},
-			{anim = 'loud', name = 'AHH speech bubble'},
+			{anim = 'loud', name = 'AHH speech bubble', loops = true},
 			{anim = 'loudOpen', name = 'speech bubble loud open'}
 		}, 'open', false, nil, {center=true})
 		scaredDave = graphics:newAnimatedSprite('dave/dialogue/dave/dave_scared', {
 			{anim = 'scared', name = 'post insanity'}
 		}, 'scared')
+		scaredDave.sizeX, scaredDave.sizeY = 0.8, 0.8 
 		portrait = graphics.newImage(paths.image('dave/dialogue/dave/dave_happy'))
 		portrait.y = 350
-		speechBubble.x = 1280/2
+		speechBubble.x = S_HALF_WIDTH
 		speechBubble.y = 550
 		nextDial()
 	end,
@@ -220,7 +228,7 @@ return {
 		scaredDave:update(dt)
 		scaredDave:setLooping(true)
 		if portrait then
-			scaredDave.x, scaredDave.y = portrait.x, portrait.y
+			scaredDave.x, scaredDave.y = portrait.x - 100, portrait.y - 150
 		end
 	end,
 	draw = function(self)
@@ -249,7 +257,7 @@ return {
 		if not (mesongs[funkin.curSong] == 'scaryAmbience' and not weirdPolygonized) then
 			fonts('comic', 32)
 			graphics.setColor(rgb255(unpack(dropTxtColor)))
-			love.graphics.printf(dialPrint, 102, 502, speechBubble.width - 55)
+			love.graphics.printf(dialPrint:sub(1, #dialPrint - 1), 102, 502, speechBubble.width - 55)
 		else
 			fonts((curDial and curDial.char == 'dave') and 'barcode' or 'comic', 32)
 		end

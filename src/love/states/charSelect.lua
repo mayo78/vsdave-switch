@@ -116,14 +116,16 @@ return {
 		)
 		local full = {full=true}
 		guide = graphics.newImage(paths.image 'dave/title/charSelectGuide', full)
-		guide.x, guide.y = 300, 300
+		guide.x, guide.y = 0, 0
 		guide.sizeX, guide.sizeY = 1.5, 1.5
 		
 		arrowLeft = graphics.newImage(paths.image 'dave/title/ArrowLeft_Idle', full)
-		arrowLeft.x = 150
+		arrowLeft.x = -150
+		arrowLeft.y = -arrowLeft.height/2
 		paths.image 'dave/title/ArrowLeft_Pressed'
 		arrowRight = graphics.newImage(paths.image 'dave/title/ArrowRight_Idle', full)
-		arrowRight.x = (1280/0.75) - arrowRight.width
+		arrowRight.x = (1280/0.75) - arrowRight.width - 200
+		arrowRight.y = -arrowRight.height/2
 		paths.image 'dave/title/ArrowRight_Pressed'
 		changeChar(0)
 
@@ -173,7 +175,7 @@ return {
 			elseif controls.pressed.down then 
 				changeForm(1)
 			end
-			if controls.pressed.confirm then
+			if controls.pressed.confirm and save.save['unlocked_'..characters[charIndex].forms[formIndex].char] then
 				if funkin.curSong:lower() == 'exploitation' then
 					love.window.showMessageBox('Error', 'Attempt to index nil value "deleteExpunged"')
 				end
@@ -186,36 +188,46 @@ return {
 	end,
 	draw = function()
 		love.graphics.push()
-		love.graphics.translate(1280/2, 720/2)
+		love.graphics.translate(S_HALF_WIDTH, S_HALF_HEIGHT)
 		if glitchshader then love.graphics.setShader(glitchshader) end
 		sky:draw()
 		if glitchshader then love.graphics.setShader() end
 		bg:draw()
 		love.graphics.scale(2, 2)
+		if not save.save['unlocked_'..characters[charIndex].forms[formIndex].char] then 
+			love.graphics.setColor(0,0,0)
+		end
 		portrait:draw()
+		if not save.save['unlocked_'..characters[charIndex].forms[formIndex].char] then 
+			love.graphics.setColor(1,1,1)
+		end
 		love.graphics.pop()
 		love.graphics.push()
 		love.graphics.scale(0.75, 0.75)
 		love.graphics.translate(-(1280 * .75 - 1280)/2, -(720 * .75 - 720)/2)
 		guide:draw()
-		love.graphics.translate(0, 720/2 + 200)
+		love.graphics.translate(0, S_HALF_HEIGHT + 200)
 		arrowLeft:draw()
 		arrowRight:draw()
 		love.graphics.translate(475, -500)
 		fonts('comic', 32)
-		for i=1,4 do
-			love.graphics.setColor(1,1,1,1-strumLine.alpha)
-			local badstrum = (not strum3D) and strumLine.threedees[i] or strumLine.normals[i]
-			badstrum:draw()
-			love.graphics.setColor(1,1,1,strumLine.alpha)
-			local strum = strum3D and strumLine.threedees[i] or strumLine.normals[i]
-			strum:draw()
-			local hi = tostring(characters[charIndex].scoreMultiplier[i])
-			printfOutline(hi, -curFont:getWidth(hi)/2, -curFont:getHeight()/2)
-			love.graphics.translate(154, 0)
+		if save.save['unlocked_'..characters[charIndex].forms[formIndex].char] then 
+			for i=1,4 do
+				love.graphics.setColor(1,1,1,1-strumLine.alpha)
+				local badstrum = (not strum3D) and strumLine.threedees[i] or strumLine.normals[i]
+				badstrum:draw()
+				love.graphics.setColor(1,1,1,strumLine.alpha)
+				local strum = strum3D and strumLine.threedees[i] or strumLine.normals[i]
+				strum:draw()
+				local hi = tostring(characters[charIndex].scoreMultiplier[i])
+				printfOutline(hi, -curFont:getWidth(hi)/2, -curFont:getHeight()/2)
+				love.graphics.translate(154, 0)
+			end
 		end
 		love.graphics.pop()
 		fonts('comic', 64)
-		printfOutline(characters[charIndex].forms[formIndex].print, 1280/2 - curFont:getWidth(characters[charIndex].forms[formIndex].print)/2, 450)
+		local printy = characters[charIndex].forms[formIndex].print
+		if not save.save['unlocked_'..characters[charIndex].forms[formIndex].char] then printy = '???' end
+		printfOutline(printy, S_HALF_WIDTH - curFont:getWidth(printy)/2, 450)
 	end,
 }

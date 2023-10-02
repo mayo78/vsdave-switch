@@ -177,8 +177,8 @@ return {
 			'good',
 			false
 		)
-		iconP1.y = timeBarOverlay.y
-		iconP2.y = timeBarOverlay.y
+		iconP1.y = timeBarOverlay.y - (150/2)
+		iconP2.y = timeBarOverlay.y - (150/2)
 		change(0)
 	end,
 	update = function(self, dt)
@@ -239,6 +239,10 @@ return {
 				iconP1:animate 'good'
 				iconP2:animate 'good'
 			end
+			local tw = timeBarOverlay.width*timeBarOverlay.sizeX
+			local th = timeBarOverlay.height*timeBarOverlay.sizeY
+			iconP1.x = 425 - (tw - 9) * -(songPercent) - 850 - 37.5 + (150 * math.abs(iconP1.sizeX)) - 25
+			iconP2.x = 425 - (tw - 9) * -(songPercent) - 850 + 37.5 - (150 * iconP2.sizeX) - 25
 			iconP1:update(dt)
 			iconP2:update(dt)			
 		end
@@ -247,7 +251,7 @@ return {
 	end,
 	draw = function()
 		love.graphics.push()
-		love.graphics.translate(1280/2, 720/2)
+		love.graphics.translate(S_HALF_WIDTH, S_HALF_HEIGHT)
 		graphics.setColor(rr, gg, bb)
 		bg:draw()
 		fonts('comic', 72)
@@ -255,13 +259,16 @@ return {
 		for i,v in ipairs(djList) do
 			love.graphics.translate(64, 92)
 			printfOutline(v.print, 0, 0, nil, {alpha = (songIndex == i and 1 or 0.5)})
-			v.iconSprite.x = curFont:getWidth(v.print) + 150/2
+			v.iconSprite.x = curFont:getWidth(v.print)
+			v.iconSprite.y = -150/8
+			graphics.setColor(1, 1, 1, (songIndex == i and 1 or 0.5))
 			v.iconSprite:draw()
+			graphics.setColor(1, 1, 1)
 		end
 		love.graphics.pop()
 		if playingSong then
 			love.graphics.push()
-			love.graphics.translate(1280/2, (720/2) + 50)
+			love.graphics.translate(S_HALF_WIDTH, (S_HALF_HEIGHT) + 50)
 			local tw = timeBarOverlay.width*timeBarOverlay.sizeX
 			local th = timeBarOverlay.height*timeBarOverlay.sizeY
 			graphics.setColor(128/255, 128/255, 128/255, 1)
@@ -271,10 +278,7 @@ return {
 			graphics.setColor(1, 1, 1, 1)
 			timeBarOverlay:draw()
 			local hi = formatTime(musicTime)..' / '..formatTime(inst:getDuration 'seconds')
-			printfOutline(hi, -((#hi/2) * 16), timeBarOverlay.y + 10, nil, {size = 32, depth = 0.05, alpha = 1})
-			local songPercent = musicTime/inst:getDuration 'seconds'
-			iconP2.x = -(550 - (tw - 9) * -(1-songPercent) - 925 - 37.5) - 25
-			iconP1.x = -(550 - (tw - 9) * -(1-songPercent) - 925 + 37.5) + 25
+			printfOutline(hi, 0, timeBarOverlay.y + 10, nil, {size = 32, depth = 0.05, alpha = 1, center = true})
 			iconP1:draw()
 			iconP2:draw()
 			love.graphics.pop()

@@ -1,4 +1,4 @@
-local layers = {}
+local layers
 local layerScales
 local paused
 local audio
@@ -16,6 +16,8 @@ return {
 		offsets = _offsets or {}
 		paused = false
 		leaving = false
+		layers = {}
+		print(layerScales, #layerScales, _layerScales, #_layerScales)
 		for i=1,#layerScales do
 			local layer = 'layer'..i
 			local img = (singleImage and image or (image..'/'..layer))
@@ -24,7 +26,7 @@ return {
 				{anim = 'static', name = layer..'0', fps = 0}
 			}, 'static', false, nil, {center= (not dontcenter)})
 			if not dontcenter then
-				layers[i].x = -1280/2 + (layers[i].width * layerScales[i])/2
+				layers[i].x = -S_HALF_WIDTH + (layers[i].width * layerScales[i])/2
 			end
 			if offsets[i] then 
 				layers[i].x, layers[i].y = layers[i].x + offsets[i].x, layers[i].y + offsets[i].y
@@ -32,6 +34,7 @@ return {
 			layers[i].onAnimComplete = function()
 				layers[i].finished = true
 			end
+			print('settging', i, layers[i])
 			--layers[i].sizeX, layers[i].sizeY = layerScales[i], layerScales[i]
 		end
 		audio = paths.sounds(sound)
@@ -51,9 +54,10 @@ return {
 				layer:update(dt)
 			end
 		end
+		--print(layers[1])
 		if (started and not layers[1]:isAnimated() or paused) and not leaving then
 			leaving = true
-			switchState(weeks)
+			switchState(stage)
 		end
 	end,
 	draw = function(self)

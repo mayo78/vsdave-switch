@@ -5960,13 +5960,13 @@
 				[
 					[
 						"subtitles",
-						"FADEOUT",
+						"",
 						""
 					],
 					[
-						"setZoom",
-						"1.1",
-						"true, 0.96, sineIn"
+						"bookmark",
+						"byebye",
+						""
 					],
 					[
 						"fadeOutNotes",
@@ -5982,6 +5982,11 @@
 						"forceStageModeOff",
 						"false",
 						"true"
+					],
+					[
+						"bookmark",
+						"hi",
+						""
 					]
 				]
 			]

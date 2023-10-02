@@ -26,10 +26,10 @@ local fullMode
 
 
 local songtostage = {
-	house = {'warmup', 'house', 'insanity', 'supernovae', 'glitch', 'memory'},
+	house = {'warmup', 'house', 'insanity', 'supernovae', 'glitch', 'memory', 'adventure'},
 	farm = {'blocked', 'corn-theft', 'maze', 'splitathon', 'mealie', 'indignancy'},
 	festival = {'shredder', 'greetings'},
-	void = {'polygonized', 'cheating', 'unfairness', 'exploitation'},
+	void = {'polygonized', 'cheating', 'unfairness'},
 	desktop = {'expoitation'},
 	backyard = {'rano'},
 	rapWorld = {'vs-dave-rap', 'vs-dave-rap-two'},
@@ -39,8 +39,12 @@ local songtostage = {
 	['inside-house'] = {'bonus-song'},
 	desert = {'escape-from-california'},
 	office = {'five-nights'},
+	overdrive = {'overdrive'},
+	desktop = {'exploitation'},
 }
 local playedCutscene
+
+local finishedGlitchCutscene
 
 local function newSprite(image, x, y)
 	local spr = graphics.newImage(paths.image(image), {full=fullMode})
@@ -95,7 +99,7 @@ local function drawTable(sprites)
 			if spr.stageLight and stageOverlay.alpha > 0 then
 				love.graphics.scale(1/curCamZoom, 1/curCamZoom)
 				graphics.setColor(stageOverlay[1], stageOverlay[2], stageOverlay[3], stageOverlay.alpha)
-				love.graphics.rectangle("fill", -1280/2, -720/2, 1280, 720)
+				love.graphics.rectangle("fill", -S_HALF_WIDTH, -S_HALF_HEIGHT, 1280, 720)
 				graphics.setColor(1, 1, 1, 1)
 				love.graphics.scale(curCamZoom, curCamZoom)
 			end
@@ -286,7 +290,6 @@ local stages = {
 		local voidStuff = {
 			cheating = 'cheater',
 			unfairness = 'scarybg',
-			exploitation = 'exploit/creepyRoom' --will probably be moved to its own stage like interdimensional soon
 		}
 		local void = voidStuff[jsonChart.song:lower()] or 'redsky'
 
@@ -320,7 +323,7 @@ local stages = {
 				end
 			end,
 			unfairness = function()
-				bg.x, bg.y = 0, 200
+				bg.x, bg.y = -600, -200
 				bg.sizeX, bg.sizeY = 3, 3
 				local aaa = {
 					slowfade = function()
@@ -344,7 +347,7 @@ local stages = {
 				end
 			end,
 			cheating = function()
-				bg.x, bg.y = -700, -350
+				bg.x, bg.y = -700 * 2, -350 * 2
 				bg.sizeX, bg.sizeY = 2, 2
 			end,
 		}
@@ -356,6 +359,8 @@ local stages = {
 		girlfriend.x, girlfriend.y = 400, 130
 		enemy.x, enemy.y = 100, 450
 		boyfriend.x, boyfriend.y = 770, 450
+
+		if enemyObject.canFloat then enemy.y = enemy.y - 70 end
 	end,
 	farm = function()
 		zoom = 0.8
@@ -449,6 +454,7 @@ local stages = {
 		bambcon.y = enemyIcon.y
 		bambcon.sizeX, bambcon.sizeY = enemyIcon.sizeX, enemyIcon.sizeY
 		local update
+		local coolbamb
 		local songStuff = {
 			maze = function()
 				songStart = function()
@@ -460,17 +466,33 @@ local stages = {
 					end)
 				end
 			end,
+			['corn-theft'] = function()
+				weeks.bookmarkEvents = function(n, v)
+					if n == 'byebye' then
+						local ok = (stepCrochet / 1000) * 6
+						enemy.alpha = 1
+						Timer.tween(ok, enemy, {alpha = 0})
+						local z = {camZoom}
+						Timer.tween(ok, z, {camZoom + 0.2}, nil, {
+							during = function()
+								camZoom = z[1]
+							end,
+						})
+					elseif n == 'hi' then
+						camZoom = 0.8
+						enemy.alpha = 1
+					end
+				end
+			end,
 			splitathon = function()
-				local bambi = character 'bambi-splitathon'
-				bambi.sprite.x = enemy.x - 450
-				bambi.sprite.y = enemy.y + 25
+				local bambi = character:new ('bambi-splitathon', false, true)
+				bambi.sprite.y = 580
 				bambi.skipDance = true
 				bambi.sprite.dontdraw = true
 				bambi.sprite.dontupdate = true
-				add(bambi.sprite)
-				local dave = character 'dave-splitathon'
-				dave.sprite.x = enemy.x - 450
-				dave.sprite.y = enemy.y + 25
+				coolbamb = bambi.sprite
+				local dave = character:new ('dave-splitathon', false, true)
+				dave.sprite.y = 225
 				dave.skipDance = true
 				dave.sprite.dontdraw = true
 				dave.sprite.dontupdate = true
@@ -522,7 +544,38 @@ local stages = {
 						weeks:setCamShaking(true)
 					end
 				end
-			end
+			end,
+			indignancy = function()
+				local vignette = graphics.newImage(paths.image 'dave/vignette')
+				vignette.sizeX, vignette.sizeY = 1/0.7, 1/0.7
+				vignette.alpha = 0
+				songStart = function()
+					Timer.tween(1, vignette, {alpha = 1})
+				end
+				extraHud = function()
+					if vignette.alpha > 0 then
+						graphics.setColor(1,1,1,vignette.alpha)
+						vignette:draw()
+					end
+				end
+				local whatever = {
+					starty = function()
+						Timer.tween(1, vignette, {alpha = 0})
+					end,
+					scream = function()
+						weeks:setCamShaking(true)
+						enemyObject.skipDance = true
+						enemyObject:playAnim 'scream'
+						Timer.after(crochet/1000, function()
+							weeks:setCamShaking(false)
+							enemyObject.skipDance = false
+						end)
+					end,
+				}
+				weeks.bookmarkEvents = function(n, v)
+					if whatever[n] then whatever[n](v) end
+				end
+			end,
 		}
 		if songStuff[jsonChart.song:lower()] then songStuff[jsonChart.song:lower()]() end
 		local moveSpr = picnic
@@ -556,11 +609,14 @@ local stages = {
 		--	spr.y = spr.y - 350
 		--end
 		addChars()
+		if coolbamb then
+			add(coolbamb)
+		end
 		--Timer.after(5, function()
 		--	Timer.tween(5, globalColor, sunsetColor)
 		--end)
 	end,
-	festival = function()
+	festival = function(dont)
 		local aaa = point(0, 0)
 		girlfriend.x, girlfriend.y = 200, 130
 		enemy.x, enemy.y = 100, 450
@@ -678,7 +734,7 @@ local stages = {
 		end
 		
 		fullMode = true
-		local bg = newSprite('dave/backgrounds/shared/sky_festival', -600, -230)
+		local bg = newSprite('dave/backgrounds/shared/sky_festival', -800, -300)
 		bg.scrollFactor = point(0.6, 0.6)
 		add(bg)
 
@@ -744,7 +800,7 @@ local stages = {
 			{anim = 'glow', name = 'idle', fps = 5, loops = true}
 		}, 'glow')
 		generalGlow.blendMode = 'add'
-		generalGlow:setPosition(-450, 400)
+		generalGlow:setPosition(-500, 500)
 		add(generalGlow)
 
 		onBeat = function(b)
@@ -754,18 +810,24 @@ local stages = {
 				end
 			end
 		end
+		if not dont then
+			enemyObject.camPos.x = enemyObject.camPos.x - 100
+			enemyObject.camPos.y = enemyObject.camPos.y + 75 
+			boyfriendObject.camPos.y = boyfriendObject.camPos.y + 75
+		end
 		return sprs
 	end,
 	interdimensional = function()
 		fullMode = true
 		zoom = 0.6
 
-		houseStage = getStage 'festival'
+		houseStage = getStage ('festival', true)
 
 		local bg = newSprite('dave/backgrounds/void/interdimensions/interdimensionVoid', -700, -350)
 		bg.shader = shaders:GLITCH()
 		bg:getImage():setFilter('nearest', 'nearest')
 		bg.sizeX, bg.sizeY = 1.75, 1.75
+		bg.x, bg.y = -700 * 1.75, -350 * 1.75
 		add(bg)
 
 		local function voidBg(k)
@@ -792,7 +854,7 @@ local stages = {
 					spr.orientation = self.angle * DEGREE_TO_RADIAN
 					if self.goLeft and spr.x < leftCheck or not self.goLeft and spr.x > rightCheck then
 						self.angleChangeAmount = love.math.random(100, 200)
-						spr.y = 720 / 2
+						spr.y = S_HALF_HEIGHT
 						self.goLeft = not self.goLeft
 					end
 				end,
@@ -833,29 +895,31 @@ local stages = {
 			function()
 				bg:setImage(voidBg 'spike')
 				bg.sizeX, bg.sizeY = 3, 3
-				bg.x, bg.y = -200, 0
+				bg.x, bg.y = -200 * 3, -200
 			end,
 			function()
 				bg:setImage(voidBg 'darkSpace')
 				bg.sizeX, bg.sizeY = 3, 3
-				bg.x, bg.y = -200, 0
+				bg.x, bg.y = -200 * 3, -200
 				Timer.tween(1, colorThing, {0, 0, 255})
 			end,
 			function()
 				bg:setImage(voidBg 'hexagon')
 				bg.sizeX, bg.sizeY = 3, 3
+				bg.x, bg.y = -200 * 3, -200
 				Timer.tween(1, colorThing, {255, 255, 255})
 			end,
 			function()
 				bg:setImage(voidBg 'nimbi/nimbiVoid')
 				bg.sizeX, bg.sizeY = 3, 3
+				bg.x, bg.y = -200 * 3, -200
 
 				nimbiLand.dontdraw = false
 				nimbiSign.dontdraw = false
 			end,
 			function()
 				bg:setImage(voidBg 'interdimensionVoid')
-				bg.x, bg.y = -700, -350
+				bg.x, bg.y = -700 * 1.75, -350 * 1.75
 				bg.sizeX, bg.sizeY = 1.75, 1.75
 				nimbiLand.dontdraw = true
 				nimbiSign.dontdraw = true
@@ -888,7 +952,7 @@ local stages = {
 		
 		local sunrise, sky
 		if jsonChart.song:lower() == 'rano' then
-			sky = newSprite('dave/backgrounds/shared/sky', 615, -670)
+			sky = newSprite('dave/backgrounds/shared/sky', -600, -670)
 			sky.scrollFactor = point(0.6, 0.6)
 			add(sky)
 
@@ -999,7 +1063,7 @@ local stages = {
 			ball.y = ball.y - math.sin(et+3) * 0.6
 		end
 		if settings.modcharts then
-			hudShader = bg.shader
+			hudShader = shaders:GLITCH(0.03, 5, 1)
 		end
 		addChars()
 	end,
@@ -1159,7 +1223,7 @@ local stages = {
 		onBeat = function(b)
 			if b % 4 == 0 then
 				freeplayBG.alpha = 0.8
-				charBackdrop.x, charBackdrop.y = -1280/2 + (gridguy:getWidth() * 6)/2, -720/2 - (gridguy:getHeight() * 4)/4
+				charBackdrop.x, charBackdrop.y = -S_HALF_WIDTH + (gridguy:getWidth() * 6)/2, -S_HALF_HEIGHT - (gridguy:getHeight() * 4)/4
 				charBackdrop.alpha = 0.8
 				for i,v in pairs(alphabets) do
 					v.alpha = 0.4
@@ -1189,7 +1253,7 @@ local stages = {
 		local space = graphics.newImage(paths.image'dave/backgrounds/shared/sky_space', {full=true})
 		space.scrollFactor = point(1.2, 1.2)
 		space.sizeX, space.sizeY = 10, 10
-		space.x, space.y = 2000, 1000
+		space.x, space.y = -1724, -971
 		space.image:setFilter(getAA(false))
 		add(space)
 
@@ -1199,9 +1263,9 @@ local stages = {
 		add(land)
 
 		
-		girlfriend.x, girlfriend.y = 15, -390
-		enemy.x, enemy.y = -enemy.width + 150, 150 -enemy.height
-		boyfriend.x, boyfriend.y = 300, -150
+		girlfriend.x, girlfriend.y = 807, -22
+		enemy.x, enemy.y = 52, -166
+		boyfriend.x, boyfriend.y = 1152, 311
 
 		addChars()
 
@@ -1215,7 +1279,7 @@ local stages = {
 	roof = function()
 		zoom = 0.8
 		local roof = graphics.newImage(paths.image'dave/backgrounds/gm_house5', {full=true})
-		roof.x, roof.y = -584, -397
+		roof.x, roof.y = -584 * 2, -397 * 2
 		roof.sizeX, roof.sizeY = 2, 2
 		add(roof)
 
@@ -1486,7 +1550,8 @@ local stages = {
 		local powerRanOut = false
 		local powerPrint
 		local powerMeter = graphics.newImage(paths.image 'dave/fiveNights/powermeter')
-		powerMeter.x, powerMeter.y = 800, 425
+		powerMeter.x, powerMeter.y = ((1175 - S_HALF_WIDTH) - powerMeter.width)/0.7 + 100, 425
+		powerMeter.sizeX, powerMeter.sizeY = 1/0.7, 1/0.7
 		local none, full = powerMeter:getImage(), paths.image 'dave/fiveNights/powermeter_2'
 		local sixam = false
 		if funkin.curSong:lower() == 'five-nights' then
@@ -1514,7 +1579,7 @@ local stages = {
 					end)
 					enemyObject.skipOtherAnims = true
 				end,
-				['6am'] = function()
+				sam = function()
 					sixam = true
 					paths.sound 'fiveNights/yay':play()
 				end
@@ -1594,25 +1659,289 @@ local stages = {
 		extraHud = function()
 			if sixam then
 				love.graphics.setColor(0,0,0)
-				love.graphics.rectangle('fill', -1280/2, -720/2, 1280, 720)
+				love.graphics.rectangle('fill', (-S_HALF_WIDTH)/0.7, (-S_HALF_HEIGHT)/0.7, 1280/.7, 720/.7)
 				love.graphics.setColor(1,1,1)
-				fonts('fnaf', 180)
-				love.graphics.print('6 AM', -curFont:getWidth '6 AM'/2, -curFont:getHeight())
+				fonts('fnaf', 180/.7)
+				love.graphics.print('6 AM', -curFont:getWidth '6 AM'/2, -curFont:getHeight()/2)
 			else
 				fonts('fnaf', 120)
 				local am = times[curTime + 1]..'AM'
-				printfOutline(am, 150 + ((1175 - 1280/2) - curFont:getWidth(am))/0.7, (24 - (720/2))/0.7, nil, {depth = 0.25})
+				printfOutline(am, 150 + ((1175 - S_HALF_WIDTH) - curFont:getWidth(am))/0.7, (24 - (S_HALF_HEIGHT))/0.7, nil, {depth = 0.25})
 				fonts('fnaf', 68)
-				printfOutline('Night 7', 150 + ((1175 - 1280/2) - curFont:getWidth 'Night 7')/0.7, (70 - (720/2))/0.7)
+				printfOutline('Night 7', 150 + ((1175 - S_HALF_WIDTH) - curFont:getWidth 'Night 7')/0.7, (70 - (S_HALF_HEIGHT))/0.7)
 				local pwer = 'Power Left: '..math.floor(power)..'%'
-				printfOutline(pwer, 150 + ((1100 - 1280/2) - curFont:getWidth(pwer))/0.7, 435)
+				printfOutline(pwer, 150 + ((1175 - S_HALF_WIDTH) - curFont:getWidth(pwer))/0.7, 360)
 				powerMeter:draw()
 			end
 		end
 	end,
+	overdrive = function()
+		enemy.x, enemy.y = 244.15, 437
+		boyfriend.x, boyfriend.y = 837, 363
+		local stfu = graphics.newImage(paths.image 'dave/backgrounds/stfu', {full=true})
+		stfu.x, stfu.y = -583, -383
+		add(stfu)
+		addChars()
+	end,
+	desktop = function()
+		fullMode = true
+		zoom = 0.8
+		useeyesores = true
+
+		local glitching = false
+		local glitch = graphics:newAnimatedSprite('dave/ui/glitch/glitchSwitch', {
+			{anim = 'glitch', name = 'glitchScreen'}
+		}, 'glitch', false, nil, {center = true})
+		glitch.sizeX, glitch.sizeY = 1280/400/0.7, 720/400/0.7
+		function extraHud()
+			if glitching then
+				glitch:draw()
+			end
+		end
+
+		local bg = newSprite('dave/backgrounds/void/exploit/creepyRoom', -700, -500)
+		bg.shader = shaders:GLITCH()
+		bg:getImage():setFilter('nearest', 'nearest')
+		bg.sizeX, bg.sizeY = 2, 2
+		add(bg)
+		--print('fudfs', fullMode)
+		local switchSide = false
+		local function preload(img) paths.image('dave/'..img):setFilter(getAA(false)) end
+		preload('ui/glitch/glitchSwitch');
+		preload('backgrounds/void/exploit/cheater GLITCH');
+		preload('backgrounds/void/exploit/glitchyUnfairBG');
+		preload('backgrounds/void/exploit/expunged_chains');
+		preload('backgrounds/void/exploit/broken_expunged_chain');
+		preload('backgrounds/void/exploit/glitchy_cheating_2');
+		local glitchers = {
+			cheating = {'cheater GLITCH', 3},
+			unfair = {'glitchyUnfairBG', 3},
+			expunged = {'creepyRoom', 2},
+			chains = {'expunged_chains', 2},
+			['cheating-2'] = {'glitchy_cheating_2', 3}
+		}
+		local function switchNotePositions(order)
+			if not settings.modcharts then return end
+			local pos = {}
+			for i=1,4 do
+				table.insert(pos, boyfriendArrows[i].baseX)
+			end
+			for i=1,4 do
+				table.insert(pos, enemyArrows[i].baseX)
+			end
+			for i=1,4 do
+				local p = boyfriendArrows[i]
+				local o = enemyArrows[i]
+				Timer.after(0.01 * (i-1), function()
+					Timer.tween(0.6, o, {x = pos[order[i + 4] + 1]}, 'out-expo')
+					Timer.tween(0.6, p, {x = pos[order[i] + 1]}, 'out-expo')
+				end)
+			end
+			switchSide = not switchSide
+		end
+		local windowFloat = false
+		if funkin.curSong == 'exploitation' then
+			local glitchHeading = graphics:newAnimatedSprite('dave/songHeadings/glitchHeading', {{anim = 'idle', name = 'glitchHeading', loops = true}}, 'idle')
+			local normalHeading, normalHeadingText
+			paths.sound 'static':setVolume(0.5)
+			local events = {
+				byexpunged = function()
+					weeks:flash(crochet / 1000, {0,0,0})
+					noHeadingIcon = true
+					songHeader = glitchHeading
+					glitchHeading.x, glitchHeading.y = normalHeading.x, normalHeading.y + normalHeading.height/2
+					glitchHeading.sizeX, glitchHeading.sizeY = normalHeading.sizeX, normalHeading.sizeY
+					songHeaderTxt = '???'
+					paths.sound 'static':stop()
+					paths.sound 'static':play()
+				end,
+				hioxygen = function()
+					weeks:flash(crochet / 1000, {0,0,0})
+					songHeader = normalHeading
+					songHeaderTxt = lm.string.credits_songby..' Oxygen'
+					noHeadingIcon = false
+					songHeaderIcon:setImage(paths.image 'dave/songcreators/oxygen')
+					paths.sound 'static':stop()
+					paths.sound 'static':play()
+				end,
+				byexpungedreal = function()
+					weeks:flash(crochet / 1000, {0,0,0})
+					songHeader = normalHeading
+					songHeaderTxt = lm.string.credits_songby..' EXPUNGED'
+					noHeadingIcon = false
+					songHeaderIcon:setImage(paths.image 'dave/songcreators/whoareyou')
+					paths.sound 'static':stop()
+					paths.sound 'static':play()
+				end,
+				talker = function()
+					camZoom = curCamZoom + 0.3
+					boyfriend.alphaMult, girlfriend.alphaMult = 1, 1
+					Timer.tween(3, boyfriend, {alphaMult = 0})
+					Timer.tween(3, girlfriend, {alphaMult = 0})
+					local _z = {curCamZoom}
+					Timer.tween(4, _z, {curCamZoom + 0.3}, nil, {during = function()
+						curCamZoom = _z[1]
+					end})
+				end,
+				notalk = function()
+					camZoom = curCamZoom - 0.3
+					Timer.tween(0.2, boyfriend, {alphaMult = 1})
+					Timer.tween(0.2, girlfriend, {alphaMult = 1})
+					local _z = {curCamZoom}
+					Timer.tween(0.05, _z, {curCamZoom - 0.3}, nil, {during = function()
+						curCamZoom = _z[1]
+					end})
+				end,
+				eh = function()
+					local _a = {0}
+					Timer.tween(0.1, _a, {10}, nil, {during = function()
+						screenAngle = _a[1]
+					end})
+				end,
+				ah = function()
+					local _a = {10}
+					Timer.tween(0.1, _a, {-10}, nil, {during = function()
+						screenAngle = _a[1]
+					end})
+				end,
+				ze = function()
+					local _a = {-10}
+					Timer.tween(0.2, _a, {0}, nil, {during = function()
+						screenAngle = _a[1]
+					end})
+				end,
+				switchNoteSide = function()
+					if not settings.modcharts then return end
+					weeks:switchNoteSide()
+				end,
+				switchNotePositions = function(v)
+					local hi, final = v:split ',', {}
+					for i,v in ipairs(hi) do
+						table.insert(final, tonumber(v))
+					end
+					switchNotePositions(final)
+				end,
+				switchNoteScroll = function()
+					if not settings.modcharts then return end
+					weeks:switchNoteScroll()
+				end,
+				resetPos = function()
+					for i=1,4 do
+						local o = enemyArrows[i]
+						o.x, o.y = o.baseX, o.baseY
+						local p = boyfriendArrows[i]
+						p.x, p.y = p.baseX, p.baseY
+					end
+				end,
+				swapGlitch = function(_glitch)
+					glitching = true
+					glitch:animate 'glitch'
+					local glitch = _glitch --ooooooooops
+					local time = crochet / 1500
+					if glitch == 'unfair' then 
+						time = crochet / 4000 
+					elseif curBeat >= 486 then
+						time = (crochet / 4000) * 2
+					end
+					local stuff = glitchers[glitch]
+					local img = paths.image('dave/backgrounds/void/exploit/'..stuff[1])
+					bg:setImage(img)
+					bg.sizeX, bg.sizeY = stuff[2], stuff[2]
+					Timer.after(time, function()
+						glitching = false
+					end)
+				end,
+				setModchart = function(str)
+					modchart = ExploitationModchartType[str]
+				end,
+				brokenchains = function()
+					bg:setImage(paths.image 'dave/backgrounds/void/exploit/broken_expunged_chain')
+				end,
+				crepy = function()
+					bg:setImage(paths.image 'dave/backgrounds/void/exploit/creepyRoom')
+				end,
+				weirdThing = function()
+					if not settings.modcharts then return end
+					for i=1,4 do
+						local spr = enemyArrows[i]
+						local id = i - 2
+						local targetPosition = (-925 + 165 * (i*2)) + 50
+						spr.orientation = 0
+						
+						Timer.tween(0.2, spr, {orientation = math.pi * 4}, 'out-circ')
+						Timer.tween(0.6, spr, {x = targetPosition}, 'out-back')
+
+						local spr = boyfriendArrows[i]
+						local targetPosition = (-925 + 165 * (i*2)) + 50 + 165
+						spr.orientation = 0
+						
+						Timer.tween(0.2, spr, {orientation = math.pi * 4}, 'out-circ')
+						Timer.tween(0.6, spr, {x = targetPosition}, 'out-back')
+					end
+				end,
+				gonnashitmyself = function()
+					overlayColor = {1,1,1,alpha=0}
+					Timer.tween(crochet / 1000, overlayColor, {alpha=1}, nil, function()
+						weeks:flash()
+					end)
+				end,
+				ohshit = function()
+					curCamZoom = curCamZoom - 0.2
+					expungedWindowMode = true
+					weeks:flash()
+					enemy.x, enemy.y = 200, (720/2 + enemy.height/2) + 1000
+					enemy.offsetX = 0
+					Timer.tween(0.5, screenInfo, {scale = 0.75, x = 235, y = 100}, 'out-bounce', function()
+						windowFloat = true
+					end)
+					enemy.dontdraw = true
+				end,
+				byestupid = function()
+					weeks:flash(1, {0,0,0})
+					expungedWindowMode = false
+					windowFloat = false
+					Timer.tween(0.5, screenInfo, {x=0,scale=1, y=0}, 'in-out-cubic')
+					enemyIcon.dontdraw = true	
+				end,
+			}
+			weeks.bookmarkEvents = function(n, v)
+				if events[n] then events[n](v) end
+			end
+		
+			function songStart()
+				normalHeading = songHeader
+				normalHeadingText = songHeaderTxt
+				--events.ohshit()
+				--Timer.after(2, events.byestupid)
+			end
+		end
+
+		local et = 0
+		onUpdate = function(dt)
+			et = et + dt
+			if glitching then
+				glitch:update(dt)
+			end
+			if windowFloat then
+				screenInfo.y = screenInfo.y + math.sin(et) * 50 * dt
+			end
+		end
+
+		addChars()
+
+		--aftger the stuff since housestage overrides the pos so this overrides the overisde that was a really bad explanation sorry
+		girlfriend.x, girlfriend.y = 400, 130
+		enemy.x, enemy.y = 100, 450
+		boyfriend.x, boyfriend.y = 770, 450
+
+		if enemyObject.canFloat then enemy.y = enemy.y - 70 end
+	end,
 }
 return {
 	enter = function(self, from, songNum, songAppend)
+		print 'hello'
+		finishedGlitchCutscene = false
+		glitchCutscene = false
 		extraHud = nil
 		fullMode = false
 		stopthisnow = false
@@ -1656,10 +1985,6 @@ return {
 			eyesore = shaders:EYESORE()
 		end
 
-		self:load()
-	end,
-
-	load = function(self)
 		weeks:load()
 
 		self:initUI()
@@ -1690,7 +2015,7 @@ return {
 		--end
 		if stopthisnow then return end
 
-		if songFinished or stage.stateToLeaveTo then
+		if songFinished and not glitchCutscene then
 			if not songFinished then
 				if inst then 
 					inst:stop() 
@@ -1704,7 +2029,6 @@ return {
 				if result then return end
 			end
 		end
-
 		weeks:update(dt, onBeat, onStep)
 		if onUpdate then onUpdate(dt) end
 		weeks:updateUI(dt)
@@ -1726,8 +2050,41 @@ return {
 		end
 	end,
 	tryToLeave = function(self)
+		paths.sound 'static':setVolume(1)
 		print 'gonna leave this stuff'
-		if not stage.stateToLeaveTo and storyMode and songIndex < #funkin.songList then
+		if inst then inst:stop() end
+		if voices then voices:stop() end
+		if funkin.curSong:lower() == 'glitch' and not finishedGlitchCutscene then
+			glitchCutscene = true
+			print 'no end!'
+			local noloop = false
+			local function weirdLoop() --lol wtf
+				if noloop then return end
+				mustHitSection = not mustHitSection
+				Timer.after(1, weirdLoop)
+			end
+			weirdLoop()
+			local marcello = graphics:newAnimatedSprite('dave/joke/cutscene', {
+				{anim = 'static', name = 'bambi0', fps = 0},
+				{anim = 'throw_phone', name = 'bambi0'},
+			}, 'static')
+			add(marcello)
+			marcello.x, marcello.y = enemy.x + 500, enemy.y
+			marcello.sizeX = -1
+			marcello.color = nightColor
+			enemy.dontdraw = true
+			boyfriendObject:playAnim 'hurt'
+			paths.sound 'break_phone':play()
+			Timer.after(5.5, function()
+				marcello:animate 'throw_phone'
+				Timer.after(5.5, function()
+					finishedGlitchCutscene = true
+					self:tryToLeave()
+				end)
+			end)
+			return false
+		end
+		if storyMode and songIndex < #funkin.songList then
 			if funkin.curSong == 'greetings' and not greetingsCutscene then
 				greetingsCutscene = true
 				switchState(stage)
@@ -1767,43 +2124,60 @@ return {
 			--real shitty
 			local myBallsJustBlewUp = false
 			local whatever = false
-			if not stage.stateToLeaveTo then 
-				stage.stateToLeaveTo = storyMode and menuWeek or menuFreeplay 
-				myBallsJustBlewUp = true
-				playedCutscene = false
-				if curWeek == '_WEEK1' then
-					if health >= 1 then
-						save.save['unlocked_dave-angey'] = true
-						save:writeSave()
-						switchState(endings, 'goodEnding')
-					elseif health < 1 then
-						save.save.unlocked_bambi = true
-						save:writeSave()
-						switchState(endings, 'vomit_ending', 'badending')
-					else
-						switchState(endings, 'badEnding', 'badending')
-					end
-					whatever = true
-					myBallsJustBlewUp = false
-				elseif curWeek == '_WEEK4' then
-					--save.save.beatGame = true
-					--save.writeSave()
-					switchState(menuCredits)
-					whatever = true
-					myBallsJustBlewUp = false
-				elseif weirdPolygonized then
-					whatever = true
-					myBallsJustBlewUp = false
-					switchState(recurserState)
-				elseif funkin.curSong:lower() == 'bonus-song' then
-					save.save.unlocked_dave = true
-				elseif funkin.curSong:lower() == 'cheating' then
-					save.save['unlocked_bambi-3d'] = true
+			local leaveState = storyMode and menuWeek or menuFreeplay 
+			recursedSwap = false
+			myBallsJustBlewUp = true
+			playedCutscene = false
+			if curWeek == '_WEEK1' then
+				save.save.unlocked_tristan = true
+				if health >= 1 then
+					save.save['unlocked_dave-angey'] = true
+					switchState(endings, 'goodEnding')
+				elseif health < 1 then
+					switchState(endings, 'vomit_ending', 'badending')
+				else
+					switchState(endings, 'badEnding', 'badending')
 				end
-				noMissMode = false
+				save.writeSave()
+				whatever = true
+				myBallsJustBlewUp = false
+			elseif curWeek == '_WEEK2' then
+				save.save['unlocked_bambi-new'] = true
+				save.writeSave()
+			elseif curWeek == '_WEEK4' then
+				--save.save.beatGame = true
+				--save.writeSave()
+				switchState(menuCredits, true)
+				whatever = true
+				myBallsJustBlewUp = false
+			elseif weirdPolygonized then
+				whatever = true
+				myBallsJustBlewUp = false
+				switchState(recurserState)
+			elseif funkin.curSong:lower() == 'bonus-song' then
+				save.save.unlocked_dave = true
+			elseif funkin.curSong:lower() == 'cheating' then
+				save.save['unlocked_bambi-3d'] = true
 			end
+			if storyMode then
+				local mustComplete = {'_WEEK1', '_WEEK2', '_WEEK3', '_WEEK4'}
+				local yeah = true
+				for i,v in pairs(mustComplete) do
+					print('checking if i have', v)
+					if not save.highscores[v] then
+						print('cant find this week', v)
+						yeah = false
+						break;
+					end
+				end
+				if yeah then
+					save.save['unlocked_tristan-golden'] = true
+					save.writeSave()
+				end
+			end
+			noMissMode = false
 			if not whatever	then
-				switchState(stage.stateToLeaveTo)
+				switchState(leaveState)
 			end
 			if myBallsJustBlewUp then
 				love.audio.stop()
@@ -1812,12 +2186,17 @@ return {
 		end
 		stopthisnow = true
 		weeks.leaving = false
-		stage.stateToLeaveTo = nil
 		songFinished = false
+		if awaitingExploitation then
+			awaitingExploitation = false
+		end
 		return true
 	end,
 	draw = function(self)
-		love.graphics.setCanvas(gameCanvas)
+		if gameShader or hudShader then --sustains and other semi transparent things look weird when using canvases so only use them when theres a shader needed for one
+			love.graphics.setCanvas(gameCanvas)
+			love.graphics.clear()
+		end
 		love.graphics.push()
 		love.graphics.translate(graphics.getWidth() / 2, graphics.getHeight() / 2)
 		love.graphics.scale(curCamZoom, curCamZoom)
@@ -1831,37 +2210,56 @@ return {
 		weeks:drawRating(0.9)
 		love.graphics.pop()
 
-		if not cutscene then
-			love.graphics.setCanvas(hudCanvas)
+		if not cutscene and not glitchCutscene then
+			if gameShader or hudShader then
+				love.graphics.setCanvas(hudCanvas)
+				love.graphics.clear()
+			end
 			weeks:drawUI()
 		end
 
-		love.graphics.setCanvas(globalCanvas)
-		if gameShader then
-			love.graphics.setShader(gameShader)
-		end
-		love.graphics.draw(gameCanvas)
-		if gameShader then
-			love.graphics.setShader()
-		end
-		if hudShader then
-			love.graphics.setShader(hudShader)
-		end
-		love.graphics.draw(hudCanvas)
-		if hudShader then
-			love.graphics.setShader()
+		if gameShader or hudShader then
+			love.graphics.setCanvas(globalCanvas)
+			love.graphics.push()
+			love.graphics.scale(lovesize.reverseLS, lovesize.reverseLS)
+			love.graphics.setColor(1,1,1)
+			if gameShader then
+				love.graphics.setShader(gameShader)
+			end
+			love.graphics.draw(gameCanvas)
+			if gameShader then
+				love.graphics.setShader()
+			end
+			if not cutscene and not glitchCutscene then
+				if hudShader then
+					love.graphics.setShader(hudShader)
+				end
+				love.graphics.draw(hudCanvas)
+				if hudShader then
+					love.graphics.setShader()
+				end
+			end
+			love.graphics.pop()
 		end
 		if scripts then
 			scripts:call 'draw'
 		end
 	end,
-
+	preleave = function(self)
+		if exbungoAmen then
+			exbungoAmen:stop()
+			exbungoAmen = nil
+		end
+		print 'HI THIS IS OPRELAEV'
+		if inst then inst:stop() end
+		if voices then voices:stop() end
+	end,
 	leave = function(self)
+		terminalModChart = CharacterFunnyEffect.None
+		expungedWindowMode = false
 		weirdPolygonized = false
 		table.clear(sprites)
 		if houseStage then table.clear(houseStage) end
-		--if inst and inst:isPlaying() then inst:stop() end
-		--if voices and voices:isPlaying() then voices:stop() end
 		onUpdate = nil
 		onBeat = nil
 		onStep = nil

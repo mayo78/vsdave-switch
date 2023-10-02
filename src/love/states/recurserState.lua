@@ -52,7 +52,7 @@ return {
 	end,
 	draw = function()
 		love.graphics.push()
-		love.graphics.translate(1280/2, 720/2)
+		love.graphics.translate(S_HALF_WIDTH, S_HALF_HEIGHT)
 		fonts('recurser', 32)
 		for i,v in pairs(bgTexts) do
 			love.graphics.setColor(1,1,1,0.5)

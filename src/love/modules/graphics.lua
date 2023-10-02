@@ -34,7 +34,10 @@ return {
 				break;
 			end
 		end
-		if not pathStr then error('Image ['..path..'] not found! Checked paths: ['..table.concat(checks, ',')..']') end
+		if not pathStr then 
+			print('Image ['..path..'] not found! Checked paths: ['..table.concat(checks, ',')..']') 
+			return 'images/unknown.png'
+		end
 		return pathStr
 	end,
 	setImageType = function(type)

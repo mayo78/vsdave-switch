@@ -56,7 +56,10 @@ local function change(how)
     end
     for i,icon in pairs(icons) do icon:animate((i == curSelected) and 'select' or 'idle') end
     bigIcons:animate(optionShit[curSelected], false)
-    if how ~= 0 then love.audio.play(selectSound) end
+    if how ~= 0 then
+        selectSound:stop()
+        selectSound:play()
+    end
 end
 
 beenInTitle = false
@@ -142,7 +145,7 @@ return {
             spr.sizeX = 128/204
             spr.sizeY = spr.sizeX
             spr.y = 130
-            local targetX = fromTopLeft((1280 / 2) - 450 + ((i-1) * 160)).x
+            local targetX = fromTopLeft((S_HALF_WIDTH) - 450 + ((i-1) * 160)).x
             if not beenInTitle then
                 Timer.tween(1 + (i * 0.25), spr, {x = targetX}, 'in-out-expo')
             else
@@ -154,7 +157,7 @@ return {
         bigIcons = graphics:newAnimatedSprite('dave/title/menu_big_icons', anims, 'story mode', false, nil, {center=true})
         bigIcons:animate('story mode', false)
         bigIcons.image:setFilter('nearest', 'nearest')
-        bigIcons.y = -720/2 + 352/2
+        bigIcons.y = -S_HALF_HEIGHT + 352/2
         add(bigIcons)
         
 		cam.sizeX, cam.sizeY = 0.9, 0.9
@@ -206,7 +209,7 @@ return {
             redsky:draw()
             love.graphics.setShader()
             love.graphics.setColor(0,0,0,0.4)
-            love.graphics.rectangle('fill', -1280/2, -720/2, 1280, 720)
+            love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, 1280, 720)
             love.graphics.setColor(1,1,1)
         else
             love.graphics.setColor(rgb255(unpack(bg.color)))
@@ -235,11 +238,11 @@ return {
         --print(lm.string['main_'..aaa], 'main_'..aaa)
         fonts('comic', 64)
         local main = lm.string['main_'..aaa]
-        printfOutline(main, -curFont:getWidth(main)/2, fromTopLeft(0, 720/2 + 28).y, 9999)
+        printfOutline(main, -curFont:getWidth(main)/2, fromTopLeft(0, S_HALF_HEIGHT + 28).y, 9999)
         fonts('comic', 24)
         local desc = lm.string['desc_'..aaa]
         printfOutline(desc, -curFont:getWidth(desc)/2, fromTopLeft(0, 720 - 58).y, 9999)
-        printfOutline('Version '..tostring(version), -1280/2, -720/2 + 16) --..'\nHold start and select to reset data.'
+        printfOutline('Version '..tostring(version)..'\nMod version: v3', -S_HALF_WIDTH, -S_HALF_HEIGHT + 16) --..'\nHold start and select to reset data.'
         
 
         love.graphics.push()

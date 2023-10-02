@@ -58,9 +58,9 @@
 	],
 	"no_antialiasing": true,
 	"image": "dave/expunged/unfair_bambi",
-	"position": [
-		0,
-		0
+	"positionOffset": [
+		50,
+		200
 	],
 	"healthicon": "bambi-unfair-pixel",
 	"flip_x": false,

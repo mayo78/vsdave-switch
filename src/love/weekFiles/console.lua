@@ -10,13 +10,13 @@ local a = {
       'Unfairness',
       'bambi-unfair-pixel',
       'EF0000',
-      'foundUnfairness'
+      'found_unfairness'
     },
     {
       'Exploitation',
       'expunged-pixel',
       '910101',
-      'foundExploit'
+      'found_terminal'
     },
     {
       'Enter-Terminal',

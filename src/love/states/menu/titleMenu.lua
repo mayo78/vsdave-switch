@@ -111,7 +111,7 @@ return {
 		logo.x, logo.y = -25, -50
 		logo.sizeX, logo.sizeY = 1.2, 1.2
 		if awaitingExploitation then
-			logo.x, logo.y = 1280/2 - logo.width/2, 720/2 - logo.height/2 - 100
+			logo.x, logo.y = S_HALF_WIDTH - logo.width/2, S_HALF_HEIGHT - logo.height/2 - 100
 		end
 
 		if not awaitingExploitation then
@@ -165,7 +165,8 @@ return {
 					titleEnter:animate("pressed", false)
 
 					Timer.after(1, function()
-						switchState(menuSelect)
+						switchState(save.save.coward and cowardState or menuSelect)
+					--switchState(layeredCutscene, false, 'mazeCutscene', 'break_phone', 24, {0.75, 1.5, 0.75, 2.67})
 					end)
 				end
 			end

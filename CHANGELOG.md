@@ -36,8 +36,10 @@ this fixed one crash oops
 - More accurate stages
 - Better game over
 - Cleaner loading text
-- Terminal secrets (wip)
-- Bonus songs (wip)
-- Exploitation (wip)
+- Terminal secrets
+- Bonus songs
+- Exploitation
+- Unlockable week 5
+- Better Dave cutscene
 ## Other
 - You can exit the error screen if it ever occurs now

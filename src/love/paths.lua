@@ -35,7 +35,7 @@ function l.json(key)
 		print('json not found' .. key) 
 		return nil
 	end
-	return json, (key..'.json'):lower()
+	return table.copy(json), (key..'.json'):lower()
 end
 
 l.read = love.filesystem.read
@@ -72,6 +72,7 @@ function l.inst(song)
 end
 
 function l.voices(song)
+	if terminalModChart == CharacterFunnyEffect.Tristan then return l.music('songs/'..song:lower()..'/Voices-Tristan', 'stream') end
 	return l.music('songs/'..song:lower()..'/Voices', 'stream')
 end
 

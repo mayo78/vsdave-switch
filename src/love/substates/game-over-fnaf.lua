@@ -23,7 +23,7 @@ return {
 			paths.sounds 'fiveNights/scream':stop()
 			paths.sounds 'fiveNights/static':play()
 			Timer.after(2.7, function()
-				Timer.tween(2, fade, {v = 0}, nil, function()
+				Timer.tween(2, fade, {0}, nil, function()
 					switchState(stage)
 				end)
 			end)
@@ -41,7 +41,7 @@ return {
 		love.graphics.push()
 		love.graphics.setColor(0,0,0)
 		love.graphics.rectangle('fill', 0, 0, 1280, 720)
-		love.graphics.translate(1280/2, 720/2)
+		love.graphics.translate(S_HALF_WIDTH, S_HALF_HEIGHT)
 		love.graphics.setColor(fade[1], fade[1], fade[1])
 		if not jumpscareDone then
 			scream:draw()
@@ -49,5 +49,8 @@ return {
 			static:draw()
 		end
 		love.graphics.pop()
+	end,
+	leave = function()
+		love.audio.stop()
 	end,
 }

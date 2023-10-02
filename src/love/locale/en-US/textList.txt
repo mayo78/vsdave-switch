@@ -157,6 +157,7 @@ ctheft_sub4==I don't care...
 ctheft_sub5==You want to
 ctheft_sub6==I'll block you
 ctheft_sub7==I'm never coming back again.
+ctheft_sub8==Bya Baa!
 
 // Maze Subtitles //
 maze_sub1==I mean...
@@ -220,7 +221,7 @@ exploit_sub11==get trolled!
 exploit_sub12==Whoopsies...
 exploit_sub13==You lying!
 exploit_sub14==YOU LYING!
-exploit_sub15==A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€
+exploit_sub15==AEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAE
 
 // Escape from California Subtitles //
 california_sub1==Help me! I'm stuck in California!

@@ -67,6 +67,7 @@ local function expungedReignStarts()
 		Timer.tween(1, expungedEye, {alpha = 1})
 		Timer.after(1 + yay:getDuration(), function()
 			save.save.awaitingExploitation = true
+			save.save.found_terminal = true
 			save.writeSave()
 			love.event.quit()
 		end)
@@ -120,10 +121,11 @@ makeCommand('admin', getAwesome('term_admin_ins'), function(...)
 		  ['exbungo.dat'] = function()
 			terminalModChart = CharacterFunnyEffect.Exbungo
 			songs = {"house","insanity","polygonized","five-nights","splitathon","shredder"}
-			loadSong(songs[getRandomInt(1, #songs)], -1)
+			loadSong(songs[love.math.random(1, #songs)], -1)
 		  end,
 		  ['bambi.dat'] = function()
-			terminalModchart = CharacterFunnyEffect.Bambi
+			terminalModChart = CharacterFunnyEffect.Bambi
+			--print('settings terminal mdodhcart to', terminalModChart, CharacterFunnyEffect.Bambi)
 			loadSong('shredder', -1)
 		  end,
 		  ['recurser.dat'] = function()
@@ -253,6 +255,9 @@ makeCommand('secret mod leak', getAwesome('term_leak_ins'), function(...)
 	switchState(stage)
 	--print('entering secret leak!')
 end, false, true)
+makeCommand('exit', 'exit', function(...)
+	switchState(menuFreeplay)
+end)
 return {
 	enter = function(self)
 		keyboard = floatingKeyboard()
@@ -305,7 +310,7 @@ return {
 		eyeMode = false
 		glitchSpr = graphics:newAnimatedSprite('dave/glitch', {
 			{name = 'glitch', anim = 'glitch', fps = 40, loops = true}
-		}, 'glitch')
+		}, 'glitch', false, nil, {center = true})
 		expungedEye = graphics.newImage(paths.image('dave/title/mainmenu/eye'))
 		expungedEye.alpha = 0
 		glitchSpr.sizeX, glitchSpr.sizeY = 1/0.75, 1/0.75
@@ -326,7 +331,7 @@ return {
 	draw = function()
 		if eyeMode then
 			love.graphics.push()
-			love.graphics.translate(1280/2, 720/2)
+			love.graphics.translate(S_HALF_WIDTH, 720/2)
 			love.graphics.setColor(1,1,1,1-expungedEye.alpha)
 			glitchSpr:draw()
 			love.graphics.setColor(1,1,1,expungedEye.alpha)
@@ -336,7 +341,7 @@ return {
 		end
 		if expungedMode then
 			love.graphics.push()
-			love.graphics.translate(1280/2, 720/2)
+			love.graphics.translate(S_HALF_WIDTH, 720/2)
 			glitchSpr:draw()
 			love.graphics.pop()
 		end
@@ -374,6 +379,8 @@ return {
 		elseif controls.pressed.confirm and not keyboard.active then
 			keyboard.active = true
 			Timer.tween(0.25, keyboard, {y = 300}, 'out-expo')
+		elseif controls.pressed.back and not keyboard.active then
+			switchState(menuFreeplay)
 		end
 
 		--if controls.pressed.gameFive then

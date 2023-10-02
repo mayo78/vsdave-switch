@@ -173,10 +173,10 @@ return {
 				printfOutline(setting.print, -((#setting.print/2) * 16), setting.y, nil, {alpha = (i == settingIndex and 1 or 0.5)})
 			end
 			graphics.setColor(0, 0, 0, 0.5)
-			love.graphics.rectangle('fill', -1280/2, -720/2, 1280, 720 * 0.2)
+			love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, 1280, 720 * 0.2)
 			fonts('comic', 16)
 			local desc = settingStuff[settingIndex].metadata[2]
-			printfOutline(desc, -((#desc/2) * 8), (-720/2) + 50)
+			printfOutline(desc, -((#desc/2) * 8), (-S_HALF_HEIGHT) + 50)
 		elseif curMenu == 'select' then
 			for i,txt in pairs(menuStuff) do
 				printfOutline(txt, -((#txt/2) * 16), menuYs[txt][1], nil, {alpha = ((i == menuIndex) and 1 or 0.5)})
@@ -188,10 +188,10 @@ return {
 			end
 			if settingControl then
 				graphics.setColor(0, 0, 0, 0.5)
-				love.graphics.rectangle('fill', -1280/2, -720/2, 1280, 720 * 0.2)
+				love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, 1280, 720 * 0.2)
 				fonts('comic', 32)
 				local desc = 'Bind a key to this action or press SELECT to cancel'
-				printfOutline(desc, -((#desc/2) * 16), (-720/2) + 50)
+				printfOutline(desc, -((#desc/2) * 16), (-S_HALF_HEIGHT) + 50)
 			end
 		end
 		love.graphics.pop()

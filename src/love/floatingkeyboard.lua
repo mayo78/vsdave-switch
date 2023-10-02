@@ -263,6 +263,7 @@ return function()
 			if pressed and canjustpressed then
 				canjustpressed = false
 				local mx, my = love.mouse.getPosition()
+				mx, my = mx * lovesize.reverseLS, my * lovesize.reverseLS
 				local x,y = self.x,self.y
 				local lastKey
 				for i,v in pairs(layout) do

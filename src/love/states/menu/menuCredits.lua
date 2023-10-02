@@ -474,7 +474,7 @@ return {
 	draw = function(self)
 		local myAlpha = 1 - weirdAlpha[1]
 		love.graphics.push()
-		love.graphics.translate(1280/2, 720/2)
+		love.graphics.translate(S_HALF_WIDTH, S_HALF_HEIGHT)
 		if not scrolling then
 			graphics.setColor(0, 1, 0)
 		else
@@ -519,7 +519,7 @@ return {
 		if inSocial then
 			graphics.setColor(0, 0, 0, weirdAlpha[1] * 0.5)
 			love.graphics.rectangle('fill', 0, 0, 1280, 720)
-			love.graphics.translate(1280/2, 0)
+			love.graphics.translate(S_HALF_WIDTH, 0)
 			printfOutline(curPerson.name, -((#curPerson.name)/2 * 16), 64, nil, {alpha = weirdAlpha[1]})
 			printfOutline(curPerson.desc, -((#curPerson.desc)/2 * 16), 128, nil, {alpha = weirdAlpha[1]})
 			love.graphics.translate(0, 128)

@@ -42,6 +42,8 @@ local recursedPrints
 
 local redsky, glitchshader
 
+local freeplayScale
+
 local function resetPresses()
 	table.clear(pressSpeeds)
 	pressUnlockNumber = love.math.random(20,40)
@@ -99,7 +101,7 @@ local function recurserUnlock()
 		boom:play()
 		for i,v in pairs(icons) do
 			v.angle = 0
-			Timer.tween(4, v, {x = love.math.random(-1280/2, 1280/2), y = love.math.random(-500, 100), angle = love.math.random(-360, 360)}, 'out-cubic')
+			Timer.tween(4, v, {x = love.math.random(-S_HALF_WIDTH, S_HALF_WIDTH), y = love.math.random(-500, 100), angle = love.math.random(-360, 360)}, 'out-cubic')
 		end
 		local bigString = {}
 		recursedPrints = {}
@@ -120,7 +122,7 @@ local function recurserUnlock()
 
 		for i,v in pairs(recursedPrints) do
 			v.angle = 0
-			Timer.tween(4, v, {x = love.math.random(-1280/2, 1280/2), y = love.math.random(-500, 100), angle = love.math.random(-360, 360)}, 'out-cubic')
+			Timer.tween(4, v, {x = love.math.random(-S_HALF_WIDTH, S_HALF_WIDTH), y = love.math.random(-500, 100), angle = love.math.random(-360, 360)}, 'out-cubic')
 		end
 		
 		local hi = {1}
@@ -151,6 +153,7 @@ local function recurserUnlock()
 end
 return {
 	enter = function(self, previous)
+		freeplayScale = 0
 		recursedScale = 1
 		canMove = true
 		shakeAmount, shakeTime = 0,0
@@ -207,19 +210,26 @@ return {
 				love.audio.play(confirmSound)
 				Timer.after(0.1, function()
 					cats[catIndex].alpha = 1
-					Timer.tween(1, cats[catIndex], {alpha = 0, y = -720}, 'out-expo', function()
+					Timer.tween(0.25, cats[catIndex], {alpha = 0, y = -720}, 'out-expo', function()
 						inRealFreeplay = true
 						if catIndex ~= lastCat then songIndex = 1 end
 						for _,cat in pairs(cats) do
 							cat.dontdraw = true
 						end
+						freeplayScale = 0
+						local _scale = {0}
+						Timer.after(0.1, function()
+							Timer.tween(0.5, _scale, {1}, 'in-out-expo', {during = function()
+								freeplayScale = _scale[1]
+							end})
+						end)
 						
 						--print('idiots', funkin.freeplayList.extras, funkin.freeplayList.extras[1], funkin.freeplayList.extras[2], funkin.freeplayList.extras[2].songs[1][1])
 						for k,cat in pairs(funkin.freeplayList) do
 							print('hiii')
 							local docat = k == catStrings[catIndex]
 							if k == 'terminal' and not save.save.found_terminal then
-								print 'its the terminal song!!! and terminal not found oops!'
+								--print 'its the terminal song!!! and terminal not found oops!'
 								docat = catIndex == 2
 							end
 							if docat then
@@ -227,7 +237,7 @@ return {
 								for _,week in pairs(cat) do
 									for _,song in ipairs(week.songs) do
 										--song[4] = nil
-										if not song[4] or save.save[song[4]] or true then
+										if not song[4] or save.save[song[4]] then
 											song[3] = _G.colors[song[3] or week.color] or (song[3] or week.color)
 											table.insert(songs, song)
 											local icon = graphics.newSprite(
@@ -297,7 +307,7 @@ return {
 					charOverride = nil
 					scoreMultiplier = {1, 1, 1, 1}
 					funkin.curSong = songs[songIndex][1]:lower()
-					switchState((controls.down['button:y'] or love.keyboard.isDown'lshift') and stage or charSelect)
+					switchState((controls.down['button:y'] or love.keyboard.isDown'lshift' or funkin.curSong == 'five-nights') and stage or charSelect)
 				end
 			end
 			curScore = math.floor(lerp(curScore, targetScore, 0.4))
@@ -316,7 +326,7 @@ return {
             redsky:draw()
             love.graphics.setShader()
             love.graphics.setColor(0,0,0,0.4)
-            love.graphics.rectangle('fill', -1280/2, -720/2, 1280, 720)
+            love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, 1280, 720)
             love.graphics.setColor(1,1,1)
         else
 			love.graphics.setColor(rgb255(unpack(titleBG.color)))
@@ -335,11 +345,11 @@ return {
 			end
 		else
 			love.graphics.push()
-			love.graphics.translate(-500 * recursedScale, -100 * recursedScale)
-			love.graphics.translate(targetX * recursedScale, targetY * recursedScale)
+			love.graphics.translate(-500 * recursedScale, -100 * recursedScale * freeplayScale)
+			love.graphics.translate(targetX * recursedScale, targetY * recursedScale * freeplayScale)
 			fonts('comic', 72)
 			for i,song in ipairs(songs) do
-				love.graphics.translate(75 * recursedScale, 165 * recursedScale)
+				love.graphics.translate(75 * recursedScale, 165 * recursedScale * freeplayScale)
 				local icon = icons[song[1]]
 				local nodash = song[1]:gsub('-', ' ')
 				local alpha = (i == songIndex) and 1 or 0.5
@@ -368,9 +378,9 @@ return {
 			love.graphics.setColor(0, 0, 0, 0.6)
 			local str = lm.string.freeplay_personalBest..curScore..'\n'..(save.highscoreChars[songs[songIndex][1]:lower()] or 'bf')
 			local strWidth = curFont:getWidth(str)
-			love.graphics.rectangle('fill', (1280/2)-strWidth-6, -(720/2), strWidth + 6, 66)
+			love.graphics.rectangle('fill', (S_HALF_WIDTH)-strWidth-6, -(S_HALF_HEIGHT), strWidth + 6, 66)
 			love.graphics.setColor(1, 1, 1)
-			love.graphics.printf(str, (1280/2)-strWidth, (-720/2), 9999999)
+			love.graphics.printf(str, (S_HALF_WIDTH)-strWidth, (-S_HALF_HEIGHT), 9999999)
 		end
 		love.graphics.pop()
 	end,

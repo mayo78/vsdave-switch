@@ -20,7 +20,7 @@ local inputList = {
 	"gameRight"
 }
 
-local ExploitationModchartType = {
+ExploitationModchartType = {
 	None = 0,
 	Cheating = 1,
 	Figure8 = 2,
@@ -76,7 +76,7 @@ local hasShapes
 
 local _boyfriendArrows
 
-local CREDITS_X = -1280/2/0.7 + (4/0.7)
+local CREDITS_X = -S_HALF_WIDTH/0.7 + (4/0.7)
 
 local boyfriends = {}
 local dads = {}
@@ -114,14 +114,13 @@ local goldenShards
 
 local cinbarUp, cinbarDown, cinbars
 
-local modchart, localFunny
-
-local NOTE_WIDTH, NOTE_HEIGHT = 165, 160 --general widths, not exact but close enough!
+NOTE_WIDTH, NOTE_HEIGHT = 165, 160 --general widths, not exact but close enough!
 
 local isFiveNights
 
-gameCanvas = love.graphics.newCanvas(1920, 1080)
-hudCanvas = love.graphics.newCanvas(1920, 1080)
+local crazyZooming
+
+local isDownscroll
 
 local function addCharToList(type, char)
 	if type == 1 then
@@ -286,6 +285,15 @@ local function resetStrumPos()
 		enemyArrows[i].y = enemyArrows[i].baseY
 	end
 end
+--backInOut from FlxEase
+local function backInOut(t)
+	t = t * 2;
+	if t < 1 then
+		return t * t * (2.70158 * t - 1.70158) / 2;
+	end
+	t = t - 1;
+	return (1 - (t-1) * (t) * (-2.70158 * t - 1.70158)) / 2 + .5;
+end
 return {
 	--keypressed = function(self, key)
 	--	print(key)
@@ -305,6 +313,8 @@ return {
 				end
 			end
 		end
+		isDownscroll = settings.downscroll
+		crazyZooming = false
 		if charOverride == 'bf' then charOverride = nil end
 		modchart = ExploitationModchartType.None
 		localFunny = CharacterFunnyEffect.None
@@ -340,6 +350,7 @@ return {
 		origZoom = camZoom
 		enemyNotesToDraw = {0, 0, 0, 0, 0}
 		boyfriendNotesToDraw = {0, 0, 0, 0}
+		noHeadingIcon = false
 		sounds = {
 			countdown = {},
 			miss = {
@@ -361,6 +372,7 @@ return {
 
 
 		curSong = funkin.curSong
+		print('song genie orwhatecver', curSong)
 		jsonChart = paths.song(curSong) -- funkin.difficulty)
 		self.jsonChart = jsonChart
 		randomSpeed = settings.modcharts and (curSong:lower() == 'unfairness' or curSong:lower() == 'exploitation')
@@ -374,16 +386,18 @@ return {
 		}
 		local healthImg = paths.image('dave/'..(healths[curSong:lower()] or 'healthBar'))
 		healthBarOverlay = graphics.newImage(healthImg)
-		healthBarOverlay.y = settings.downscroll and -450 - 20 or 720 * (0.9 * 0.7) - 10
+		healthBarOverlay.y = isDownscroll and -450 - 20 or 720 * (0.9 * 0.7) - 10
 		healthBarOverlay.sizeX = 1/0.7
 		healthBarOverlay.sizeY = 1/0.7
 		timeBarOverlay = graphics.newImage(paths.image('dave/timeBar'))
-		timeBarOverlay.y = settings.downscroll and 720 * (0.9 * 0.7) - 10 or -450 - 20
+		timeBarOverlay.y = isDownscroll and 720 * (0.9 * 0.7) - 10 or -450 - 20
 		timeBarOverlay.sizeX = 1/0.7
 		timeBarOverlay.sizeY = 1/0.7
 
 		if greetingsCutscene then jsonChart.player2 = 'dave-festival'
 		elseif weirdPolygonized then jsonChart.player2 = 'dave-annoyed'
+		elseif terminalModChart == CharacterFunnyEffect.Tristan then jsonChart.player2 = 'tristan-opponent'
+		elseif terminalModChart == CharacterFunnyEffect.Exbungo then jsonChart.player2 = 'exbungo'
 		end
 		enemyObject = addCharToList(1, jsonChart.player2 or 'bf')
 		enemy = enemyObject.sprite
@@ -568,7 +582,7 @@ return {
 		enemyNoteData = {}
 		boyfriendNotes = {}
 		boyfriendNoteData = {}
-		health = 50
+		health = funkin.curSong == 'unfairness' and 100 or 50
 		score = 0
 		totalNotes = 0
 		notesHit = 0
@@ -582,10 +596,12 @@ return {
 		curSongTime = 0
 		lastEvent = {c = 0, st = 0, bpm = 0}
 		hasShapes = false
+		drawSongHeader = false
 		songHeader = nil
 		songHeaderIcon = nil
 		songHeaderTxt = nil
 		shapeWarning = nil
+		print('my funny effect is', terminalModChart, CharacterFunnyEffect.Bambi)
 		for i=1,8 do
 			local dir = animList[((i-1)%4)+1]
 			if terminalModChart == CharacterFunnyEffect.Bambi then dir = animList[3] end
@@ -613,7 +629,7 @@ return {
 				else
 					boyfriendArrows[i].x = 100 + 165 * i
 				end
-				boyfriendArrows[i].y = -350 * (settings.downscroll and -1 or 1)
+				boyfriendArrows[i].y = -350 * (isDownscroll and -1 or 1)
 				boyfriendNotes[i] = {}
 				boyfriendNoteData[i] = {}
 			else
@@ -623,12 +639,28 @@ return {
 				else
 					enemyArrows[i].x = -925 + 165 * i
 				end
-				enemyArrows[i].y = -350 * (settings.downscroll and -1 or 1)
+				enemyArrows[i].y = -350 * (isDownscroll and -1 or 1)
 				enemyNotes[i] = {}
 				enemyNoteData[i] = {}
 			end
 			spr.baseX = spr.x
 			spr.baseY = spr.y
+		end
+		if terminalModChart == CharacterFunnyEffect.Tristan then
+			local order = {0, 3, 2, 1, 4, 7, 6, 5}
+			local pos = {}
+			for i=1,4 do
+				table.insert(pos, boyfriendArrows[i].baseX)
+			end
+			for i=1,4 do
+				table.insert(pos, enemyArrows[i].baseX)
+			end
+			for i=1,4 do
+				local o = boyfriendArrows[i]
+				local p = enemyArrows[i]
+				p.x = pos[order[i + 4] + 1]
+				o.x = pos[order[i] + 1]
+			end
 		end
 		if curSong:lower() == 'shredder' then
 			local dirs = {'A', 'B', 'C', 'D', 'E'}
@@ -641,7 +673,7 @@ return {
 				spr.alpha = 0
 				spr.x = (-925 + 165 * i) + 500
 				spr.baseX = spr.x
-				spr.y = -300 * (settings.downscroll and -1 or 1)
+				spr.y = -300 * (isDownscroll and -1 or 1)
 				spr.baseY = spr.y
 				ghStrums[i] = spr
 				enemyNotes[5] = {}
@@ -657,8 +689,8 @@ return {
 		--	print('doing x', i)
 		--	enemyArrows[i].x = -925 + 165 * i
 		--	boyfriendArrows[i].x = 100 + 165 * i
-		--	enemyArrows[i].y = -400 * (settings.downscroll and -1 or 1)
-		--	boyfriendArrows[i].y = -400 * (settings.downscroll and -1 or 1)
+		--	enemyArrows[i].y = -400 * (isDownscroll and -1 or 1)
+		--	boyfriendArrows[i].y = -400 * (isDownscroll and -1 or 1)
 
 		--	enemyNotes[i] = {}
 		--	enemyNoteData[i] = {}
@@ -672,30 +704,40 @@ return {
 
 		local data = getData(curSong:lower())
 		if data then
+			if curSong == 'overdrive' then
+				data.composer = 'Top 10 Awesome'
+				data.header = 'fnfengeading'
+			elseif terminalModChart and terminalModChart ~= CharacterFunnyEffect.None then
+				data.header = 'expungedHeading'
+			end
 			if data.composer == 'glitch' then data.composer = 'DeadShadow & PixelGH' end
+			if recursedSwap then data.header = 'somethingHeading' end
 			local animatedNameGuys = {
 				expungedHeading = 'Expunged',
 				unfairHeading = 'Unfairness',
 				botHeading = 'Bot trot',
 				cheatingHeading = 'Cheating',
 				somethingHeading = 'Scramble',
-				californiaHeading = 'California'
+				californiaHeading = 'California',
 			}
 			local me
 			if animatedNameGuys[data.header] then
 				me = graphics:newAnimatedSprite('dave/songHeadings/'..data.header, {{anim = 'idle', name = animatedNameGuys[data.header], loops = true}}, 'idle')
 			else
-				me = graphics.newImage(paths.image('dave/songHeadings/'..data.header))
+				me = graphics.newImage(paths.image('dave/songHeadings/'..data.header), {full = true})
 			end
 			songHeaderTxt = lm.string.credits_songby..' '..data.composer
 			songHeaderIcon = graphics.newImage(paths.image('dave/songCreators/'..data.composer))
 			--print('hi!', me.width, songHeaderIcon.width)
 			me.image:setFilter(getAA(data.antialiasing))
-			me.x, me.y = -685, -200
-			me.sizeX = (#songHeaderTxt * (15/0.7) + songHeaderIcon.width + 1) / me.width
+			me.x, me.y = -720, -225
 			me.sizeY = 1.1
 			me.x = me.x - me.width * me.sizeX
 			songHeader = me
+			curSongHeader = data.header
+		end
+		if terminalModChart == CharacterFunnyEffect.Exbungo then
+			hudShader = shaders:GLITCH(0.03, 5, 1)
 		end
 	end,
 
@@ -707,6 +749,8 @@ return {
 		stepCrochet = crochet / 4
 		curStep = 0
 		curBeat = 0
+
+		print('set the stuff')
 
 		strumsBlocked = {}
 
@@ -772,7 +816,7 @@ return {
 					end
 					--print('these are the shit...', id)
 
-					local c = #noteTable[id] + 1 --latest note in the notetables direction table thing
+					--local c = #noteTable[id] + 1 --latest note in the notetables direction table thing
 					local threedee = false
 					--visualiszstion
 					--[[
@@ -851,12 +895,24 @@ return {
 						tex = lastTex
 					end
 					--noteREAL.
-					--local coolY = settings.downscroll and 400 or -400
+					--local coolY = isDownscroll and 400 or -400
 					local strum = strumTable[id]
-					if curSong:lower() == 'cheating' and settings.modcharts then strum = strumTable[scramble[id]] end
-					if ghNote then strum = ghStrums[note[2]+1] end
+					if curSong:lower() == 'cheating' and settings.modcharts or terminalModChart == CharacterFunnyEffect.Dave then strum = strumTable[scramble[id]] 
+					elseif terminalModChart == CharacterFunnyEffect.Bambi then strum = strumTable[4]
+					end
+					if ghNote then
+						strum = ghStrums[note[2]+1]
+						if terminalModChart == CharacterFunnyEffect.Bambi then
+							strum = ghStrums[3]
+						end
+					end
 					--print('my strum is', strum, id)
 					noteREAL.strumTime = note[1] --i should really just rewrite this whole system
+					local speed = speed
+					if randomSpeed then
+						speed = settings.modcharts and love.math.random(1, 5) or 3
+						if curSong == 'exploitation' and love.math.random(1,20) ~= 1 then speed = 3 end
+					end
 					table.insert(noteTable[id], noteREAL)
 					table.insert(noteDataTable[id], {
 						id = id,
@@ -864,16 +920,16 @@ return {
 						distance = note[1],
 						noteType = note[4], --maybe????
 						is3D = (threedee or note[4] == 'shape'),
-						speed = settings.modcharts and love.math.random(1, 5) or 3, --for unfairness and exploitation
+						speed = speed, --for unfairness and exploitation
 						ghNote = ghNote,
 						origID = note[2],
 						strum = strum,
 						textNote = textNote
 					})
-					if settings.modcharts and curSong:lower() == 'cheating' then
+					if settings.modcharts and curSong:lower() == 'cheating' or terminalModChart == CharacterFunnyEffect.Dave then
 						noteREAL.orientation = math.pi
-						noteREAL.offsetX = noteREAL.width
-						noteREAL.offsetY = noteREAL.height
+						--noteREAL.offsetX = noteREAL.width
+						--noteREAL.offsetY = noteREAL.height
 					end
 					--noteREAL.y = note[1] + coolY * 0.6 * speed --actually stupid
 					--fuck this ill fix it later (sustains sometimes play the on animation for no reason and theres no trace of it doing that AGHJKDKLSJHDFJKLSGUHDFIKHDFJKLHDJK:FL)
@@ -884,6 +940,10 @@ return {
 								{anim = 'hold', name = colors[id]..' hold piece', fps = 0},
 								{anim = 'end', name = (colors[id] ~= 'purple') and colors[id]..' hold end' or 'pruple end hold', fps = 0}
 							}
+							if terminalModChart == CharacterFunnyEffect.Bambi then
+								anims[1].name = colors[3]..' hold piece'
+								anims[2].name = colors[3]..' hold end'
+							end
 							if tex == 'dave/notes/note_recursed' then
 								anims[1].offsets = {-25, 0}
 								anims[2].offsets = {-25, 0}
@@ -893,6 +953,11 @@ return {
 							sus.dontdraw = true
 							--sus.offsetY = -10
 							sus.strumTime = note[1] + susNote
+							local speed = speed
+							if randomSpeed then
+								speed = settings.modcharts and love.math.random(1, 5) or 3
+								if curSong == 'exploitation' and love.math.random(1,20) ~= 1 then speed = 3 end
+							end
 							table.insert(noteTable[id], sus)
 							table.insert(noteDataTable[id], {
 								id = id,
@@ -901,7 +966,7 @@ return {
 								noteType = note[4],
 								isSustain = true,
 								alphaMult = 0.5,
-								speed = settings.modcharts and love.math.random(1, 5) or 3, --for unfairness and exploitation
+								speed = speed, --for unfairness and exploitation
 								ghNote = ghNote,
 								origID = note[2],
 								strum = strum
@@ -917,7 +982,7 @@ return {
 						--print ('can we do this please', noteDataTable[id][#noteTable[id]].isSustain)
 						if curSong:lower() ~= 'unfairness' and curSong:lower() ~= 'exploitation' and settings.modcharts or not settings.modcharts then
 							noteTable[id][#noteTable[id]]:animate 'end'
-							if settings.downscroll then noteTable[id][#noteTable[id]].sizeY = -1 end
+							if isDownscroll then noteTable[id][#noteTable[id]].sizeY = -1 end
 						end
 						--print(noteTable[id][#noteTable[id]]:getAnimName(), 'tguis is AFTER GJNDSJKLGJSDGJH')
 					end
@@ -939,7 +1004,7 @@ return {
 				shapeArrows[i] = spr
 				shapeArrows[i].x = 100 + 165 * i
 				spr.baseX = spr.x
-				shapeArrows[i].y = -350 * (settings.downscroll and -1 or 1)
+				shapeArrows[i].y = -350 * (isDownscroll and -1 or 1)
 				spr.baseY = spr.y
 			end
 		end
@@ -993,7 +1058,7 @@ return {
 						end
 					elseif event[1] == 'stageLightToggle' and not stageLight then
 						stageLight = graphics.newImage(paths.image'dave/spotlight')
-						stageLight.y = -200
+						stageLight.y = 325
 						stageLight.x = -400
 						stageLight.blendMode = 'add'
 						stageLight.dontdraw = true
@@ -1005,7 +1070,7 @@ return {
 							et = et + dt
 							meangle = (math.sin(et * 2) * 10)
 							stageLight.orientation = meangle * DEGREE_TO_RADIAN
-							stageLight.x = lerp(stageLight.x, mustHitSection and 150 or -390, math.boundTo(dt * 2.4, 0, 1))
+							stageLight.x = lerp(stageLight.x, (mustHitSection and boyfriend.x or enemy.x) + stageLight.width/3, math.boundTo(dt * 2.4, 0, 1))
 						end
 						stage:addSpr(stageLight) --woops
 					end
@@ -1040,7 +1105,7 @@ return {
 		--	for j = 2, #enemyNotes[i] do
 		--		local index = j - offset
 
-		--		if enemyNotes[i][index]:getAnimName() == "on" and enemyNotes[i][index - 1]:getAnimName() == "on" and ((not settings.downscroll and enemyNotes[i][index].y - enemyNotes[i][index - 1].y <= 10) or (settings.downscroll and enemyNotes[i][index].y - enemyNotes[i][index - 1].y >= -10)) then
+		--		if enemyNotes[i][index]:getAnimName() == "on" and enemyNotes[i][index - 1]:getAnimName() == "on" and ((not isDownscroll and enemyNotes[i][index].y - enemyNotes[i][index - 1].y <= 10) or (isDownscroll and enemyNotes[i][index].y - enemyNotes[i][index - 1].y >= -10)) then
 		--			table.remove(enemyNotes[i], index)
 
 		--			offset = offset + 1
@@ -1053,7 +1118,7 @@ return {
 		--	for j = 2, #boyfriendNotes[i] do
 		--		local index = j - offset
 
-		--		if boyfriendNotes[i][index]:getAnimName() == "on" and boyfriendNotes[i][index - 1]:getAnimName() == "on" and ((not settings.downscroll and boyfriendNotes[i][index].y - boyfriendNotes[i][index - 1].y <= 10) or (settings.downscroll and boyfriendNotes[i][index].y - boyfriendNotes[i][index - 1].y >= -10)) then
+		--		if boyfriendNotes[i][index]:getAnimName() == "on" and boyfriendNotes[i][index - 1]:getAnimName() == "on" and ((not isDownscroll and boyfriendNotes[i][index].y - boyfriendNotes[i][index - 1].y <= 10) or (isDownscroll and boyfriendNotes[i][index].y - boyfriendNotes[i][index - 1].y >= -10)) then
 		--			table.remove(boyfriendNotes[i], index)
 
 		--			offset = offset + 1
@@ -1066,14 +1131,6 @@ return {
 	setupCountdown = function(self)
 		Timer.tween(0.5, hudAlpha, {1})
 		print 'setting up the countdown now'
-		if inst then
-			inst:release()
-			inst = nil
-		end
-		if voices then
-			voices:release()
-			voices = nil
-		end
 		inst = paths.inst(curSong)
 		if jsonChart.needsVoices then
 			voices = paths.voices(curSong)
@@ -1089,13 +1146,13 @@ return {
 		countingDown = true
 		countdownFade[1] = 0
 		love.audio.play(sounds.countdown.three)
-		Timer.after(
+		countdownTween = Timer.after(
 			(60 / bpm),
 			function()
 				mustHitSection = not mustHitSection
 				countdownFade[1] = 1
 				love.audio.play(sounds.countdown.two)
-				Timer.tween(
+				countdownTween = Timer.tween(
 					(60 / bpm),
 					countdownFade,
 					{0},
@@ -1105,7 +1162,7 @@ return {
 						countdown:setImage(setImg)
 						countdownFade[1] = 1
 						love.audio.play(sounds.countdown.one)
-						Timer.tween(
+						countdownTween = Timer.tween(
 							(60 / bpm),
 							countdownFade,
 							{0},
@@ -1115,12 +1172,13 @@ return {
 								countdown:setImage(goImg)
 								countdownFade[1] = 1
 								love.audio.play(sounds.countdown.go)
-								Timer.tween(
+								countdownTween = Timer.tween(
 									(60 / bpm),
 									countdownFade,
 									{0},
 									"linear",
 									function()
+										countdownTween = nil
 										mustHitSection = not mustHitSection
 										if not greetingsCutscene then
 											Timer.tween(0.25, timebarAlpha, {1})
@@ -1130,19 +1188,32 @@ return {
 											musicTime = 0
 											if inst then 
 												inst:play()
+												inst:setVolume(1)
+												if terminalModChart == CharacterFunnyEffect.Exbungo then
+													inst:setVolume(0)
+													exbungoAmen = paths.sound('amen/amen_'..love.math.random(1,6))
+													exbungoAmen:setLooping(true)
+													exbungoAmen:setVolume(0.91)
+													exbungoAmen:play()
+												end
 											end
 											if voices then voices:play() end
 											if songHeader then
-												Timer.tween(0.5, songHeader, {x = songHeader.x + (songHeader.width * songHeader.sizeX)}, 'out-back', function()
-													Timer.after(0.5, function() Timer.tween(0.5, songHeader, {x = songHeader.x - (songHeader.width * songHeader.sizeX)}, 'in-back') end)
+												drawSongHeader = true
+												Timer.tween(0.5, songHeader, {x = CREDITS_X}, 'out-back', function()
+													Timer.after(3, function() 
+														Timer.tween(1, songHeader, {x = -1820/0.7}, 'in-back', function()
+															songHeader, songHeaderIcon, songHeaderTxt = nil
+														end) 
+													end)
 												end)
 											end
 											if table.contains({'polygonized', 'interdimensional', 'five-nights'}, curSong:lower()) and not weirdPolygonized then
 												local img = paths.image((curSong:lower() == 'five-nights') and 'dave/ui/doorWarning' or 'dave/ui/shapeNoteWarning')
 												local hi = graphics.newImage(img)
-												hi.x = hi.width - ((1280/2)/0.7)
-												local they = ((720/2)/0.7) - ((hi.height/0.7)/2)
-												local othery = ((720/2)/0.7) + ((hi.height/0.7))
+												hi.x = hi.width - ((S_HALF_WIDTH)/0.7)
+												local they = ((S_HALF_HEIGHT)/0.7) - ((hi.height/0.7)/2)
+												local othery = ((S_HALF_HEIGHT)/0.7) + ((hi.height/0.7))
 												hi.y = othery
 												hi.alpha = 0
 												hi.sizeX, hi.sizeY = 1/0.7, 1/0.7
@@ -1194,6 +1265,7 @@ return {
 		)
 	end,
 	updateStep = function()
+		--print('doing this now')
 		local old = curStep
 		local oldb = curBeat
 		curStep = math.floor(musicTime / stepCrochet)
@@ -1215,7 +1287,7 @@ return {
 		if countingDown or love.system.getOS() == "Web" then -- Source:tell() can't be trusted on love.js!
 			musicTime = musicTime + 1000 * dt
 		else
-			if inst and not cutscene then
+			if inst and not (cutscene or glitchCutscene) then
 				local time = love.timer.getTime() -- - (pauseOffset * 1000)
 				local seconds = inst:tell("seconds")
 				if voices and voices:tell 'seconds' ~= seconds then
@@ -1230,7 +1302,7 @@ return {
 					musicTime = (musicTime + lastReportedPlaytime) / 2
 				end
 				curSongTime = curSongTime + (musicTime - last)
-				if seconds >= (inst:getDuration "seconds" - 0.1) then --GOING TO FUCKING KILL MYSELF
+				if seconds >= (inst:getDuration "seconds" - 0.1) and not songFinished then --GOING TO FUCKING KILL MYSELF
 					print "NFHDSHKLFGHJK<DSGH JKLFKZHJHJKBFKLS"
 					songFinished = true
 					stage:songEnd()
@@ -1238,62 +1310,71 @@ return {
 			end
 		end
 
-		
-		local dsh, dbh = self:updateStep()
+		if not cutscene or glitchCutscene then
+			local dsh, dbh = self:updateStep()
 
-		local eventID = (curStep / 16)
-		if events[eventID] then
-			sectionEvent(eventID)
-		end
+			local eventID = (curStep / 16)
+			if events[eventID] then
+				sectionEvent(eventID)
+			end
 
-		
-		if dsh and ons then ons(curStep) end
-		if dbh then 
-			if girlfriendObject:animExists 'danceLeft' or curBeat % 2 == 0 then
-				girlfriendObject:dance()
-			end
-			if funkin.curSong == 'warmup' or curBeat % 2 == 0 then
-				if not enemyObject.sprite:isAnimated() then
-					enemyObject:dance()
+			
+			if dsh  then 
+				if ons then
+					ons(curStep)
 				end
-				if not boyfriendObject.sprite:isAnimated() then
-					boyfriendObject:dance()
-				end
+				if funkin.curSong == 'exploitation' and curStep % 8 == 0 then
+					local fonts = {'arial', 'chalktastic', 'openSans', 'pkmndp', 'barcode', 'vcr'}
+					hudFont = 'exploit/'..fonts[love.math.random(1, #fonts)]
+				end 
 			end
-			if curBeat % 4 == 0 then 
-				curCamZoom = curCamZoom + 0.015 
-				hudZoom = hudZoom + 0.03
+			if dbh then 
+				if girlfriendObject:animExists 'danceLeft' or curBeat % 2 == 0 then
+					girlfriendObject:dance()
+				end
+				if funkin.curSong == 'warmup' or curBeat % 2 == 0 then
+					if not enemyObject.sprite:isAnimated() then
+						enemyObject:dance()
+					end
+					if not boyfriendObject.sprite:isAnimated() then
+						boyfriendObject:dance()
+					end
+				end
+				if curBeat % 4 == 0 or crazyZooming then 
+					curCamZoom = curCamZoom + 0.015 
+					hudZoom = hudZoom + 0.03
+				end
+				
+				-- i will kill missingtextureman101 in real life
+				if enemyIcon.tween then Timer.cancel(enemyIcon.tween) end
+
+				enemyIcon.sizeX = math.lerp(1.3, 1.05, (health/100))/0.7
+				enemyIcon.sizeY = math.lerp(0.35, 0.95, (health/100))/0.7
+				--enemyIcon.y = enemyIcon.y - (150/0.7) + (150*enemyIcon.sizeY)
+				enemyIcon.tween = Timer.tween(0.25, enemyIcon, {sizeX = 1/0.7, sizeY = 1/0.7}, 'out-quad', function()
+					enemyIcon.tween = nil
+				end)
+
+				if boyfriendIcon.tween then Timer.cancel(boyfriendIcon.tween) end
+
+				boyfriendIcon.sizeX = -math.lerp(1.3, 1.05, 1-(health/100))/0.7
+				boyfriendIcon.sizeY = math.lerp(0.35, 0.95, 1-(health/100))/0.7
+				--boyfriendIcon.y = boyfriendIcon.y - (150/0.7) + (150*boyfriendIcon.sizeY)
+				boyfriendIcon.tween = Timer.tween(0.25, boyfriendIcon, {sizeX = -1/0.7, sizeY = 1/0.7}, 'out-quad', function()
+					boyfriendIcon.tween = nil
+				end)
+
+				if onb then onb(curBeat) end
 			end
 			
-			-- i will kill missingtextureman101 in real life
-			if enemyIcon.tween then Timer.cancel(enemyIcon.tween) end
-
-			enemyIcon.sizeX = math.lerp(1.3, 1.05, (health/100))/0.7
-			enemyIcon.sizeY = math.lerp(0.35, 0.95, (health/100))/0.7
-			--enemyIcon.y = enemyIcon.y - (150/0.7) + (150*enemyIcon.sizeY)
-			enemyIcon.tween = Timer.tween(0.25, enemyIcon, {sizeX = 1/0.7, sizeY = 1/0.7}, 'out-quad', function()
-				enemyIcon.tween = nil
-			end)
-
-			if boyfriendIcon.tween then Timer.cancel(boyfriendIcon.tween) end
-
-			boyfriendIcon.sizeX = -math.lerp(1.3, 1.05, 1-(health/100))/0.7
-			boyfriendIcon.sizeY = math.lerp(0.35, 0.95, 1-(health/100))/0.7
-			--boyfriendIcon.y = boyfriendIcon.y - (150/0.7) + (150*boyfriendIcon.sizeY)
-			boyfriendIcon.tween = Timer.tween(0.25, boyfriendIcon, {sizeX = -1/0.7, sizeY = 1/0.7}, 'out-quad', function()
-				boyfriendIcon.tween = nil
-			end)
-
-			if onb then onb(curBeat) end
-		end
-		
-		if not shredderMode then
-			if mustHitSection then
-				camPos.x = -(boyfriendObject.sprite.width/2)-boyfriendObject.sprite.x+boyfriendObject.camPos.x + 100 -- - cam.x
-				camPos.y = -(boyfriendObject.sprite.height/2)-boyfriendObject.sprite.y+boyfriendObject.camPos.y + 100 -- - cam.y
-			else
-				camPos.x = -(enemyObject.sprite.width/2)-enemyObject.sprite.x+enemyObject.camPos.x - 150 -- - cam.x
-				camPos.y = -(enemyObject.sprite.height/2)-enemyObject.sprite.y+enemyObject.camPos.y + 100 -- - cam.y
+			if not shredderMode then
+				if mustHitSection then
+					camPos.x = -(boyfriendObject.sprite.width/2)-boyfriendObject.sprite.x+boyfriendObject.camPos.x + 100 -- - cam.x
+					camPos.y = -(boyfriendObject.sprite.height/2)-boyfriendObject.sprite.y+boyfriendObject.camPos.y + 100 -- - cam.y
+				else
+					camPos.x = -(enemyObject.sprite.width/2)-enemyObject.sprite.x+enemyObject.camPos.x - 150 -- - cam.x
+					camPos.y = -(enemyObject.sprite.height/2)-enemyObject.sprite.y+enemyObject.camPos.y + 100 -- - cam.y
+				end
 			end
 		end
 
@@ -1321,37 +1402,49 @@ return {
 		girlfriendObject:update(dt)
 		enemyObject:update(dt)
 		boyfriendObject:update(dt)
-		if not substateJustLeft and controls.pressed.pause and not cutscene then
+		if not substateJustLeft and controls.pressed.pause and not (cutscene or glitchCutscene) then
 			openSubstate(pause, true)
 		end
 
-		if not switching and (controls.down['button:leftshoulder'] and controls.down['axis:triggerleft+'] and 
-			controls.down['axis:triggerright+'] and controls.down['button:rightshoulder'] and 
-			controls.down.select or love.keyboard.isDown '7') then
-			
-				local cheater = {
-					supernovae = 'cheating',
-					cheating = 'unfairness',
-					glitch = 'kabunga'
-				}
-				storyMode = false
-				if funkin.curSong == 'unfairness' then
-					--terminal stuff
-					save.save.found_terminal = true
-					save.writeSave()
-					switchState(terminalState)
-					switching = true
-				elseif funkin.curSong == 'kabunga' then --once you go in, you cant go back!!!!
-					mukoMode = true
-					switchState(mukoTitle)
-					switching = true
-				elseif cheater[funkin.curSong:lower()] then
-					save.save['found_'..cheater[funkin.curSong:lower()]] = true
-					save.writeSave()
-					funkin.curSong = cheater[funkin.curSong:lower()]
-					switchState(stage)
-					switching = true
+		if not switching and press7() then
+			local cheater = {
+				supernovae = 'cheating',
+				cheating = 'unfairness',
+				glitch = 'kabunga',
+				['vs-dave-rap'] = 'vs-dave-rap-two',
+			}
+			storyMode = false
+			if funkin.curSong == 'unfairness' then
+				--terminal stuff
+				switchState(terminalState)
+			elseif funkin.curSong == 'kabunga' then --once you go in, you cant go back!!!!
+				mukoMode = true
+				switchState(mukoTitle)
+			elseif funkin.curSong == 'master' or funkin.curSong == 'exploitation' then
+				health = 0
+			elseif funkin.curSong == 'recursed' then
+				local songs = {}
+				for i,v in pairs(funkin.freeplayList) do
+					for i,v in pairs(v) do
+						for i,v in pairs(v.songs) do
+							if (not v[4] or save.save[v[4]]) and v[1] ~= 'enter-terminal' then
+								table.insert(songs, v[1])
+							end
+						end
+					end
 				end
+				funkin.curSong = songs[love.math.random(1,#songs)]:lower()
+				recursedSwap = true
+				switchState(stage)
+			elseif cheater[funkin.curSong:lower()] then
+				save.save['found_'..cheater[funkin.curSong:lower()]] = true
+				save.writeSave()
+				funkin.curSong = cheater[funkin.curSong:lower()]
+				switchState(stage)
+			else
+				switchState(debugMenu)
+			end
+			switching = true
 		end
 
 		if recursedTimeLeft then
@@ -1395,6 +1488,8 @@ return {
 			strumsAreShapes = false
 			boyfriendArrows = _boyfriendArrows
 		end
+		if glitchCutscene then return end
+		local bPressedNote = false
 		for i = 1, 5 do
 			if ghStrums[i] then
 				ghStrums[i]:update(dt)
@@ -1412,9 +1507,6 @@ return {
 			local boyfriendNoteData = boyfriendNoteData[i]
 			local curAnim = animList[i]
 			local curInput = inputList[i]
-			if terminalModChart == CharacterFunnyEffect.Bambi then
-				curInput = inputList[3]
-			end
 
 			local noteNum = i
 
@@ -1427,7 +1519,7 @@ return {
 			if settings.modcharts then
 				elapseduitime = elapseduitime + dt
 				local elapsedtime = elapseduitime/5
-				if curSong:lower() == 'cheating' or localFunny == CharacterFunnyEffect.Dave or modchart == ExploitationModchartType.Cheating then 
+				if curSong:lower() == 'cheating' or terminalModChart == CharacterFunnyEffect.Dave or modchart == ExploitationModchartType.Cheating then 
 					--same situation as the icon bop where its coded entirely differently but it looks similar enough to where i dont think anyone will care
 					boyfriendArrow.x = boyfriendArrow.x + (-256 * math.sin(elapsedtime)) * (1.5 * dt * (((i % 2) == 0) and 1 or 0.5));
 					
@@ -1565,8 +1657,8 @@ return {
 				if randomSpeed then speed = enemyNoteData[j].speed end
 				enemyNoteData[j].distance = (enemyNoteData[j].strumTime - musicTime) * speed * 0.6
 				note.x = enemyArrow.x
-				note.y = enemyArrow.y + (enemyNoteData[j].distance * (settings.downscroll and -1 or 1))
-				if settings.downscroll and note.y < -1000 or note.y > 1000 then
+				note.y = enemyArrow.y + (enemyNoteData[j].distance * (isDownscroll and -1 or 1))
+				if isDownscroll and note.y < -1000 or note.y > 1000 then
 					if randomSpeed then
 						note.dontdraw = true
 					else
@@ -1600,10 +1692,18 @@ return {
 					end
 
 					--print(enemyArrow, i)
-					if settings.modcharts and curSong:lower() == 'cheating' then
-						enemyArrows[noteNum]:animate('confirm', false)
+					if settings.modcharts and curSong:lower() == 'cheating' or terminalModChart == CharacterFunnyEffect.Dave then
+						enemyArrows[noteNum]:animate('confirm')
 					elseif terminalModChart == CharacterFunnyEffect.Bambi then
-						enemyArrows[3]:animate('confirm', false)
+						if enemyNoteData[j].ghNote then
+							for i=1,5 do
+								ghStrums[i]:animate 'confirm'
+							end
+						else
+							for i=1,4 do
+								enemyArrows[i]:animate('confirm')
+							end
+						end
 					else
 						enemyArrow:animate("confirm", false)
 					end
@@ -1611,27 +1711,49 @@ return {
 					if isFiveNights and not enemyNoteData[j].isSustain then
 						ratingPopup((love.math.random(1,5) == 1) and 'good' or 'sick', true)
 					end
-					
-					local speed = speed
-					local healthToLower = 0.5
-					if altSection then healthToLower = healthToLower / 10 end
-					if curSong:lower() == 'unfairness' then healthToLower = healthToLower/3 end
-					if curSong:lower() == 'unfairness' or curSong:lower() == 'cheating' then 
-						health = health - healthToLower
+					if not enemyNoteData[j].isSustain then
+						local h = health / 50
+						local healthToLower = 0.02
+						if altSection then healthToLower = 0.005 end
+						if curSong:lower() == 'cheating' then
+							h = h - healthToLower
+							health = h * 50
+						elseif curSong:lower() == 'unfairness' then 
+							h = h - healthToLower/3 
+							health = h * 50
+						elseif curSong:lower() == 'mealie' and curBeat >= 464 and curBeat <= 592 then 
+							h = h - h/1.5
+							health = h * 50
+						elseif curSong == 'five-nights' then
+							health = health - 1.15
+							if health <= 0 then
+								health = 0.01
+							end
+						elseif curSong:lower() == 'exploitation' and (((h + (backInOut(h / 16.5)) - 0.002) >= 0) and not (curBeat >= 320 and curBeat <= 330)) then
+							h = h + ((backInOut(h / 16.5)) * (curBeat <= 160 and 0.25 or 1)) - 0.002
+							health = h * 50
+						end
 					end
 					--print('HIT OPPONENT NOTE!', enemyNoteData[i].noteType, enemyNoteData[1].strumTime)
 					table.remove(enemyNote, j)
 					table.remove(enemyNoteData, j)
 				end
 			end
+			local inputPressed = input:pressed(curInput)
+			local inpDown = input:down(curInput)
+			if terminalModChart == CharacterFunnyEffect.Bambi then
+				inputPressed = input:pressed(inputList[1]) or input:pressed(inputList[2]) or input:pressed(inputList[3]) or input:pressed(inputList[4])
+				inpDown = input:down(inputList[1]) or input:down(inputList[2]) or input:down(inputList[3]) or input:down(inputList[4])
+			end
 			if randomSpeed then enemyNotesToDraw[noteNum] = #enemyNote end
-			if input:pressed(curInput) and not strumsBlocked[noteNum] then
+			if inputPressed and not strumsBlocked[noteNum] then
 				boyfriendArrow:animate("press", false)
 				if boyfriendAltArrows then
 					boyfriendAltArrows:animate 'press'
 				end
 			end
 			local pressedNote = false
+			if CharacterFunnyEffect.Bambi then pressedNote = bPressedNote end
 			local noteMissed
 			for i,note in ipairs(boyfriendNote) do
 				local boyfriendArrow = boyfriendNoteData[i].strum
@@ -1646,8 +1768,8 @@ return {
 				if randomSpeed then speed = boyfriendNoteData[i].speed end
 				boyfriendNoteData[i].distance = (boyfriendNoteData[i].strumTime - musicTime) * speed * 0.6
 				note.x = boyfriendArrow.x
-				note.y = boyfriendArrow.y + (boyfriendNoteData[i].distance * (settings.downscroll and -1 or 1))
-				if settings.downscroll and note.y < -1000 or note.y > 1000 then
+				note.y = boyfriendArrow.y + (boyfriendNoteData[i].distance * (isDownscroll and -1 or 1))
+				if isDownscroll and note.y < -1000 or note.y > 1000 then
 					if randomSpeed then
 						note.dontdraw = true
 					else
@@ -1661,12 +1783,15 @@ return {
 					if voices then voices:setVolume(0) end
 
 					noteMissed = i
-				elseif input:pressed(curInput) and not strumsBlocked[noteNum] and boyfriendNote[i] and not boyfriendNoteData[i].isSustain and not pressedNote and
+				elseif inputPressed and not strumsBlocked[noteNum] and boyfriendNote[i] and not boyfriendNoteData[i].isSustain and not pressedNote and
 				not (hasShapes and (boyfriendNoteData[i].noteType == 'shape' and not spacey or boyfriendNoteData[i].noteType ~= 'shape' and spacey)) then
 					local notePos = math.abs(boyfriendNoteData[i].distance)
 					if notePos <= safeZoneOffset then
 						if curSong:lower() ~= 'overdrive' then --lol
 							pressedNote = true
+							if terminalModChart == CharacterFunnyEffect.Bambi then
+								bPressedNote = true
+							end
 						end
 						local ratingAnim = 'sick'
 
@@ -1724,9 +1849,11 @@ return {
 						if shapeArrows and strumsAreShapes then
 							shapeArrows[noteNum]:animate 'confirm'
 						elseif terminalModChart == CharacterFunnyEffect.Bambi then
-							boyfriendArrows[3]:animate('confirm')
+							for i=1,4 do
+								boyfriendArrows[i]:animate('confirm')
+							end
 						else
-							boyfriendArrow:animate("confirm", false)
+							boyfriendArrow:animate("confirm")
 						end
 						if boyfriendAltArrows then
 							boyfriendAltArrows:animate 'confirm'
@@ -1742,7 +1869,7 @@ return {
 							boyfriendObject:playAnim 'dodge'
 							enemyObject:playAnim 'singThrow'
 						end
-						health = health + 1
+						health = health + 1.15
 						table.remove(boyfriendNote, i)
 						table.remove(boyfriendNoteData, i)
 						
@@ -1760,7 +1887,7 @@ return {
 							end
 						end
 					end
-				elseif boyfriendNoteData[i] and input:down(curInput) and boyfriendNoteData[i].distance < -10 and boyfriendNoteData[i].isSustain then
+				elseif boyfriendNoteData[i] and inpDown and boyfriendNoteData[i].distance < -10 and boyfriendNoteData[i].isSustain then
 					if not (strumsBlocked[noteNum] or (hasShapes and (boyfriendNoteData[i].noteType == 'shape' and not spacey or boyfriendNoteData[i].noteType ~= 'shape' and spacey))) then
 						
 						if voices then
@@ -1781,24 +1908,39 @@ return {
 	
 						boyfriendObject:playAnim('sing'..curAnim:upper())
 						--notesHit = notesHit + 1
-						health = health + 0.15
+						health = health + 0.115
 						notesHit = notesHit + 1
 						totalNotes = totalNotes + 1
 					end
 				end
 			end
 			local forcedMiss = false
-			if randomSpeed then forcedMiss = input:pressed(curInput) and not pressedNote end
-			if (noteMissed or forcedMiss) and not skippingSong then
-				notMissed[noteNum] = false
+			if randomSpeed then forcedMiss = inputPressed and not pressedNote end
+			if noteMissed or forcedMiss and not skippingSong then
+				local hi
+				if curSong == 'overdrive' then
+					hi = paths.sound 'bad_disc'
+				elseif curSong == 'vs-dave-rap' or curSong == 'vs-dave-rap-two' then
+					hi = paths.sound 'deathbell'
+				else
+					hi = sounds.miss[love.math.random(3)]
+				end
+				hi:stop()
+				hi:play()
 				if not noMissMode then
-					if curSong == 'overdrive' then
-						love.audio.play(paths.sound 'bad_disc')
-					elseif curSong == 'vs-dave-rap' or curSong == 'vs-dave-rap-two' then
-						love.audio.play(paths.sound 'deathbell')
+					misses = misses + 1
+					if isFiveNights then
+						health = health - 0.2
 					else
-						love.audio.play(sounds.miss[love.math.random(3)])
+						health = health - 2
 					end
+				end
+				
+				score = score - 100
+				combo = 0
+				if noteMissed then
+					notMissed[noteNum] = false
+					--if not noMissMode then
 					--if combo >= 5 then girlfriendObject:playAnim('sad', true) end
 					if noteMissed and boyfriendNoteData[noteMissed] and boyfriendNotes[noteMissed] then
 						if boyfriendNoteData[noteMissed].noteType == 'phone' then
@@ -1851,6 +1993,23 @@ return {
 										else
 											if bf == 'tristan-golden' then
 												--do stuff
+												paths.sound 'recursed/boom':play()
+												for i=1,15 do
+													local goldenPiece = graphics:newAnimatedSprite('dave/recursed/gold_pieces_but_not_broken', {
+														{anim = 'piece', name = 'gold piece '..love.math.random(1,4), fps = 0}
+													}, 'piece')
+													goldenPiece.x, goldenPiece.y = boyfriend.x + boyfriend.width/2 + love.math.random(-200, 100), boyfriend.y + boyfriend.height/2
+													goldenPiece.alpha = 1
+													Timer.tween(2, goldenPiece, {y = goldenPiece.y + love.math.random(50, 60)}, "in-back", nil, 5)
+													Timer.tween(2, goldenPiece, {alpha = 0, x = goldenPiece.x + love.math.random(-200, 200)})
+
+													local angle = {0}
+													Timer.tween(2, angle, {love.math.random(-360, 360)}, nil, {during = function()
+														goldenPiece.orientation = angle[1] * DEGREE_TO_RADIAN
+													end})
+
+													stage:addSpr(goldenPiece)
+												end
 											end
 											preRecursedSkin = bf
 											changeChar(0, recursedSkin)
@@ -1874,20 +2033,23 @@ return {
 						end
 						totalNotes = totalNotes + 1
 					end
-					misses = misses + 1
-					health = health - 2
-				else --is this bad?
-					totalNotes = totalNotes + 1
+					--else --is this bad?
+					--	totalNotes = totalNotes + 1
+					--end
+
+
+					table.remove(boyfriendNote, noteMissed)
+					table.remove(boyfriendNoteData, noteMissed)
 				end
-
-				score = score - 100
-				combo = 0
-
-				table.remove(boyfriendNote, noteMissed)
-				table.remove(boyfriendNoteData, noteMissed)
 			end
-
-			if input:released(curInput) then
+			if forcedMiss then
+				
+			end
+			local inpReleased = input:released(curInput)
+			if terminalModChart == CharacterFunnyEffect.Bambi then
+				inpReleased = input:released(inputList[1]) or input:released(inputList[2]) or input:released(inputList[3]) or input:released(inputList[4])
+			end
+			if inpReleased then
 				boyfriendArrow:animate("off", false)
 				if boyfriendAltArrows then
 					boyfriendAltArrows:animate 'off'
@@ -1900,7 +2062,7 @@ return {
 			boyfriendIcon:animate("idle", false)
 		elseif health <= 0 and not debugMode then -- Game over
 			if camShaking then
-				if funkin.curSong == 'blocked' or funkin.curSong == 'corn-theft' or funkin.curSong == 'maze' then
+				if (funkin.curSong == 'blocked' or funkin.curSong == 'corn-theft' or funkin.curSong == 'maze') and onlineVersion then
 					love.system.openURL 'https://www.youtube.com/watch?v=HtfxYr4uV9k' --would this even work lol?? also reupload!
 					love.event.quit()
 				elseif storyMode then
@@ -1948,9 +2110,9 @@ return {
 			songHeader:update(dt)
 		end
 		if songHeaderIcon then
-			songHeaderIcon.x = songHeader.x - 300 + (songHeader.width * songHeader.sizeX)
+			songHeaderIcon.x = songHeader.x + (songHeader.width * songHeader.sizeX) - (songHeaderIcon.width/2)
 			--print((songHeader.width * songHeader.sizeX))
-			songHeaderIcon.y = songHeader.y
+			songHeaderIcon.y = songHeader.y + songHeader.height/2
 		end
 		health = math.min(100, math.max(0, health))
 	end,
@@ -2025,9 +2187,11 @@ return {
 			graphics.setColor(1, 1, 1)
 
 			love.graphics.push()
+			--this makes a really cool effect! but i dont want it to!
+			--love.graphics.setBlendMode 'add'
 			--love.graphics.translate(0, -musicPos)
-			if not settings.downscroll and enemyNotesToDraw[i] > 0 or settings.downscroll and #enemyNotes > 0 then
-				for j = (settings.downscroll and 1 or enemyNotesToDraw[i]), (settings.downscroll and enemyNotesToDraw[i] or 1), (settings.downscroll and 1 or -1) do
+			if not isDownscroll and enemyNotesToDraw[i] > 0 or isDownscroll and #enemyNotes > 0 then
+				for j = (isDownscroll and 1 or enemyNotesToDraw[i]), (isDownscroll and enemyNotesToDraw[i] or 1), (isDownscroll and 1 or -1) do
 					if enemyNotes[i][j] and not enemyNotes[i][j].dontdraw then
 						graphics.setColor(1, 1, 1, (enemyNoteData[i][j].alpha or 1) * (enemyNoteData[i][j].alphaMult or 1) * (enemyNoteData[i][j].strum.alpha or 1) * hudAlpha[1])
 						enemyNotes[i][j]:draw()
@@ -2035,8 +2199,8 @@ return {
 					end
 				end
 			end
-			if not settings.downscroll and boyfriendNotesToDraw[i] > 0 or settings.downscroll and #boyfriendNotes > 0 then
-				for j = (settings.downscroll and 1 or boyfriendNotesToDraw[i]), (settings.downscroll and boyfriendNotesToDraw[i] or 1), (settings.downscroll and 1 or -1) do
+			if not isDownscroll and boyfriendNotesToDraw[i] > 0 or isDownscroll and #boyfriendNotes > 0 then
+				for j = (isDownscroll and 1 or boyfriendNotesToDraw[i]), (isDownscroll and boyfriendNotesToDraw[i] or 1), (isDownscroll and 1 or -1) do
 					--print(boyfriendNotesToDraw, i, j)
 					if boyfriendNotes[i][j] and not boyfriendNotes[i][j].dontdraw then
 						graphics.setColor(1, 1, 1, (boyfriendNoteData[i][j].alpha or 1) * (boyfriendNoteData[i][j].alphaMult or 1) * (boyfriendNoteData[i][j].strum.alpha or 1) * hudAlpha[1])
@@ -2045,6 +2209,7 @@ return {
 				end
 			end
 			graphics.setColor(1, 1, 1)
+			--love.graphics.setBlendMode 'alpha'
 			love.graphics.pop()
 		end
 
@@ -2052,9 +2217,17 @@ return {
 			local hw = healthBarOverlay.width*healthBarOverlay.sizeX
 			if isFiveNights then hw = -hw end
 			local hh = healthBarOverlay.height*healthBarOverlay.sizeY
-			graphics.setColor(boyfriendObject.healthbarColors[1], boyfriendObject.healthbarColors[2], boyfriendObject.healthbarColors[3], hudAlpha[1])
+			if funkin.curSong:lower() == 'overdrive' then
+				graphics.setColor(0,1,0)
+			else
+				graphics.setColor(boyfriendObject.healthbarColors[1], boyfriendObject.healthbarColors[2], boyfriendObject.healthbarColors[3], hudAlpha[1])
+			end
 			love.graphics.rectangle("fill", healthBarOverlay.x + 5 - hw/2, healthBarOverlay.y - healthBarOverlay.height/2 + 2, hw - 9, hh - (8 * healthBarOverlay.sizeY) + 0.1)
-			graphics.setColor(enemyObject.healthbarColors[1], enemyObject.healthbarColors[2], enemyObject.healthbarColors[3], hudAlpha[1])
+			if funkin.curSong:lower() == 'overdrive' then
+				graphics.setColor(1,0,0)
+			else
+				graphics.setColor(enemyObject.healthbarColors[1], enemyObject.healthbarColors[2], enemyObject.healthbarColors[3], hudAlpha[1])
+			end
 			love.graphics.rectangle("fill", healthBarOverlay.x + 5 - hw/2, healthBarOverlay.y - healthBarOverlay.height/2 + 2, (hw - 9) * (1-(health/100)), hh - (8 * healthBarOverlay.sizeY) + 0.1)
 			graphics.setColor(1, 1, 1, hudAlpha[1])
 		end
@@ -2095,7 +2268,14 @@ return {
 		--print(totalNotes, notesHit)
 		if totalNotes == 0 then accuracy = 0 end
 		fonts(hudFont, 32 * hudFontScale)
-		local txt = lm.string.play_score..' ' .. score..' | '..lm.string.play_miss..' '..misses..' | '..lm.string.play_accuracy..' '..(math.floor(accuracy*1000)/10)..'%'
+		local txt
+		if curSong == 'overdrive' then
+			txt = 'score: '..score
+		elseif curSong == 'exploitation' then
+			txt = 'Scor3: '..(score * love.math.random(1,9))..' | M1ss3s: '..(misses * love.math.random(1,9))..' | Accuracy'..((math.floor(accuracy*1000)/10) * love.math.random(1,9))..'%'
+		else
+			txt = lm.string.play_score..' ' .. score..' | '..lm.string.play_miss..' '..misses..' | '..lm.string.play_accuracy..' '..(math.floor(accuracy*1000)/10)..'%'
+		end
 		printfOutline(txt, -curFont:getWidth(txt)/2, healthBarOverlay.y + 25, nil, {alpha = hudAlpha[1]})
 
 		fonts(hudFont, (16/0.7) * hudFontScale)
@@ -2111,29 +2291,30 @@ return {
 		end
 
 		if curSubtitle and curSubtitle.print and curSubtitle.alpha > 0 then
-			fonts(hudFont, (curSubtitle.size * 1.5) * hudFontScale)
+			fonts('comic', (curSubtitle.size * 1.5) * hudFontScale)
 			printfOutline(curSubtitle.print, -curFont:getWidth(curSubtitle.print)/2, -200, nil, {alpha = curSubtitle.alpha})
 		end
 
-		if songHeader then songHeader:draw() end
-		if songHeaderIcon and not cutscene then songHeaderIcon:draw() end
+		if songHeader and drawSongHeader then songHeader:draw() end
+		if songHeaderIcon and drawSongHeader and not cutscene and not noHeadingIcon then songHeaderIcon:draw() end
 		--print(songHeaderIcon.x)
-		if songHeaderTxt then
-			fonts(hudFont, (30/0.7) * hudFontScale)
-			printfOutline(songHeaderTxt, songHeader.x - (songHeader.width * songHeader.sizeX/2), songHeader.y - (songHeader.height * songHeader.sizeY/2))
+		if songHeaderTxt and drawSongHeader and not noHeadingIcon then
+			fonts('comic', (30/0.7))
+			songHeader.sizeX = (curFont:getWidth(songHeaderTxt) + songHeaderIcon.width + 1) / songHeader.width
+			printfOutline(songHeaderTxt, songHeader.x, songHeader.y + (songHeader.height/2 - curFont:getHeight()/2))
 		end
 
 		if curSong:lower() == 'recursed' and recursedTimeLeft then
 			fonts(hudFont, (30/0.7) * hudFontScale)
 			local hi = recursedNotesCount..'/'..recursedNotesAmount
 			printfOutline(hi, -curFont:getWidth(hi)/2 - 200, recursedUiY)
-			recursedUiNote.x = (-curFont:getWidth(hi)/2 - 200) + curFont:getWidth(hi) + 75
-			recursedUiNote.y = recursedUiY + 60
+			recursedUiNote.x = (-curFont:getWidth(hi)/2 - 200) + curFont:getWidth(hi)
+			recursedUiNote.y = recursedUiY
 			recursedUiNote:draw()
 			local clock = formatTime(recursedTimeLeft)
 			printfOutline(clock, -curFont:getWidth(clock)/2 + 100, recursedUiY)
-			recursedUiClock.x = (-curFont:getWidth(clock)/2 + 100) + curFont:getWidth(clock) + 60
-			recursedUiClock.y = recursedUiY + 50
+			recursedUiClock.x = (-curFont:getWidth(clock)/2 + 100) + curFont:getWidth(clock)
+			recursedUiClock.y = recursedUiY
 			recursedUiClock:draw()
 		end
 
@@ -2165,6 +2346,7 @@ return {
 	leave = function(self)
 		songStart = nil --its GOTTA BE HERE!!
 		resetOverlays()
+		if countdownTween then Timer.cancel(countdownTween) end
 		Timer.clear()
 	end,
 
@@ -2186,9 +2368,10 @@ return {
 				if v1 == '0' then v1 = origZoom end
 				camZoom = tonumber(v1 or origZoom)
 			end,
-			flash = function() self:flash() end,
+			flash = function() self:flash(tonumber(v1 or 1)) end,
 			['Change Character'] = function()
 				if not weirdPolygonized then
+					if v2 == 'bambi-angey' and love.math.random(0,999) == 0 then v2 = 'bambi-angey-old' end
 					if v2 == 'bf' and charOverride then
 						v2 = charOverride
 					end
@@ -2210,7 +2393,7 @@ return {
 				end
 			end,
 			stageMode = function()
-				local dumbidiots = {'cheating', 'unfairness'} --i forgot how the system works fdjsafjasd;fl
+				local dumbidiots = {'cheating', 'unfairness', 'mealie', 'indignancy', 'memory'} --i forgot how the system works fdjsafjasd;fl
 				stageMode = not stageMode
 				v1 = v1 == 'true'
 				local split, v3 = nil, false
@@ -2321,15 +2504,19 @@ return {
 			addZoom = function()
 				camZoom = camZoom + tonumber(v1)
 			end,
+			crazyZooming = function()
+				crazyZooming = not crazyZooming
+			end,
 		}
 		print('DOING EVENT', n, v1, v2)
 		if eventFuncs[n] then eventFuncs[n]() end
 		if eventEvents then eventEvents(n, v1, v2) end
 	end,
 	flash = function(self, duration, color)
+		if flashTween then Timer.cancel(flashTween) end
 		if color then overlayColor = color end
 		overlayColor.alpha = 1
-		Timer.tween(duration or 1, overlayColor, {alpha = 0})
+		flashTween = Timer.tween(duration or 1, overlayColor, {alpha = 0}, nil, function() flashTween = nil end)
 	end,
 	setDefaultZoom = function(zoom)
 		origZoom = zoom
@@ -2357,6 +2544,21 @@ return {
 				Timer.tween(0.6, curEnemy, {x = curPlayer.x}, 'out-expo')
 				Timer.tween(0.6, curPlayer, {x = curEnemy.x}, 'out-expo')
 			end)
+		end
+	end,
+	switchNoteScroll = function(self)
+		isDownscroll = not isDownscroll
+		for i=1,4 do
+			local spr = enemyArrows[i]
+			spr.orientation = 0
+			
+			Timer.tween(0.2, spr, {orientation = math.pi * 4}, 'out-circ')
+			Timer.tween(0.6, spr, {y = -350 * (isDownscroll and -1 or 1)}, 'out-back')
+
+			local spr = boyfriendArrows[i]
+			spr.orientation = 0
+			Timer.tween(0.2, spr, {orientation = math.pi * 4}, 'out-circ')
+			Timer.tween(0.6, spr, {y = -350 * (isDownscroll and -1 or 1)}, 'out-back')
 		end
 	end
 }

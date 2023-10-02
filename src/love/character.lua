@@ -3,7 +3,8 @@ local c = {}
 --precachedChars = {}
 local threedees = {'dave-angey', 'bambi-3d', 'expunged', 'bambi-unfair', 'exbungo', 'dave-festival-3d', 'dave-3d-recursed', 'bf-3d', 'nofriend'}
 local deadChars = {'dave', 'bambi', 'tristan-golden', 'tristan'}
-function c:new (character, isPlayer)
+local floaters = {'dave-angey', 'bambi-3d', 'expunged', 'bambi-unfair', 'exbungo', 'dave-festival-3d', 'dave-3d-recursed', 'bf-3d'}
+function c:new (character, isPlayer, noPosOfs)
 	
 	--if precachedChars[character] then return table.copy(precachedChars[character]) end
 	local lastColor
@@ -93,9 +94,6 @@ function c:new (character, isPlayer)
 			o.playingAnim = false
 		end
 	end
-	function o:inIdle()
-		return table.contains({self.idleAnim..self.idleSuffix, self.danceAnims[2]..self.idleSuffix, self.danceAnims[1]..self.idleSuffix}, self.sprite:getAnimName())
-	end
 	function o:animExists(anim)
 		return anims[anim]
 	end	
@@ -103,10 +101,13 @@ function c:new (character, isPlayer)
 		o.hasDanceAnims = true
 	end
 	local elapsedtime = 0
-	local canFloat = true
-	local positionOffset = ((o.sprite.sizeX < 0) and o.json.playerOffset or o.json.positionOffset) or {0,0}
-	o.sprite.offsetX = positionOffset[1]
-	o.sprite.offsetY = positionOffset[2]
+	local canFloat = table.contains(floaters, o.curCharacter)
+	o.canFloat = canFloat
+	if not noPosOfs then
+		local positionOffset = ((o.sprite.sizeX < 0) and o.json.playerOffset or o.json.positionOffset) or {0,0}
+		o.sprite.offsetX = positionOffset[1]
+		o.sprite.offsetY = positionOffset[2]
+	end
 	function o:update(dt)
 		elapsedtime = elapsedtime + dt
 		self.sprite:update(dt)
@@ -123,18 +124,23 @@ function c:new (character, isPlayer)
 				self.sprite.x = self.sprite.x + (tox - self.sprite.x)
 				self.sprite.y = self.sprite.y + (toy - self.sprite.y)
 			end
-			if self.is3D and canFloat then
+			if canFloat then
 				if self.curCharacter:lower() == 'expunged' then
 					self.sprite.x = self.sprite.x + (tox - self.sprite.x) / 12
 					self.sprite.y = self.sprite.y + (toy - self.sprite.y) / 12
-				else
-					self.sprite.y = self.sprite.y + math.sin(elapsedtime) * 0.2
 				end
 			end
+		elseif canFloat then
+			self.sprite.y = self.sprite.y + math.sin(elapsedtime) * 0.2
 		end
 	end
 	function o:purpleMiss()
 		self.sprite.color2 = {rgb255(hex2rgb '0xFF000084')}
+	end
+	
+	local idleList = {o.idleAnim..o.idleSuffix, o.danceAnims[2]..o.idleSuffix, o.danceAnims[1]..o.idleSuffix}
+	function o:inIdle()
+		return table.contains(idleList, self.sprite:getAnimName())
 	end
 	--precachedChars[character] = table.copy(o)
 	o:dance()

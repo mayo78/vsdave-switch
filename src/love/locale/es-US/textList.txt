@@ -152,6 +152,7 @@ ctheft_sub4==No me importa...
 ctheft_sub5==Tu quieres...
 ctheft_sub6==Te bloqueo...
 ctheft_sub7==No voy a regresar otra vez.
+ctheft_sub8==Bya Baa!
 
 // Maze Subtitles //
 maze_sub1==Digo...
@@ -215,7 +216,7 @@ exploit_sub11==se troleado!
 exploit_sub12==Whoopsies...
 exploit_sub13==Estas mintiendo!
 exploit_sub14==ESTAS MINTIENDO!
-exploit_sub15==A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€A€
+exploit_sub15==AEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAEAE
 
 // Escape from California Subtitles //
 california_sub1==Ayudenme, estoy atrapado en California!

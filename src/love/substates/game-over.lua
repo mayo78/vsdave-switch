@@ -33,11 +33,18 @@ return {
 		local deathWhatever = '-generic'
 		if table.contains(deathies, boyfriendObject.curCharacter) then deathWhatever = '-'..boyfriendObject.curCharacter
 		elseif boyfriendObject.curCharacter == 'bf' or deadBF.curCharacter == 'bf' then deathWhatever = ''
+		elseif boyfriendObject.curCharacter == 'bf-3d' then deadWhatever = '-pixel'
 		end
 		love.audio.play(paths.sound('death/fnf_loss_sfx'..deathWhatever))
-		deadSong = paths.music('gameover'..(funkin.curSong == 'exploitation' and '-ohno' or ''))
+		local stupidsuffix = ''
+		if funkin.curSong == 'exploitation' then
+			stupidsuffix = '-ohno'
+		elseif boyfriendObject.curCharacter == 'bf-3d' then
+			stupidsuffix = '-pixel'
+		end
+		deadSong = paths.music('gameover'..stupidsuffix)
 		deadSong:setLooping(true)
-		deadOver = paths.music('gameoverend'..(funkin.curSong == 'exploitation' and '-ohno' or ''))
+		deadOver = paths.music('gameoverend'..stupidsuffix)
 		Timer.clear()
 		deadBF.sprite.x, deadBF.sprite.y = boyfriendObject.sprite.x, boyfriendObject.sprite.y
 		if not noDeadAnims then
@@ -61,7 +68,29 @@ return {
 					angle = angle + (dt/100) * 2.5
 					spr.orientation = angle * RADIAN_TO_DEGREE
 				end,
+				after = function()
+					if stupidsuffix == '-pixel' then
+						deadSong:play()
+					end
+				end,
 			})
+		end
+		
+		if funkin.curSong == 'exploitation' then
+			local stupids = {
+				'i found you.', 
+				"i can see you.", 
+				'HAHAHHAHAHA', 
+				"punishment day is here, this one is removing you.",
+				"got you.",
+				"try again, if you dare.",
+				"nice try.",
+				"i could do this all day.",
+				"do that again. i like watching you fail."
+			}
+			local me = stupids[love.math.random(1,#stupids)]
+			love.window.showMessageBox('Reading HELLO.txt', me)
+			love.filesystem.write('HELLO.txt', me)
 		end
 	end,
 

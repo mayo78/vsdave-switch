@@ -43,6 +43,7 @@ local lovesize = {
             ls = sx
             lx, ly = 0, (height - lh * ls) / 2
         end
+        lovesize.reverseLS = 1/ls
     end,
     -- Transforms the x,y coordinates to the game world position
     pos = function(x, y)

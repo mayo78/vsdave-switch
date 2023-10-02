@@ -21,7 +21,7 @@ local a = {
       'VS-DAVE-RAP-TWO',
       'dave-cool',
       'other',
-      'found_daverap'
+      'found_vs-dave-rap-two'
     }
   },
   color = 'SONG_SPECIFIC',

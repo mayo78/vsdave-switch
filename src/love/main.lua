@@ -24,6 +24,8 @@ DEGREE_TO_RADIAN = math.pi/180
 screenAngle = 0
 screenRadian = 0
 
+S_HALF_WIDTH, S_HALF_HEIGHT = 1280/2, 720/2
+
 local printBuffer = {}
 
 errorData = ''
@@ -132,6 +134,8 @@ function love.load()
 			end,
 		}
 	end
+	screenInfo = point()
+	screenInfo.scale = 1
 	function string:split(sep)
 		if sep == nil then
 				sep = "%s"
@@ -184,8 +188,8 @@ function love.load()
 	end
 
 	function fromTopLeft(x, y, spill)
-		if spill then return -1280/2 + (x or 0), -720/2 + (y or 0)
-		else return point(-1280/2 + (x or 0), -720/2 + (y or 0))
+		if spill then return -S_HALF_WIDTH + (x or 0), -S_HALF_HEIGHT + (y or 0)
+		else return point(-S_HALF_WIDTH + (x or 0), -S_HALF_HEIGHT + (y or 0))
 		end
 	end
 	function addWidth(spr)
@@ -214,7 +218,7 @@ function love.load()
 	end
 	function closeSubstate()
 		statePaused = false
-		substate:leave()
+		if substate.leave then substate:leave() end
 		substate = nil
 		substateJustLeft = true
 	end
@@ -276,6 +280,11 @@ function love.load()
 		settings = require "settings"
 		nickname = (love.getNickname and settings.selfAwareness) and love.getNickname() or 'User'
 		save = require 'save'
+		if not save.save.unlocked_bf then
+			save.save.unlocked_bf = true
+			save.save['unlocked_bf-3d'] = true
+			save.writeSave()
+		end
 		funkin = require 'funkin'
 		
 		lm = require 'gamestrings' --language manager
@@ -299,6 +308,8 @@ function love.load()
 		input = reloadInput()
 		local w,h = love.window.getMode()
 		globalCanvas = love.graphics.newCanvas(1920, 1080)
+		gameCanvas = love.graphics.newCanvas(1920, 1080)
+		hudCanvas = love.graphics.newCanvas(1920, 1080)
 
 		controls = {pressed = {}, down = {}, released = {}}
 		for k,t in pairs(controls) do --so you cn do this: controls.pressed.up, controls.down.up, etc
@@ -342,6 +353,7 @@ function love.load()
 		charSelect = require 'states.charSelect'
 		terminalState = require 'states.terminalState'
 		recurserState = require 'states.recurserState'
+		cowardState = require 'states.cowardState'
 
 		-- Load substates
 		gameOver = require "substates.game-over"
@@ -373,6 +385,12 @@ function love.load()
 		--for k,v in ipairs(fonts.comic) do print(k, v) end
 		--font = fonts.comic[24]
 
+		function press7()
+			return (controls.down['button:leftshoulder'] and controls.down['axis:triggerleft+'] and 
+			controls.down['axis:triggerright+'] and controls.down['button:rightshoulder'] and 
+			controls.down.select or love.keyboard.isDown '7')
+		end
+
 
 		storyMode = false
 		countingDown = false
@@ -397,12 +415,12 @@ function love.load()
 
 		--print(tostring(version), tostring(onlineVersion))
 
-		--if onlineVersion and version and versionTable:greaterThan(onlineVersion, version) then
-		--	switchState(versionState)
-		--else
+		if onlineVersion and version and versionTable:greaterThan(onlineVersion, version) then
+			switchState(versionState)
+		else
 			print(save.save.seenWarning)
 			switchState(settings.language and (save.save.seenWarning and titleMenu or flashingState) or languageState)
-		--end
+		end
 
 		print('the save:', love.filesystem.getSaveDirectory())
 
@@ -474,6 +492,10 @@ function love.update(dt)
 		end
 	end
 	if controls.down.pause and controls.down.select then
+		if awaitingExploitation then
+			save.save.coward = true
+			save.writeSave()
+		end
 		love.event.quit()
 	end
 end
@@ -513,13 +535,21 @@ function love.draw()
 		if globalShader then
 			love.graphics.setShader(globalShader)
 		end
-		if screenRadian == 0 then
+		if screenRadian == 0 and screenInfo.x == 0 and screenInfo.scale == 1 and screenInfo.y == 0 then
 			love.graphics.draw(globalCanvas, 0, 0, 0)
 		else
-			love.graphics.draw(globalCanvas, 1280/2, 720/2, screenRadian, 1, 1, 1280/2, 720/2)
+			love.graphics.draw(globalCanvas, (S_HALF_WIDTH) + screenInfo.x, (S_HALF_HEIGHT) + screenInfo.y, screenRadian, screenInfo.scale, screenInfo.scale, S_HALF_WIDTH, S_HALF_HEIGHT)
 		end
 		graphics.screenBase(love.graphics.getWidth(), love.graphics.getHeight())
 		love.graphics.setShader()
+
+		if expungedWindowMode then
+			love.graphics.push()
+			love.graphics.scale(0.8, 0.8)
+			love.graphics.translate(150, 300)
+			enemy:draw()
+			love.graphics.pop()
+		end
 
 		
 		fonts('comic', 16)
@@ -534,7 +564,7 @@ function love.draw()
 	else
 		love.graphics.setColor(.4, .4, .4)
 		love.graphics.setFont(loadFont)
-		love.graphics.print("Loading...", 1280 - loadFont:getWidth 'Loading...', 720 - loadFont:getHeight())
+		love.graphics.print("Loading...", 1920 - loadFont:getWidth 'Loading...', 1080 - loadFont:getHeight())
 	end
 	--if settings.showDebug then
 	--	love.graphics.print(status.getDebugStr(settings.showDebug), 5, 5, nil, 0.5, 0.5)
