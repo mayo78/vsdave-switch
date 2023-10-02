@@ -78,7 +78,7 @@ function switchState(...)
 		if initState then
 			initState = false
 			transition.x = S_HALF_WIDTH
-			transitionTween = Timer.tween(0.5, transition, {x = 1280 + 2164/2}, nil, {after = onComplete, during = snapTransition})
+			transitionTween = Timer.tween(0.5, transition, {x = GAMESIZE.width + 2164/2}, nil, {after = onComplete, during = snapTransition})
 			GS.switch(...)
 			return
 		end
@@ -100,7 +100,7 @@ function switchState(...)
 				screenAngle, screenRadian = 0, 0
 				screenInfo = {x=0,y=0,scale=1}
 				GS.switch(unpack(hi)) 
-				transitionTween = Timer.tween(0.5, transition, {x = 1280 + 2164/2}, nil, {after = onComplete, during = snapTransition})
+				transitionTween = Timer.tween(0.5, transition, {x = GAMESIZE.width + 2164/2}, nil, {after = onComplete, during = snapTransition})
 				paths.clearing = false
 			end)
 		end, during = snapTransition})

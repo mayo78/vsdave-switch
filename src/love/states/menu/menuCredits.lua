@@ -518,7 +518,7 @@ return {
 		love.graphics.push()
 		if inSocial then
 			graphics.setColor(0, 0, 0, weirdAlpha[1] * 0.5)
-			love.graphics.rectangle('fill', 0, 0, 1280, 720)
+			love.graphics.rectangle('fill', 0, 0, GAMESIZE.width, GAMESIZE.height)
 			love.graphics.translate(S_HALF_WIDTH, 0)
 			printfOutline(curPerson.name, -((#curPerson.name)/2 * 16), 64, nil, {alpha = weirdAlpha[1]})
 			printfOutline(curPerson.desc, -((#curPerson.desc)/2 * 16), 128, nil, {alpha = weirdAlpha[1]})

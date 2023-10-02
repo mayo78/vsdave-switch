@@ -260,29 +260,11 @@ return function()
 				canjustpressed = true
 			end
 			pressed = md
-			if pressed and canjustpressed then
-				canjustpressed = false
-				local mx, my = love.mouse.getPosition()
-				mx, my = mx * lovesize.reverseLS, my * lovesize.reverseLS
-				local x,y = self.x,self.y
-				local lastKey
-				for i,v in pairs(layout) do
-					if v == NEWLINE then
-						local t = (lastKey and transforms[keyIdMap[lastKey].NAMEID]) or transforms.default
-						y = y + ((KEYSIZE*t.scale.y)+2) + t.offset.y
-						x = self.x
-					else
-						local t = transforms[keyIdMap[v].NAMEID] or transforms.default
-						x = x + ((KEYSIZE*t.scale.x)+2) + t.offset.x
-						local width,height = KEYSIZE*t.scale.x, KEYSIZE*t.scale.y
-						if mx > x and mx < x + width and my > y and my < y + height then
-							curKey = keyIdMap[v]
-							self:pressKey(curKey)
-						end
-						lastKey = v
-					end
-				end
-			end
+			--if pressed and canjustpressed then
+			--	canjustpressed = false
+			--	local mx, my = love.mouse.getPosition()
+				
+			--end
 		end,
 		x = 0,
 		y = 0,
@@ -317,5 +299,26 @@ return function()
 			end
 			love.graphics.pop()
 		end,
+		touchpressed = function(self, id, mx, my, dx, dy, pressure) --has to be manually called!
+			mx, my = mx * lovesize.reverseLS, my * lovesize.reverseLS
+			local x,y = self.x,self.y
+			local lastKey
+			for i,v in pairs(layout) do
+				if v == NEWLINE then
+					local t = (lastKey and transforms[keyIdMap[lastKey].NAMEID]) or transforms.default
+					y = y + ((KEYSIZE*t.scale.y)+2) + t.offset.y
+					x = self.x
+				else
+					local t = transforms[keyIdMap[v].NAMEID] or transforms.default
+					x = x + ((KEYSIZE*t.scale.x)+2) + t.offset.x
+					local width,height = KEYSIZE*t.scale.x, KEYSIZE*t.scale.y
+					if mx > x and mx < x + width and my > y and my < y + height then
+						curKey = keyIdMap[v]
+						self:pressKey(curKey)
+					end
+					lastKey = v
+				end
+			end
+		end
 	}
 end

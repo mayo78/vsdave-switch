@@ -73,6 +73,8 @@ option_upscroll==Notas para arriba
 option_songPosition_on==Barra de progreso Activado
 option_songPosition_off==Barra de progreso Desactivado
 
+option_eyesores==Efectos
+
 option_eyesores_enabled==Efectos Activados
 option_eyesores_disabled==Efectos Desactivados
 

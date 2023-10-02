@@ -206,14 +206,14 @@ return {
 		fonts('comic', 32)
 		local ay = coolWeeks[weekIndex][2]
 		graphics.setColor(1, 1, 1, 0.7)
-		love.graphics.print(ay, 1280 - curFont:getWidth(ay), 0)
+		love.graphics.print(ay, GAMESIZE.width - curFont:getWidth(ay), 0)
 		graphics.setColor(rgb255(unpack(purpleColor)))
 		fonts('comic', 28)
 		love.graphics.print(lm.string.story_track:upper(), (S_HALF_WIDTH) - curFont:getWidth(lm.string.story_track:upper())/2, stupid + banner.height + 20)
 		love.graphics.print(listText, (S_HALF_WIDTH) - curFont:getWidth(listText)/2, stupid + banner.height + 20 + 28)
 		if sevenalpha > 0 then
 			love.graphics.setColor(1,1,1,sevenalpha)
-			love.graphics.rectangle('fill', 0, 0, 1280, 720)
+			love.graphics.rectangle('fill', 0, 0, GAMESIZE.width, GAMESIZE.height)
 		end
 		love.graphics.pop()
 	end,

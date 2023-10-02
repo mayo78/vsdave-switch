@@ -11,12 +11,12 @@ return {
 		scream = graphics:newAnimatedSprite('dave/fiveNights/nofriendJumpscare', {
 			{anim = 'scare', name = 'jumpscare'}
 		}, 'scare', false, nil, {center = true})
-		scream.sizeX, scream.sizeY = 1280/scream.width, 720/scream.height
+		scream.sizeX, scream.sizeY = GAMESIZE.width/scream.width, GAMESIZE.height/scream.height
 		
 		static = graphics:newAnimatedSprite('dave/fivenights/deathstatic', {
 			{anim = 'static', name = 'static', loops = true}
 		}, 'static', false, nil, {center = true})
-		static.sizeX, static.sizeY = 1280/static.width, 720/static.height
+		static.sizeX, static.sizeY = GAMESIZE.width/static.width, GAMESIZE.height/static.height
 
 		scream.onAnimComplete = function()
 			jumpscareDone = true
@@ -40,7 +40,7 @@ return {
 	draw = function()
 		love.graphics.push()
 		love.graphics.setColor(0,0,0)
-		love.graphics.rectangle('fill', 0, 0, 1280, 720)
+		love.graphics.rectangle('fill', 0, 0, GAMESIZE.width, GAMESIZE.height)
 		love.graphics.translate(S_HALF_WIDTH, S_HALF_HEIGHT)
 		love.graphics.setColor(fade[1], fade[1], fade[1])
 		if not jumpscareDone then

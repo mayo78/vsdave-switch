@@ -119,7 +119,7 @@ return {
 	draw = function(self)
 		love.graphics.push()
 		graphics.setColor(0, 0, 0)
-		love.graphics.rectangle("fill", 0, 0, 1280, 720)
+		love.graphics.rectangle("fill", 0, 0, GAMESIZE.width, GAMESIZE.height)
 		graphics.setColor(fade.v, fade.v, fade.v, deadBF.sprite.alpha or 1)
 		love.graphics.translate(cam.x + (graphics.getWidth() / 2), cam.y + (graphics.getHeight() / 2))
 		love.graphics.scale(curCamZoom, curCamZoom)

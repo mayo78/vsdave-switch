@@ -65,7 +65,7 @@ return {
 
 	draw = function(self)
 		love.graphics.push()
-		love.graphics.rectangle('fill', 0, 0, 1280, 720)
+		love.graphics.rectangle('fill', 0, 0, GAMESIZE.width, GAMESIZE.height)
 		love.graphics.translate(S_HALF_WIDTH, S_HALF_HEIGHT)
 		bf.sprite:draw()
 		--love.graphics.pop()

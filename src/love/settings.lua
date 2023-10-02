@@ -38,7 +38,10 @@ local default = { --default values
 			nickname = (love.getNickname and v) and love.getNickname() or 'User'
 		end}},
 		showDebug = {'Show debug', 'This will show debug information on screen!'},
-	}
+	},
+	getOrder = function() --a fuinction so it gets cleaned out :)
+		return {'eyesores', 'modcharts', 'volume', 'downscroll', 'selfAwareness', 'showDebug'}
+	end,
 }
 function settings:reset()
 	for i,v in pairs(default) do
@@ -79,7 +82,7 @@ settings:reset()
 if curOS == 'NX' then
 	love.window.setMode(1920, 1080)
 elseif curOS == 'web' then
-	love.window.setMode(1280, 720) -- Due to shared code, lovesize will be used even though the resolution will never change :/
+	love.window.setMode(GAMESIZE.width, GAMESIZE.height) -- Due to shared code, lovesize will be used even though the resolution will never change :/
 else
 	love.window.setMode(
 		1280,

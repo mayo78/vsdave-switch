@@ -20,6 +20,11 @@ local inputList = {
 	"gameRight"
 }
 
+local NOTE_Y
+gameEvents.screenResize:add(function(width, height)
+	NOTE_Y = GAMESIZE.height * 720/-350
+end, true)
+
 ExploitationModchartType = {
 	None = 0,
 	Cheating = 1,
@@ -629,7 +634,7 @@ return {
 				else
 					boyfriendArrows[i].x = 100 + 165 * i
 				end
-				boyfriendArrows[i].y = -350 * (isDownscroll and -1 or 1)
+				boyfriendArrows[i].y = NOTE_Y * (isDownscroll and -1 or 1)
 				boyfriendNotes[i] = {}
 				boyfriendNoteData[i] = {}
 			else
@@ -639,7 +644,7 @@ return {
 				else
 					enemyArrows[i].x = -925 + 165 * i
 				end
-				enemyArrows[i].y = -350 * (isDownscroll and -1 or 1)
+				enemyArrows[i].y = NOTE_Y * (isDownscroll and -1 or 1)
 				enemyNotes[i] = {}
 				enemyNoteData[i] = {}
 			end
@@ -1004,7 +1009,7 @@ return {
 				shapeArrows[i] = spr
 				shapeArrows[i].x = 100 + 165 * i
 				spr.baseX = spr.x
-				shapeArrows[i].y = -350 * (isDownscroll and -1 or 1)
+				shapeArrows[i].y = NOTE_Y * (isDownscroll and -1 or 1)
 				spr.baseY = spr.y
 			end
 		end
@@ -1596,12 +1601,12 @@ return {
 					spr.x = xx - ((i == 0 or i == 2) and NOTE_WIDTH or (i == 1 or i == 3) and -NOTE_WIDTH or 0);
 					spr.y = yy - ((i <= 1) and 0 or NOTE_HEIGHT);
 					spr.x = spr.x + math.sin((elapsedtime + (i * 3)) / 3) * NOTE_WIDTH;
-					spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
+					--spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
 					local spr = enemyArrow
 					spr.x = xx2 - ((i == 0 or i == 2) and NOTE_WIDTH or (i == 1 or i == 3) and -NOTE_WIDTH or 0);
 					spr.y = yy2 - ((i <= 1) and 0 or NOTE_HEIGHT);
 					spr.x = spr.x + (math.sin((elapsedtime + (i * 3)) / 3) * NOTE_WIDTH);
-					spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
+					--spr.x, spr.y = spr.x / 0.7, spr.y / 0.7
 				elseif modchart == ExploitationModchartType.Figure8 then
 					local spr = boyfriendArrow
 					local i = i - 1
@@ -2140,10 +2145,10 @@ return {
 	drawUI = function(self)
 		love.graphics.push()
 		love.graphics.scale(hudZoom, hudZoom)
-		love.graphics.translate(-(1280 * hudZoom - 1280)/2, -(720 * hudZoom - 720)/2)
+		love.graphics.translate(-(GAMESIZE.width * hudZoom - GAMESIZE.width)/2, -(GAMESIZE.height * hudZoom - GAMESIZE.height)/2)
 		if stageOverlay.alpha > 0 and not stageLightOn then
 			graphics.setColor(stageOverlay[1], stageOverlay[2], stageOverlay[3], stageOverlay.alpha)
-			love.graphics.rectangle("fill", 0, 0, 1280, 720)
+			love.graphics.rectangle("fill", 0, 0, GAMESIZE.width, GAMESIZE.height)
 			graphics.setColor(1, 1, 1, 1)
 		end
 		love.graphics.translate(lovesize.getWidth() / 2, lovesize.getHeight() / 2)
@@ -2336,10 +2341,10 @@ return {
 		love.graphics.push()
 		love.graphics.setColor(0,0,0)
 		--if cinbarDown.y ~= 860 then
-			love.graphics.rectangle('fill', 0, cinbarDown.y, 1280, 140)
+			love.graphics.rectangle('fill', 0, cinbarDown.y, GAMESIZE.width, 140)
 		--end
 		--if cinbarUp.y ~= -140 then
-			love.graphics.rectangle('fill', 0, cinbarUp.y, 1280, 140)
+			love.graphics.rectangle('fill', 0, cinbarUp.y, GAMESIZE.height, 140)
 		--end
 		love.graphics.pop()
 	end,
@@ -2553,12 +2558,12 @@ return {
 			spr.orientation = 0
 			
 			Timer.tween(0.2, spr, {orientation = math.pi * 4}, 'out-circ')
-			Timer.tween(0.6, spr, {y = -350 * (isDownscroll and -1 or 1)}, 'out-back')
+			Timer.tween(0.6, spr, {y = NOTE_Y * (isDownscroll and -1 or 1)}, 'out-back')
 
 			local spr = boyfriendArrows[i]
 			spr.orientation = 0
 			Timer.tween(0.2, spr, {orientation = math.pi * 4}, 'out-circ')
-			Timer.tween(0.6, spr, {y = -350 * (isDownscroll and -1 or 1)}, 'out-back')
+			Timer.tween(0.6, spr, {y = NOTE_Y * (isDownscroll and -1 or 1)}, 'out-back')
 		end
 	end
 }
