@@ -1,9 +1,4 @@
-# v0.1.2
-
-### Other
-- Literally fixes one bug i dont have a patch system for my update thing
-
-# v0.1.1
+# v0.1.1 (wip)
 note: this version uses a new version of love.elf, so donwload it from the new source as listed in the thing :)
 ### Gameplay
 - Controls can be bounded now to any button

@@ -230,7 +230,7 @@ function love.load()
 	http = require 'socket.http'
 
 	versionTable = require 'version'
-	version = versionTable:new(0, 1, 2)
+	version = versionTable:new(0, 1, 1)
 	--local ssl = require 'ssl'
 	--local body, code, headers, status = http.request("https://raw.githubusercontent.com/mayo78/vsdave-switch/main/version.txt")
 	--print(code, status, body)
