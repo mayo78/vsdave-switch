@@ -263,7 +263,7 @@ return {
 				end)
 			end
 			for i,cat in ipairs(cats) do
-				local targetX = -(1280 * (-i + catIndex))
+				local targetX = -(GAMESIZE.width * (-i + catIndex))
 				cat.x = math.lerp(cat.x, targetX, dt * 15)
 			end
 		elseif canMove then
@@ -326,7 +326,7 @@ return {
             redsky:draw()
             love.graphics.setShader()
             love.graphics.setColor(0,0,0,0.4)
-            love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, 1280, 720)
+            love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, GAMESIZE.width, GAMESIZE.height)
             love.graphics.setColor(1,1,1)
         else
 			love.graphics.setColor(rgb255(unpack(titleBG.color)))

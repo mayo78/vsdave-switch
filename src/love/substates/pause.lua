@@ -161,10 +161,10 @@ return {
 		love.graphics.push()
 		fonts('comic', 32)
 		for _,v in pairs(texts) do
-			if v.back then printfOutline(v.print, 1280-curFont:getWidth(v.print), v.y, nil, {alpha = v.alpha}) end
+			if v.back then printfOutline(v.print, GAMESIZE.width-curFont:getWidth(v.print), v.y, nil, {alpha = v.alpha}) end
 		end
 		graphics.setColor(0, 0, 0, fadeInAlpha)
-		love.graphics.rectangle("fill", 0, 0, 1280, 720)
+		love.graphics.rectangle("fill", 0, 0, GAMESIZE.width, GAMESIZE.height)
 		graphics.setColor(0, 0, 0, (fadeInAlpha * 2) * 0.6)
 		love.graphics.draw(gridguy, gridframe, gridPos.x, gridPos.y)
 		graphics.setColor(1, 1, 1)
@@ -174,7 +174,7 @@ return {
 		end
 		fonts('comic', 32)
 		for _,v in pairs(texts) do
-			printfOutline(v.print, 1280-curFont:getWidth(v.print) - 6, v.y, nil, {alpha = v.alpha})
+			printfOutline(v.print, GAMESIZE.width-curFont:getWidth(v.print) - 6, v.y, nil, {alpha = v.alpha})
 			if v.back then break end
 		end
 		love.graphics.pop()

@@ -99,7 +99,7 @@ local function drawTable(sprites)
 			if spr.stageLight and stageOverlay.alpha > 0 then
 				love.graphics.scale(1/curCamZoom, 1/curCamZoom)
 				graphics.setColor(stageOverlay[1], stageOverlay[2], stageOverlay[3], stageOverlay.alpha)
-				love.graphics.rectangle("fill", -S_HALF_WIDTH, -S_HALF_HEIGHT, 1280, 720)
+				love.graphics.rectangle("fill", -S_HALF_WIDTH, -S_HALF_HEIGHT, GAMESIZE.width, GAMESIZE.height)
 				graphics.setColor(1, 1, 1, 1)
 				love.graphics.scale(curCamZoom, curCamZoom)
 			end
@@ -1160,10 +1160,13 @@ local stages = {
 							local txt = {
 								draw = function(self)
 									fonts('comic', 256)
-									printfOutline(c, self.x, self.y, nil, {angle = self.angle, alpha = self.alpha})
+									love.graphics.setColor(1,1,1,self.alpha)
+									love.graphics.print(c, self.x, self.y, self.orientation, 1, 1, curFont:getWidth(c)/2, curFont:getHeight()/2)
+									love.graphics.setColor(1,1,1)
 								end,
-								update = function(self, dt)
+								fixedUpdate = function(self, dt)
 									self.angle = self.angle + dt * angvel * 2
+									self.orientation = self.angle * DEGREE_TO_RADIAN
 									self.x, self.y = self.x + vel.x*dt, self.y + vel.y*dt
 								end,
 								x = love.math.random(-1280, 1280 * 2.5),
@@ -1185,6 +1188,19 @@ local stages = {
 			end
 		end
 		newAlphabet(daveSongs)
+
+		--songLoaded = function()
+		--	local alphaupdatetime = crochet / 1000
+		--	local function alphabetLoop() --hopefully not as laggy
+		--		Timer.after(alphaupdatetime, alphabetLoop)
+		--	end
+		--	alphabetLoop()
+		--end
+		onStep = function()
+			for i,v in pairs(alphabets) do
+				v:fixedUpdate(stepCrochet / 1000)
+			end
+		end
 
 		girlfriend.x, girlfriend.y = 30, -90
 		enemy.x, enemy.y = -380, -110
@@ -1615,7 +1631,7 @@ local stages = {
 			end,
 			draw = function()
 				love.graphics.setColor(0,0,0)
-				love.graphics.rectangle('fill', 0, 0, 1280, 720)
+				love.graphics.rectangle('fill', 0, 0, GAMESIZE.width, GAMESIZE.height)
 				love.graphics.setColor(1,1,1)
 				powerMeter:draw()
 			end,
@@ -1659,7 +1675,7 @@ local stages = {
 		extraHud = function()
 			if sixam then
 				love.graphics.setColor(0,0,0)
-				love.graphics.rectangle('fill', (-S_HALF_WIDTH)/0.7, (-S_HALF_HEIGHT)/0.7, 1280/.7, 720/.7)
+				love.graphics.rectangle('fill', (-S_HALF_WIDTH)/0.7, (-S_HALF_HEIGHT)/0.7, GAMESIZE.width/.7, GAMESIZE.height/.7)
 				love.graphics.setColor(1,1,1)
 				fonts('fnaf', 180/.7)
 				love.graphics.print('6 AM', -curFont:getWidth '6 AM'/2, -curFont:getHeight()/2)
@@ -1692,7 +1708,7 @@ local stages = {
 		local glitch = graphics:newAnimatedSprite('dave/ui/glitch/glitchSwitch', {
 			{anim = 'glitch', name = 'glitchScreen'}
 		}, 'glitch', false, nil, {center = true})
-		glitch.sizeX, glitch.sizeY = 1280/400/0.7, 720/400/0.7
+		glitch.sizeX, glitch.sizeY = GAMESIZE.width/400/0.7, GAMESIZE.height/400/0.7
 		function extraHud()
 			if glitching then
 				glitch:draw()

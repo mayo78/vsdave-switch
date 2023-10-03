@@ -82,6 +82,8 @@ option_upscroll==Upscroll
 option_songPosition_on==Posição da Música On
 option_songPosition_off==Posição da Música Off
 
+option_eyesores==Efeitos
+
 option_eyesores_enabled==Efeitos Ativados
 option_eyesores_disabled==Efeitos Desativados
 

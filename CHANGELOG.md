@@ -18,7 +18,7 @@ note: this version uses a new version of love.elf, so donwload it from the new s
 # v0.1.2
 this fixed one crash oops
 
-# v1.0.0 (wip)
+# v1.0.0
 ### Gameplay
 - Character dances are 100% on beat now
 - You can now exit the game at any time by holding start and select at the same time
@@ -43,3 +43,5 @@ this fixed one crash oops
 - Better Dave cutscene
 ## Other
 - You can exit the error screen if it ever occurs now
+- Compressed audio files down
+- Converted the remaining pngs to dds files (pngs are still there since they can vbe opened in more things)

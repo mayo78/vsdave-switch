@@ -3,6 +3,8 @@ local keySounds
 local commands = {}
 local height, updateHeight, eyeMode
 
+local music
+
 
 local keyboard
 
@@ -260,9 +262,13 @@ makeCommand('exit', 'exit', function(...)
 end)
 return {
 	enter = function(self)
+		music = paths.music 'TheAmbience'
+		music:setLooping(true)
+		music:setVolume(0.7)
+		music:play()
 		keyboard = floatingKeyboard()
 		keyboard.x = 25
-		keyboard.y = 720
+		keyboard.y = GAMESIZE.height
 		keyboard.onKey = function(keything, shift)
 			local key = shift and keything.alt or keything.name
 			if expungedMode or eyeMode then return end
@@ -286,11 +292,11 @@ return {
 					updateText ''
 				end
 				keyboard.active = false
-				Timer.tween(0.25, keyboard, {y = 720}, 'in-expo')
+				Timer.tween(0.25, keyboard, {y = GAMESIZE.height}, 'in-expo')
 			elseif key == 'escape' then
 				keyBuffer = ''
 				keyboard.active = false
-				Timer.tween(0.25, keyboard, {y = 720}, 'in-expo')
+				Timer.tween(0.25, keyboard, {y = GAMESIZE.height}, 'in-expo')
 			elseif key == '<==' then
 				keySounds.back:stop()
 				keySounds.back:play()
@@ -355,7 +361,7 @@ return {
 				local width = 0
 				v:gsub('.', function(c)
 					width = width + curFont:getWidth(c)
-					if width > 1280 then
+					if width > GAMESIZE.width then
 						lines = lines + 1
 						width = curFont:getWidth(c)
 					end
@@ -363,14 +369,17 @@ return {
 			end
 			lines = lines + 2
 			height = lines * curFont:getHeight()
-			if height > 720 then
-				y = 720 - height
+			if height > GAMESIZE.height then
+				y = GAMESIZE.height - height
 			end
 		end
 		local printer = curText..'\n>>'..keyBuffer
-		love.graphics.printf(printer, 0, y, 1280)
+		love.graphics.printf(printer, 0, y, GAMESIZE.width)
 		keyboard:draw()
 		love.graphics.pop()
+	end,
+	preleave = function()
+		music:stop()
 	end,
 	update = function(self, dt)
 		if transOut then return end
@@ -378,7 +387,7 @@ return {
 			glitchSpr:update(dt)
 		elseif controls.pressed.confirm and not keyboard.active then
 			keyboard.active = true
-			Timer.tween(0.25, keyboard, {y = 300}, 'out-expo')
+			Timer.tween(0.25, keyboard, {y = GAMESIZE.height/2.4}, 'out-expo')
 		elseif controls.pressed.back and not keyboard.active then
 			switchState(menuFreeplay)
 		end
@@ -387,5 +396,10 @@ return {
 		--	keyBuffer = 'admin grant recurser.dat'
 		--end
 		keyboard:update()
+	end,
+	touchpressed = function(self, prev, ...)
+		if keyboard.active then
+			keyboard:touchpressed(_, ...) --wtf?
+		end
 	end,
 }

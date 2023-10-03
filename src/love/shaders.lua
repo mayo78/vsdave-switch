@@ -130,7 +130,7 @@ local REPEAT_FRAG = [[
 	uniform float uTime;
 
 	vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
-		vec2 st = texture_coords.xy / vec2(1280, 720);
+		vec2 st = texture_coords.xy / vec2(GAMESIZE.width, GAMESIZE.height);
 
 		st *= 1.05; // size each shitter
 		st.x += uTime / 4;

@@ -89,7 +89,7 @@ local function nextDial()
 		portraitAlpha = 0
 		if curDial.char ~= 'generic' then
 			portrait:setImage(exprStuff[curDial.char][curDial.emotion])
-			portrait.x = curDial.right and 1280 + portrait.width or -portrait.width
+			portrait.x = curDial.right and GAMESIZE.width + portrait.width or -portrait.width
 		end
 		if curDial.effect == 'to_black' then
 			fadingOut = true
@@ -238,10 +238,10 @@ return {
 			love.graphics.setBlendMode 'replace'
 		end
 		graphics.setColor(rgb255(unpack(fadeColor)))
-		love.graphics.rectangle('fill', 0, 0, 1280, 720)
+		love.graphics.rectangle('fill', 0, 0, GAMESIZE.width, GAMESIZE.height)
 		if fadeOutAlpha and fadeOutAlpha > 0 then
 			graphics.setColor(0, 0, 0, fadeOutAlpha)
-			love.graphics.rectangle('fill', 0, 0, 1280, 720)
+			love.graphics.rectangle('fill', 0, 0, GAMESIZE.width, GAMESIZE.height)
 		end
 		if greetingsCutscene then
 			love.graphics.setBlendMode 'alpha'

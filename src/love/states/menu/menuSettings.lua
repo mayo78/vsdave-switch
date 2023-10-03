@@ -4,22 +4,58 @@ local settingIndex = 1
 local titleBG
 local curMenu = 'select'
 local menuIndex = 1
-local controlArray = {
-	{'Left Note', 'gameLeft'},
-	{'Down Note', 'gameDown'},
-	{'Up Note', 'gameUp'},
-	{'Right Note', 'gameRight'},
-	{'Game Five', 'gameFive'},
-	{'Confirm', 'confirm'},
-	{'Back', 'back'}
-}
+local controlArray
 
 local controlYs = {}
 local menuStuff = {'General', 'Controls', 'Change Language'}
 local settingControl = false
 local controlIndex = 1
+local descArray
+local function updateDescArray()
+	fonts('comic', 32)
+	local desc = settingStuff[settingIndex].metadata[2]
+	local w = curFont:getWidth(desc)
+	if w > GAMESIZE.width then
+		descArray = {}
+		local ww = 0
+		local spaceBuffer = ''
+		local spaceWidth = 0
+		local spaceArrayBuffer = {}
+		local i = 0
+		desc:gsub('.', function(c)
+			i = i + 1
+			ww = ww + curFont:getWidth(c)
+			spaceWidth = spaceWidth + curFont:getWidth(c)
+			spaceBuffer = spaceBuffer..c
+			if c == ' ' or i == #desc then
+				--print('adding word', spaceBuffer)
+				table.insert(spaceArrayBuffer, spaceBuffer)
+				spaceBuffer = ''
+				spaceWidth = 0
+			end
+			if ww > (GAMESIZE.width - 115) or i == #desc then
+				--print('new line :)', table.concat(spaceArrayBuffer, ''))
+				table.insert(descArray, table.concat(spaceArrayBuffer, ''))
+				ww = 0
+				spaceArrayBuffer = {}
+			end
+		end)
+		--print('this is the final thing', table.concat(descArray, '\n'))
+	else
+		descArray = {desc}
+	end
+end
 return {
 	enter = function(self, previous)
+		controlArray = {
+			{'Left Note', 'gameLeft'},
+			{'Down Note', 'gameDown'},
+			{'Up Note', 'gameUp'},
+			{'Right Note', 'gameRight'},
+			{'Game Five', 'gameFive'},
+			{'Confirm', 'confirm'},
+			{'Back', 'back'}
+		}
 		if save.save.foundMuko then
 			for _,v in pairs{
 				{'Close Door', 'mukoDoor'},
@@ -69,9 +105,11 @@ return {
 			if controls.pressed.down then
 				settingIndex = settingIndex + 1
 				if settingIndex > #settingStuff then settingIndex = 1 end
+				updateDescArray()
 			elseif controls.pressed.up then
 				settingIndex = settingIndex - 1
 				if settingIndex <= 0 then settingIndex = #settingStuff end
+				updateDescArray()
 			end
 
 			if controls.pressed.back then
@@ -81,17 +119,18 @@ return {
 			if controls.pressed.confirm then
 				if menuIndex == 1 then
 					settingStuff = {}
-					for k,v in pairs(settings) do
-						if settings.metadata[k] then
+					for i,v in pairs(settings:getOrder()) do
+						if settings.metadata[v] then
 							table.insert(settingStuff, {
-								key = k,
-								metadata = settings.metadata[k],
+								key = v,
+								metadata = settings.metadata[v],
 								y = 0,
 								targetY = 0,
 								print = ''
 							})
 						end
 					end
+					updateDescArray()
 					curMenu = 'general'
 				elseif menuIndex == 2 then
 					controlYs = {}
@@ -141,7 +180,7 @@ return {
 					confirm:stop()
 					confirm:play()
 				elseif controls.pressed.back then
-					switchState(menuSelect)
+					switchState(menuSettings)
 				end
 			else
 				for _,control in pairs(bindableKeys) do
@@ -170,28 +209,29 @@ return {
 		fonts('comic', 32)
 		if curMenu == 'general' then
 			for i,setting in pairs(settingStuff) do
-				printfOutline(setting.print, -((#setting.print/2) * 16), setting.y, nil, {alpha = (i == settingIndex and 1 or 0.5)})
+				printfOutline(setting.print, -curFont:getWidth(setting.print)/2, setting.y, nil, {alpha = (i == settingIndex and 1 or 0.5)})
 			end
 			graphics.setColor(0, 0, 0, 0.5)
-			love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, 1280, 720 * 0.2)
-			fonts('comic', 16)
-			local desc = settingStuff[settingIndex].metadata[2]
-			printfOutline(desc, -((#desc/2) * 8), (-S_HALF_HEIGHT) + 50)
+			love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, GAMESIZE.width, GAMESIZE.height * 0.2)
+			fonts('comic', 32)
+			for i,v in pairs(descArray) do
+				printfOutline(v, -curFont:getWidth(v)/2, (-S_HALF_HEIGHT) + 50 + (curFont:getHeight() * (i-1)))
+			end
 		elseif curMenu == 'select' then
 			for i,txt in pairs(menuStuff) do
-				printfOutline(txt, -((#txt/2) * 16), menuYs[txt][1], nil, {alpha = ((i == menuIndex) and 1 or 0.5)})
+				printfOutline(txt, -curFont:getWidth(txt)/2, menuYs[txt][1], nil, {alpha = ((i == menuIndex) and 1 or 0.5)})
 			end
 		elseif curMenu == 'controls' then
 			for i,data in pairs(controlArray) do
 				local str = data[1]..' | '..(controlList[data[2]][3]:split':'[2]:gsub('+', ''))
-				printfOutline(str, -((#str/2) * 16), controlYs[data[2]][1], nil, {alpha = (i == controlIndex and 1 or 0.5), color = ((i == controlIndex and settingControl) and {1, 1, 0} or {1, 1, 1})})
+				printfOutline(str, -curFont:getWidth(str)/2, controlYs[data[2]][1], nil, {alpha = (i == controlIndex and 1 or 0.5), color = ((i == controlIndex and settingControl) and {1, 1, 0} or {1, 1, 1})})
 			end
 			if settingControl then
 				graphics.setColor(0, 0, 0, 0.5)
-				love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, 1280, 720 * 0.2)
+				love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, GAMESIZE.width, GAMESIZE.height * 0.2)
 				fonts('comic', 32)
 				local desc = 'Bind a key to this action or press SELECT to cancel'
-				printfOutline(desc, -((#desc/2) * 16), (-S_HALF_HEIGHT) + 50)
+				printfOutline(desc, -curFont:getWidth(desc)/2, (-S_HALF_HEIGHT) + 50)
 			end
 		end
 		love.graphics.pop()

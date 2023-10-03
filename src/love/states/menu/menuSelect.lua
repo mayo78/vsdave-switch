@@ -141,7 +141,7 @@ return {
                 {anim = 'idle', name = o..' basic', fps = 12, loops = true},
                 {anim = 'select', name = o..' white', loops = true}
             }, 'idle')
-            spr.x = fromTopLeft(1280 * 1.6).x
+            spr.x = fromTopLeft(GAMESIZE.width * 1.6).x
             spr.sizeX = 128/204
             spr.sizeY = spr.sizeX
             spr.y = 130
@@ -209,7 +209,7 @@ return {
             redsky:draw()
             love.graphics.setShader()
             love.graphics.setColor(0,0,0,0.4)
-            love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, 1280, 720)
+            love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, GAMESIZE.width, GAMESIZE.height)
             love.graphics.setColor(1,1,1)
         else
             love.graphics.setColor(rgb255(unpack(bg.color)))

@@ -124,7 +124,7 @@ return {
 		arrowLeft.y = -arrowLeft.height/2
 		paths.image 'dave/title/ArrowLeft_Pressed'
 		arrowRight = graphics.newImage(paths.image 'dave/title/ArrowRight_Idle', full)
-		arrowRight.x = (1280/0.75) - arrowRight.width - 200
+		arrowRight.x = (GAMESIZE.width/0.75) - arrowRight.width - 200
 		arrowRight.y = -arrowRight.height/2
 		paths.image 'dave/title/ArrowRight_Pressed'
 		changeChar(0)
@@ -204,7 +204,7 @@ return {
 		love.graphics.pop()
 		love.graphics.push()
 		love.graphics.scale(0.75, 0.75)
-		love.graphics.translate(-(1280 * .75 - 1280)/2, -(720 * .75 - 720)/2)
+		love.graphics.translate(-(GAMESIZE.width * .75 - GAMESIZE.width)/2, -(GAMESIZE.height * .75 - GAMESIZE.height)/2)
 		guide:draw()
 		love.graphics.translate(0, S_HALF_HEIGHT + 200)
 		arrowLeft:draw()

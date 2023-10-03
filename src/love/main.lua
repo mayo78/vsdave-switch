@@ -31,6 +31,11 @@ local printBuffer = {}
 errorData = ''
 
 isLoading = true
+
+_16_9 = 16/9
+
+SCREENSIZE = {width = 1920, height = 1080}
+GAMESIZE = {width = 1280, height = 720}
 --debugMode = true
 function love.load()
 	--https://love2d.org/forums/viewtopic.php?t=77272
@@ -183,8 +188,9 @@ function love.load()
 	end
 
 	--makes stuff like 255, 255, 255 to 1, 1, 1
-	function rgb255(r, g, b, a) --actually rgba but whatebver
-		return (r and r/255 or 1), (g and g/255 or 1), (b and b/255 or 1), a or 1
+	function rgb255(r, g, b, a) --wow there was a function for this the whole time thats crazy
+		local rr, gg, bb = love.math.colorFromBytes(r, g, b)
+		return rr, gg, bb, a
 	end
 
 	function fromTopLeft(x, y, spill)
@@ -265,6 +271,8 @@ function love.load()
 	loadFont = love.graphics.newFont(64)
 	-- Load modules
 	Timer.after(0.05, function() --let the loading text draw :)
+		gameEvents = require 'gameEvents'
+		gameEvents:newEvent 'screenResize'
 		json = require 'json'
 		xmlparser = require 'modules.xmlparser'
 		files = require 'files'
@@ -307,9 +315,14 @@ function love.load()
 		reloadInput = require "input"
 		input = reloadInput()
 		local w,h = love.window.getMode()
-		globalCanvas = love.graphics.newCanvas(1920, 1080)
-		gameCanvas = love.graphics.newCanvas(1920, 1080)
-		hudCanvas = love.graphics.newCanvas(1920, 1080)
+		gameEvents.screenResize:add(function()
+			if globalCanvas then globalCanvas:release() end
+			if gameCanvas then gameCanvas:release() end
+			if hudCanvas then hudCanvas:release() end
+			globalCanvas = love.graphics.newCanvas(SCREENSIZE.width, SCREENSIZE.height)
+			gameCanvas = love.graphics.newCanvas(SCREENSIZE.width, SCREENSIZE.height)
+			hudCanvas = love.graphics.newCanvas(SCREENSIZE.width, SCREENSIZE.height)
+		end, true)
 
 		controls = {pressed = {}, down = {}, released = {}}
 		for k,t in pairs(controls) do --so you cn do this: controls.pressed.up, controls.down.up, etc
@@ -327,7 +340,12 @@ function love.load()
 		--local ssl = require 'ssl'
 		--local body, code, headers, status = http.request("https://raw.githubusercontent.com/mayo78/vsdave-switch/main/version.txt")
 		--print(code, status, body)
-		onlineVersion = versionTable:fromString((http.request 'https://www.mayo78.com/vsdaveswitch-version.txt' or '-99.-99.-99'):gsub('v', ''))
+		local ovstring = (http.request 'https://www.mayo78.com/vsdaveswitch-version.txt' or '-99.-99.-99'):gsub('v', '')
+		if ovstring:startsWith '<' then --wtf?
+			ovstring = '-99.-99.-99'
+		end
+		--errorData = errorData..'\n'..ovstring
+		onlineVersion = versionTable:fromString(ovstring)
 
 		floatingKeyboard = require 'floatingkeyboard'
 
@@ -376,7 +394,7 @@ function love.load()
 			love.window.setIcon(love.image.newImageData("icons/default.png"))
 		end
 
-		lovesize.set(1280, 720)
+		lovesize.set(GAMESIZE.width, GAMESIZE.height)
 
 		-- Variables
 		fonts = require 'fonts'
@@ -429,7 +447,7 @@ function love.load()
 		--switchState(terminalState)
 		--switchState(debugMenu)
 		--switchState(menuFreeplay)
-		local scale = 1280/1920
+		--local scale = 1280/1920
 		
 		--local testChar = character 'bf'
 		
@@ -441,6 +459,10 @@ end
 function love.resize(width, height)
 	if isLoading then return end
 	lovesize.resize(width, height)
+	SCREENSIZE = {width = width * 1.5, height = height * 1.5}
+	GAMESIZE = {width = width, height = height}
+	gameEvents.screenResize:dispatch()
+	print 'yeah i did it!'
 end
 
 function love.keypressed(key)
@@ -453,6 +475,11 @@ function love.keypressed(key)
 		Gamestate.keypressed(key)
 		--weeks:keypressed(key)
 	end
+end
+
+function love.touchpressed(...)
+	if isLoading then return end
+	Gamestate.touchpressed(...)
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
@@ -513,7 +540,7 @@ function love.draw()
 		Gamestate.draw()
 		if overlayColor.alpha > 0 then
 			graphics.setColor(overlayColor[1], overlayColor[2], overlayColor[3], overlayColor.alpha)
-			love.graphics.rectangle("fill", 0, 0, 1280, 720)
+			love.graphics.rectangle("fill", 0, 0, GAMESIZE.width, GAMESIZE.height)
 			graphics.setColor(1, 1, 1)
 		end
 		if substate then substate:draw() end
@@ -564,7 +591,7 @@ function love.draw()
 	else
 		love.graphics.setColor(.4, .4, .4)
 		love.graphics.setFont(loadFont)
-		love.graphics.print("Loading...", 1920 - loadFont:getWidth 'Loading...', 1080 - loadFont:getHeight())
+		love.graphics.print("Loading...", SCREENSIZE.width - loadFont:getWidth 'Loading...', SCREENSIZE.height - loadFont:getHeight())
 	end
 	--if settings.showDebug then
 	--	love.graphics.print(status.getDebugStr(settings.showDebug), 5, 5, nil, 0.5, 0.5)
