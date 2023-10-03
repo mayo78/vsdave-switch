@@ -4,18 +4,19 @@ local a = {
       'Recursed',
       'recurser',
       '2C2C2C',
-      'foundRecursed'
+      'found_recursed'
     },
     {
       'Bonus-Song',
       'dave',
       'other'
     },
-    {
-      'Bot-Trot',
-      'playrobot',
-      'A296BC'
-    },
+    -- :(
+    --{
+    --  'Bot-Trot',
+    --  'playrobot',
+    --  'A296BC'
+    --},
     {
       'Escape-From-California',
       'Moldy',
@@ -50,7 +51,13 @@ local a = {
       'Memory',
       'dave',
       'other'
-    }
+    },
+    --was just testing stuff, not charting this whole thing!
+    --{
+    --  'Splitathon-2',
+    --  'dave',
+    --  'other'
+    --}
   },
   color = 'SONG_SPECIFIC',
   banner = 'DaveHouse',

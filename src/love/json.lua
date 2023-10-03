@@ -22,6 +22,8 @@
 -- SOFTWARE.
 --
 
+--modified to be readable when exported
+
 local json = { _version = "0.1.2" }
 
 -------------------------------------------------------------------------------
@@ -56,7 +58,7 @@ local function encode_nil(val)
 end
 
 
-local function encode_table(val, stack)
+local function encode_table(val, stack, tabCount)
   local res = {}
   stack = stack or {}
 
@@ -64,6 +66,13 @@ local function encode_table(val, stack)
   if stack[val] then error("circular reference") end
 
   stack[val] = true
+
+  local tabStr = ''
+  if tabCount > 0 then
+    local hi = {}
+    for i=1,tabCount do table.insert(hi, '\t') end
+    tabStr = table.concat(hi, '')
+  end
 
   if rawget(val, 1) ~= nil or next(val) == nil then
     -- Treat as array -- check keys are valid and it is not sparse
@@ -79,10 +88,10 @@ local function encode_table(val, stack)
     end
     -- Encode
     for i, v in ipairs(val) do
-      table.insert(res, encode(v, stack))
+      table.insert(res, encode(v, stack, tabCount + 1))
     end
     stack[val] = nil
-    return "[" .. table.concat(res, ",") .. "]"
+    return "[" .. table.concat(res, ", ") .. "]"
 
   else
     -- Treat as an object
@@ -90,10 +99,10 @@ local function encode_table(val, stack)
       if type(k) ~= "string" then
         error("invalid table: mixed or invalid key types")
       end
-      table.insert(res, encode(k, stack) .. ":" .. encode(v, stack))
+      table.insert(res, tabStr..encode(k, stack, tabCount + 1) .. ": " .. encode(v, stack, tabCount + 1))
     end
     stack[val] = nil
-    return "{" .. table.concat(res, ",") .. "}"
+    return "{\n" .. table.concat(res, ",\n") .. "\n"..(tabStr:sub(1,#tabStr-1)).."}"
   end
 end
 
@@ -121,11 +130,11 @@ local type_func_map = {
 }
 
 
-encode = function(val, stack)
+encode = function(val, stack, tabCount)
   local t = type(val)
   local f = type_func_map[t]
   if f then
-    return f(val, stack)
+    return f(val, stack, tabCount or 1)
   end
   error("unexpected type '" .. t .. "'")
 end

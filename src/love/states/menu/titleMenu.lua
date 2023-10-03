@@ -1,59 +1,143 @@
-
-
-local upFunc, downFunc, confirmFunc, backFunc, drawFunc, musicStop
-
-local menuState
-
-local menuNum = 1
-
-local weekNum = 1
-local songNum, songAppend
-local songDifficulty = 2
-
 local logo
 
---local girlfriendTitle = love.filesystem.load("sprites/menu/girlfriend-title.lua")()
---local titleEnter = love.filesystem.load("sprites/menu/titleEnter.lua")()
 local girlfriendTitle
 local titleEnter
 
-local selectSound
 local confirmSound
 
+local canMove
+local beatTimer
+local danceLeft
+local curBeat
+local introDone = false
+local curWacky
 
-
-
-
-local canMove = true
+local texts = {}
+local function addText(text)
+	for i,v in pairs(text) do table.insert(texts, v) end
+end
+local function clearText()
+	texts = {}
+end
+local _flashTimer
+local function finish()
+	introDone = true
+	overlayColor = {1,1,1,alpha=1}
+	if _flashTimer then Timer.cancel(_flashTimer) end
+	_flashTimer = Timer.tween(1, overlayColor, {alpha=0}, nil, function() _flashTimer = nil end)
+end
+local beatEvents = {
+	[1] = function()
+		addText{
+			'Created By:',
+			'MoldyGH',
+			'MissingTextureMan101',
+			'Rapparep LOL'
+		}
+	end,
+	[3] = function()
+		addText{
+			'TheBuilderXD',
+			'Erizur, T5mpler'
+		}
+	end,
+	[4] = function()
+		addText{
+			'and our wonderful contributors!'
+		}
+	end,
+	[5] = function()
+		clearText()
+	end,
+	[6] = function()
+		addText{'Supernovae by ArchWk'}
+	end,
+	[7] = function()
+		addText{'Glitch by The Boneyard'}
+	end,
+	[8] = function()
+		clearText()
+	end,
+	[9] = function()
+		addText{curWacky[1]}
+	end,
+	[10] = function()
+		addText{curWacky[2]}
+	end,
+	[11] = function()
+		clearText()
+	end,
+	[12] = function()
+		addText{'Friday Night Funkin\''}
+	end,
+	[13] = function()
+		addText{awaitingExploitation and 'Vs. Expunged' or 'VS. Dave'}
+	end,
+	[14] = function()
+		addText{not awaitingExploitation and 'and Bambi' or 'The Full Mod'}
+	end,
+	[15] = function()
+		addText(awaitingExploitation and tostring('HAHAHHAHAHAHAHHAHAHAHAHHAHAHAHAHHAHA\nHAHAHHAHAHAHAHHAHAHAHAHHAHAHAHAHHAHA\nHAHAHHAHAHAHAHHAHAHAHAHHAHAHAHAHHAHA'):split'\n' or {'The Full Mod'})
+		if awaitingExploitation then paths.sound 'evilLaugh':play() end
+	end,
+	[16] = finish,
+}
+local function beatLoop() --no need to do any fancy beat stuff, a timer will work fine enough!
+	if beatEvents[curBeat] and not introDone then beatEvents[curBeat]() end
+	curBeat = curBeat + 1
+	danceLeft = not danceLeft
+	if not awaitingExploitation then
+		girlfriendTitle:animate(danceLeft and 'danceLeft' or 'danceRight')
+	end
+	if not logo:isAnimated() then
+		logo:animate 'idle'
+	end
+	beatTimer = Timer.after(awaitingExploitation and 0.7 or 0.4, beatLoop)
+end
 
 return {
 	enter = function(self, previous)
+		danceLeft = false
+		curBeat = 0
+		local awaiting = save.save.awaitingExploitation
+		if awaiting then
+			awaitingExploitation = true
+			save.save.awaitingExploitation = false
+			save.writeSave()
+		end
 		canMove = true
-        selectSound = paths.sound('menu/select')
         confirmSound = paths.sound('menu/confirm')
-		logo = graphics:newAnimatedSprite('dave/title/logoBumpin', {{name = 'logo bumpin', anim = 'idle', loops = true}}, 'idle', true)
-		logo.x, logo.y = -350, -125
-		logo.sizeX, logo.sizeY = 1.25, 1.25
+		logo = graphics:newAnimatedSprite('dave/title/logoBumpin'..(awaitingExploitation and 'expunged' or ''), {{name = 'logo bumpin', anim = 'idle'}}, 'idle', true)
+		logo.x, logo.y = -25, -50
+		logo.sizeX, logo.sizeY = 1.2, 1.2
+		if awaitingExploitation then
+			logo.x, logo.y = S_HALF_WIDTH - logo.width/2, S_HALF_HEIGHT - logo.height/2 - 100
+		end
 
-		girlfriendTitle = graphics:newAnimatedSprite('dave/title/gfDanceTitle', {{name = 'gfDance', anim = 'idle', loops = true}}, 'idle')
-		girlfriendTitle.x, girlfriendTitle.y = 325, 65
-		girlfriendTitle.sizeX, girlfriendTitle.sizeY = 1.25, 1.25
+		if not awaitingExploitation then
+			girlfriendTitle = graphics:newAnimatedSprite('dave/title/gfDanceTitle', {
+				{name = 'gfDance', anim = 'danceLeft', indices = {30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}},
+				{name = 'gfDance', anim = 'danceRight', indices = {15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29}}
+			}, 'danceRight')
+			girlfriendTitle.x, girlfriendTitle.y = GAMESIZE.width * 0.4, GAMESIZE.height * 0.07
+		end
 
 		titleEnter = graphics:newAnimatedSprite('dave/titleEnter', {{name = 'Press Enter to Begin', anim = "anim"}, {name = 'ENTER PRESSED', anim = 'pressed'}}, 'anim')
-		titleEnter.x, titleEnter.y = 225, 350
+		titleEnter.x, titleEnter.y = 100, 720 * 0.8
 		
-		songNum = 0
-
-
 
 		cam.sizeX, cam.sizeY = 0.9, 0.9
 		camScale.x, camScale.y = 0.9, 0.9
 
 		--switchMenu(1)
 
-		music = paths.music('menu/menu')
+		local hi = love.filesystem.read 'data/introText.txt':split '\n'
+		curWacky = hi[love.math.random(1, #hi)]:split '--'
+
+		music = paths.music(awaitingExploitation and 'menu/evilmenu' or 'menu/menu')
 		music:setLooping(true)
 		music:play()
+		Timer.after(0.03, beatLoop) --weird delay
 	end,
 
 	musicStop = function(self)
@@ -61,40 +145,53 @@ return {
 	end,
 
 	update = function(self, dt)
-		--print(love.timer.getTime())
-		girlfriendTitle:update(dt)
-		titleEnter:update(dt)
-		--titleEnter:animate("anim", true)
-
-		if not drawTransition and canMove then
-			if input:pressed("confirm") then
-				canMove = false
-				audio.playSound(confirmSound)
-
-				titleEnter:animate("pressed", false)
-
-				Timer.after(1, function()
-					switchState(menuSelect)
-				end)
+		if introDone then
+			--print(love.timer.getTime())
+			if not awaitingExploitation then
+				girlfriendTitle:update(dt)
 			end
-
+			titleEnter:update(dt)
 			logo:update(dt)
+			--titleEnter:animate("anim", true)
+		end
+		if not drawTransition and canMove then
+			if controls.pressed.confirm then
+				if not introDone then finish()
+				else
+					finish()
+					canMove = false
+					love.audio.play(confirmSound)
+
+					titleEnter:animate("pressed", false)
+
+					Timer.after(1, function()
+						switchState(save.save.coward and cowardState or menuSelect)
+					--switchState(layeredCutscene, false, 'mazeCutscene', 'break_phone', 24, {0.75, 1.5, 0.75, 2.67})
+					end)
+				end
+			end
 		end
 	end,
 
 	draw = function(self)
 		love.graphics.push()
-			love.graphics.translate(graphics.getWidth() / 2, graphics.getHeight() / 2)
+		--love.graphics.translate(graphics.getWidth() / 2, graphics.getHeight() / 2)
 
-			love.graphics.push()
-				love.graphics.scale(cam.sizeX, cam.sizeY)
-
-				logo:draw()
-
+		if introDone then
+			if not awaitingExploitation then
 				girlfriendTitle:draw()
-				titleEnter:draw()
+			end
+			titleEnter:draw()
 
-				love.graphics.pop()
+			logo:draw()
+		else
+			fonts('comic', 48)
+			love.graphics.translate(graphics.getWidth() / 2, graphics.getHeight() / 2)
+			for i,v in pairs(texts) do
+				love.graphics.print(v, -curFont:getWidth(v)/2, (50 * (i-1)) - 72)
+			end
+		end
+
 		love.graphics.pop()
 	end,
 

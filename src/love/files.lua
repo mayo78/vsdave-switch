@@ -55,11 +55,20 @@ end)
 local imgs = {}
 checkFolder('images/png', function(folder, file)
 	if file:endsWith '.png' then
-		folder = folder:gsub('images/png/', ''):gsub('/', '\\')
-		table.insert(imgs, (([[mkdir ..\dds\]]..folder..[[$NEWLINE%texconv% -f DXT5 -m 1 -nologo -o ..\dds\]]..folder..[[ -srgb -y ]]..(folder..'\\'..file).."\nrename ..\\dds\\"..(folder..'\\'..file:gsub('png', '')).."DDS "..(file:gsub('png', '')).."dds"):gsub('$NEWLINE', '\n')))
+		--folder = folder:gsub('images/png/', ''):gsub('/', '\\')
+		--uncomment one of two chunks, the first detects images with an uppercase letter in its name (which is bad for some reason??) and the second makes a script that converts every png file to a dds file
+		--[==[
+		--]== ]
+		file:gsub('.', function(c)
+			if c:lower() ~= c:upper() and c:upper() == c then
+				print(c:upper(), 'matches with', c, 'inside of', file)
+			end
+		end)
+		--]==]
+		--table.insert(imgs, (([[mkdir ..\dds\]]..folder..[[$NEWLINE%texconv% -f DXT5 -m 1 -nologo -o ..\dds\]]..folder..[[ -srgb -y ]]..(folder..'\\'..file).."\nrename ..\\dds\\"..(folder..'\\'..file:gsub('png', '')).."DDS "..(file:gsub('png', '')).."dds"):gsub('$NEWLINE', '\n')))
 	end
 end)
-print(table.concat(imgs, '\n'))
+love.filesystem.write('imagesoutput.txt', table.concat(imgs, '\n'))
 --]=]
 --this was for when i was trying to get this to run on the wii which couldn't tellif a file existed or not so i just had a table of all the files that existed so you could do if fileList["file.png"] then
 --local final = 'return {'

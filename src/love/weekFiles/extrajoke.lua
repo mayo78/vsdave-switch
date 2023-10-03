@@ -4,13 +4,13 @@ local a = {
       'Kabunga',
       'exbungo-pixel',
       'FF0202',
-      'foundKabunga'
+      'found_kabunga'
     },
     {
       'Roofs',
       'baldi',
       '0EAE2C',
-      'foundRoofs'
+      'found_roofs'
     },
     {
       'VS-DAVE-RAP',
@@ -21,7 +21,7 @@ local a = {
       'VS-DAVE-RAP-TWO',
       'dave-cool',
       'other',
-      'foundDaveRap'
+      'found_vs-dave-rap-two'
     }
   },
   color = 'SONG_SPECIFIC',

@@ -4,25 +4,25 @@ local a = {
       'Cheating',
       'bambi-3d-pixel',
       '35BD3B',
-      'foundCheating'
+      'found_cheating'
     },
     {
       'Unfairness',
       'bambi-unfair-pixel',
       'EF0000',
-      'foundUnfairness'
+      'found_unfairness'
     },
     {
       'Exploitation',
       'expunged-pixel',
       '910101',
-      'foundExploit'
+      'found_terminal'
     },
     {
       'Enter-Terminal',
       'terminal',
-      '000000'
-      -- 'foundTerminal'
+      '000000',
+      'found_terminal'
     }
   },
   color = 'SONG_SPECIFIC',

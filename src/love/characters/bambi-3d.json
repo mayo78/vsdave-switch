@@ -58,9 +58,8 @@
 	],
 	"no_antialiasing": true,
 	"image": "dave/expunged/cheating",
-	"position": [
-		0,
-		0
+	"positionOffset": [
+		200, 350
 	],
 	"healthicon": "bambi-3d-pixel",
 	"flip_x": false,
@@ -70,9 +69,14 @@
 		27
 	],
 	"camera_position": [
-		20,
-		90
+		-25,
+		150
+	],
+	"pcamera_position": [
+		150,
+		250
 	],
 	"sing_duration": 4,
-	"scale": 1.4
+	"scale": 1.4705,
+	"playerOffset": [649, 472]
 }

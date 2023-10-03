@@ -4,19 +4,19 @@ local a = {
       'Supernovae',
       'bambi-joke',
       nil,
-      'foundJoke'
+      'found_joke'
     },
     {
       'Glitch',
       'bambi-joke',
       nil,
-      'foundJoke' --save data for unlocking songs
+      'found_joke' --save data for unlocking songs
     },
     {
       'Master',
       'bambi-joke-mad',
       nil,
-      'foundJoke'
+      'found_joke'
     }
   },
   color = '116D1C',

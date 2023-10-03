@@ -15,14 +15,20 @@ echo Converting...
 @REM  go to the files.lua file and uncomment the batch script section, run the program and copy and paste the output until the popd thing at the bottom
 
 mkdir ..\dds\images\png
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\images\png -srgb -y images\png\GF_assets.png
-rename ..\dds\images\png\GF_assets.DDS GF_assets.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\images\png -srgb -y images\png\blank.png
+rename ..\dds\images\png\blank.DDS blank.dds
 mkdir ..\dds\images\png
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\images\png -srgb -y images\png\boyfriend.png
 rename ..\dds\images\png\boyfriend.DDS boyfriend.dds
+mkdir ..\dds\characters\cool
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\characters\cool -srgb -y characters\cool\bf.png
+rename ..\dds\characters\cool\bf.DDS bf.dds
+mkdir ..\dds\dave
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\alphabet.png
+rename ..\dds\dave\alphabet.DDS alphabet.dds
 mkdir ..\dds\dave\backgrounds\backyard
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\backyard -srgb -y dave\backgrounds\backyard\bearDude.png
-rename ..\dds\dave\backgrounds\backyard\bearDude.DDS bearDude.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\backyard -srgb -y dave\backgrounds\backyard\beardude.png
+rename ..\dds\dave\backgrounds\backyard\beardude.DDS beardude.dds
 mkdir ..\dds\dave\backgrounds\backyard
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\backyard -srgb -y dave\backgrounds\backyard\gates.png
 rename ..\dds\dave\backgrounds\backyard\gates.DDS gates.dds
@@ -38,9 +44,6 @@ rename ..\dds\dave\backgrounds\backyard\house.DDS house.dds
 mkdir ..\dds\dave\backgrounds\backyard
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\backyard -srgb -y dave\backgrounds\backyard\supergrass.png
 rename ..\dds\dave\backgrounds\backyard\supergrass.DDS supergrass.dds
-mkdir ..\dds\dave\backgrounds\bedroom
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\bedroom -srgb -y dave\backgrounds\bedroom\TristanSitting.png
-rename ..\dds\dave\backgrounds\bedroom\TristanSitting.DDS TristanSitting.dds
 mkdir ..\dds\dave\backgrounds\bedroom
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\bedroom -srgb -y dave\backgrounds\bedroom\bed.png
 rename ..\dds\dave\backgrounds\bedroom\bed.DDS bed.dds
@@ -63,32 +66,32 @@ mkdir ..\dds\dave\backgrounds\bedroom
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\bedroom -srgb -y dave\backgrounds\bedroom\sky.png
 rename ..\dds\dave\backgrounds\bedroom\sky.DDS sky.dds
 mkdir ..\dds\dave\backgrounds\bedroom
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\bedroom -srgb -y dave\backgrounds\bedroom\tristansitting.png
+rename ..\dds\dave\backgrounds\bedroom\tristansitting.DDS tristansitting.dds
+mkdir ..\dds\dave\backgrounds\bedroom
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\bedroom -srgb -y dave\backgrounds\bedroom\tv.png
 rename ..\dds\dave\backgrounds\bedroom\tv.DDS tv.dds
-mkdir ..\dds\dave\backgrounds\charSelect
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charSelect -srgb -y dave\backgrounds\charSelect\behindGrass.png
-rename ..\dds\dave\backgrounds\charSelect\behindGrass.DDS behindGrass.dds
-mkdir ..\dds\dave\backgrounds\charSelect
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charSelect -srgb -y dave\backgrounds\charSelect\frontGrass.png
-rename ..\dds\dave\backgrounds\charSelect\frontGrass.DDS frontGrass.dds
-mkdir ..\dds\dave\backgrounds\charSelect
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charSelect -srgb -y dave\backgrounds\charSelect\gateLeft.png
-rename ..\dds\dave\backgrounds\charSelect\gateLeft.DDS gateLeft.dds
-mkdir ..\dds\dave\backgrounds\charSelect
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charSelect -srgb -y dave\backgrounds\charSelect\gateRight.png
-rename ..\dds\dave\backgrounds\charSelect\gateRight.DDS gateRight.dds
-mkdir ..\dds\dave\backgrounds\charSelect
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charSelect -srgb -y dave\backgrounds\charSelect\grass.png
-rename ..\dds\dave\backgrounds\charSelect\grass.DDS grass.dds
-mkdir ..\dds\dave\backgrounds\charSelect
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charSelect -srgb -y dave\backgrounds\charSelect\hills.png
-rename ..\dds\dave\backgrounds\charSelect\hills.DDS hills.dds
-mkdir ..\dds\dave\backgrounds\charSelect
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charSelect -srgb -y dave\backgrounds\charSelect\house.png
-rename ..\dds\dave\backgrounds\charSelect\house.DDS house.dds
-mkdir ..\dds\dave\backgrounds\dave-house
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\dave-house -srgb -y dave\backgrounds\dave-house\ICANTBELIEVEIHAVETOCLARIFYTHIS.png
-rename ..\dds\dave\backgrounds\dave-house\ICANTBELIEVEIHAVETOCLARIFYTHIS.DDS ICANTBELIEVEIHAVETOCLARIFYTHIS.dds
+mkdir ..\dds\dave\backgrounds\charselect
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charselect -srgb -y dave\backgrounds\charselect\behindgrass.png
+rename ..\dds\dave\backgrounds\charselect\behindgrass.DDS behindgrass.dds
+mkdir ..\dds\dave\backgrounds\charselect
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charselect -srgb -y dave\backgrounds\charselect\frontgrass.png
+rename ..\dds\dave\backgrounds\charselect\frontgrass.DDS frontgrass.dds
+mkdir ..\dds\dave\backgrounds\charselect
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charselect -srgb -y dave\backgrounds\charselect\gateleft.png
+rename ..\dds\dave\backgrounds\charselect\gateleft.DDS gateleft.dds
+mkdir ..\dds\dave\backgrounds\charselect
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charselect -srgb -y dave\backgrounds\charselect\gateright.png
+rename ..\dds\dave\backgrounds\charselect\gateright.DDS gateright.dds
+mkdir ..\dds\dave\backgrounds\charselect
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charselect -srgb -y dave\backgrounds\charselect\grass.png
+rename ..\dds\dave\backgrounds\charselect\grass.DDS grass.dds
+mkdir ..\dds\dave\backgrounds\charselect
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charselect -srgb -y dave\backgrounds\charselect\hills.png
+rename ..\dds\dave\backgrounds\charselect\hills.DDS hills.dds
+mkdir ..\dds\dave\backgrounds\charselect
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\charselect -srgb -y dave\backgrounds\charselect\house.png
+rename ..\dds\dave\backgrounds\charselect\house.DDS house.dds
 mkdir ..\dds\dave\backgrounds\dave-house
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\dave-house -srgb -y dave\backgrounds\dave-house\gate.png
 rename ..\dds\dave\backgrounds\dave-house\gate.DDS gate.dds
@@ -101,6 +104,9 @@ rename ..\dds\dave\backgrounds\dave-house\grass.DDS grass.dds
 mkdir ..\dds\dave\backgrounds\dave-house
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\dave-house -srgb -y dave\backgrounds\dave-house\hills.png
 rename ..\dds\dave\backgrounds\dave-house\hills.DDS hills.dds
+mkdir ..\dds\dave\backgrounds\dave-house
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\dave-house -srgb -y dave\backgrounds\dave-house\icantbelieveihavetoclarifythis.png
+rename ..\dds\dave\backgrounds\dave-house\icantbelieveihavetoclarifythis.DDS icantbelieveihavetoclarifythis.dds
 mkdir ..\dds\dave\backgrounds\dave-house
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\dave-house -srgb -y dave\backgrounds\dave-house\land.png
 rename ..\dds\dave\backgrounds\dave-house\land.DDS land.dds
@@ -120,14 +126,14 @@ mkdir ..\dds\dave\backgrounds\farm
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\farm -srgb -y dave\backgrounds\farm\baldo.png
 rename ..\dds\dave\backgrounds\farm\baldo.DDS baldo.dds
 mkdir ..\dds\dave\backgrounds\farm
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\farm -srgb -y dave\backgrounds\farm\cornFence.png
-rename ..\dds\dave\backgrounds\farm\cornFence.DDS cornFence.dds
-mkdir ..\dds\dave\backgrounds\farm
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\farm -srgb -y dave\backgrounds\farm\cornFence2.png
-rename ..\dds\dave\backgrounds\farm\cornFence2.DDS cornFence2.dds
-mkdir ..\dds\dave\backgrounds\farm
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\farm -srgb -y dave\backgrounds\farm\cornbag.png
 rename ..\dds\dave\backgrounds\farm\cornbag.DDS cornbag.dds
+mkdir ..\dds\dave\backgrounds\farm
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\farm -srgb -y dave\backgrounds\farm\cornfence.png
+rename ..\dds\dave\backgrounds\farm\cornfence.DDS cornfence.dds
+mkdir ..\dds\dave\backgrounds\farm
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\farm -srgb -y dave\backgrounds\farm\cornfence2.png
+rename ..\dds\dave\backgrounds\farm\cornfence2.DDS cornfence2.dds
 mkdir ..\dds\dave\backgrounds\farm
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\farm -srgb -y dave\backgrounds\farm\funfarmhouse.png
 rename ..\dds\dave\backgrounds\farm\funfarmhouse.DDS funfarmhouse.dds
@@ -150,74 +156,74 @@ mkdir ..\dds\dave\backgrounds\farm
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\farm -srgb -y dave\backgrounds\farm\sign.png
 rename ..\dds\dave\backgrounds\farm\sign.DDS sign.dds
 mkdir ..\dds\dave\backgrounds\festival
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\backGrass - Copy.png
-rename ..\dds\dave\backgrounds\festival\backGrass - Copy.DDS backGrass - Copy.dds
-mkdir ..\dds\dave\backgrounds\festival
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\backGrass.png
-rename ..\dds\dave\backgrounds\festival\backGrass.DDS backGrass.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\backgrass.png
+rename ..\dds\dave\backgrounds\festival\backgrass.DDS backgrass.dds
 mkdir ..\dds\dave\backgrounds\festival
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\corn.png
 rename ..\dds\dave\backgrounds\festival\corn.DDS corn.dds
 mkdir ..\dds\dave\backgrounds\festival
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\cornGlow.png
-rename ..\dds\dave\backgrounds\festival\cornGlow.DDS cornGlow.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\cornglow.png
+rename ..\dds\dave\backgrounds\festival\cornglow.DDS cornglow.dds
 mkdir ..\dds\dave\backgrounds\festival
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\crowd.png
 rename ..\dds\dave\backgrounds\festival\crowd.DDS crowd.dds
 mkdir ..\dds\dave\backgrounds\festival
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\farmHouse.png
-rename ..\dds\dave\backgrounds\festival\farmHouse.DDS farmHouse.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\farmhouse.png
+rename ..\dds\dave\backgrounds\festival\farmhouse.DDS farmhouse.dds
 mkdir ..\dds\dave\backgrounds\festival
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\frontGrass.png
-rename ..\dds\dave\backgrounds\festival\frontGrass.DDS frontGrass.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\frontgrass.png
+rename ..\dds\dave\backgrounds\festival\frontgrass.DDS frontgrass.dds
 mkdir ..\dds\dave\backgrounds\festival
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\generalGlow.png
-rename ..\dds\dave\backgrounds\festival\generalGlow.DDS generalGlow.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\generalglow.png
+rename ..\dds\dave\backgrounds\festival\generalglow.DDS generalglow.dds
 mkdir ..\dds\dave\backgrounds\festival
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\gm_flatgrass.png
 rename ..\dds\dave\backgrounds\festival\gm_flatgrass.DDS gm_flatgrass.dds
 mkdir ..\dds\dave\backgrounds\festival
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival -srgb -y dave\backgrounds\festival\hills.png
 rename ..\dds\dave\backgrounds\festival\hills.DDS hills.dds
-mkdir ..\dds\dave\backgrounds\festival\mainCrowd
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\mainCrowd -srgb -y dave\backgrounds\festival\mainCrowd\bambi.png
-rename ..\dds\dave\backgrounds\festival\mainCrowd\bambi.DDS bambi.dds
-mkdir ..\dds\dave\backgrounds\festival\mainCrowd
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\mainCrowd -srgb -y dave\backgrounds\festival\mainCrowd\dave.png
-rename ..\dds\dave\backgrounds\festival\mainCrowd\dave.DDS dave.dds
-mkdir ..\dds\dave\backgrounds\festival\mainCrowd
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\mainCrowd -srgb -y dave\backgrounds\festival\mainCrowd\tristan.png
-rename ..\dds\dave\backgrounds\festival\mainCrowd\tristan.DDS tristan.dds
-mkdir ..\dds\dave\backgrounds\festival\scaredCrowd
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredCrowd -srgb -y dave\backgrounds\festival\scaredCrowd\ball.png
-rename ..\dds\dave\backgrounds\festival\scaredCrowd\ball.DDS ball.dds
-mkdir ..\dds\dave\backgrounds\festival\scaredCrowd
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredCrowd -srgb -y dave\backgrounds\festival\scaredCrowd\bambi.png
-rename ..\dds\dave\backgrounds\festival\scaredCrowd\bambi.DDS bambi.dds
-mkdir ..\dds\dave\backgrounds\festival\scaredCrowd
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredCrowd -srgb -y dave\backgrounds\festival\scaredCrowd\bimpe.png
-rename ..\dds\dave\backgrounds\festival\scaredCrowd\bimpe.DDS bimpe.dds
-mkdir ..\dds\dave\backgrounds\festival\scaredCrowd
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredCrowd -srgb -y dave\backgrounds\festival\scaredCrowd\maldo.png
-rename ..\dds\dave\backgrounds\festival\scaredCrowd\maldo.DDS maldo.dds
-mkdir ..\dds\dave\backgrounds\festival\scaredCrowd
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredCrowd -srgb -y dave\backgrounds\festival\scaredCrowd\memes kids.png
-rename ..\dds\dave\backgrounds\festival\scaredCrowd\memes kids.DDS memes kids.dds
-mkdir ..\dds\dave\backgrounds\festival\scaredCrowd
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredCrowd -srgb -y dave\backgrounds\festival\scaredCrowd\muko.png
-rename ..\dds\dave\backgrounds\festival\scaredCrowd\muko.DDS muko.dds
-mkdir ..\dds\dave\backgrounds\festival\scaredCrowd
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredCrowd -srgb -y dave\backgrounds\festival\scaredCrowd\ruby man.png
-rename ..\dds\dave\backgrounds\festival\scaredCrowd\ruby man.DDS ruby man.dds
-mkdir ..\dds\dave\backgrounds\festival\scaredCrowd
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredCrowd -srgb -y dave\backgrounds\festival\scaredCrowd\tristan.png
-rename ..\dds\dave\backgrounds\festival\scaredCrowd\tristan.DDS tristan.dds
+mkdir ..\dds\dave\backgrounds\festival\maincrowd
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\maincrowd -srgb -y dave\backgrounds\festival\maincrowd\bambi.png
+rename ..\dds\dave\backgrounds\festival\maincrowd\bambi.DDS bambi.dds
+mkdir ..\dds\dave\backgrounds\festival\maincrowd
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\maincrowd -srgb -y dave\backgrounds\festival\maincrowd\dave.png
+rename ..\dds\dave\backgrounds\festival\maincrowd\dave.DDS dave.dds
+mkdir ..\dds\dave\backgrounds\festival\maincrowd
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\maincrowd -srgb -y dave\backgrounds\festival\maincrowd\tristan.png
+rename ..\dds\dave\backgrounds\festival\maincrowd\tristan.DDS tristan.dds
+mkdir ..\dds\dave\backgrounds\festival\scaredcrowd
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredcrowd -srgb -y dave\backgrounds\festival\scaredcrowd\ball.png
+rename ..\dds\dave\backgrounds\festival\scaredcrowd\ball.DDS ball.dds
+mkdir ..\dds\dave\backgrounds\festival\scaredcrowd
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredcrowd -srgb -y dave\backgrounds\festival\scaredcrowd\bambi.png
+rename ..\dds\dave\backgrounds\festival\scaredcrowd\bambi.DDS bambi.dds
+mkdir ..\dds\dave\backgrounds\festival\scaredcrowd
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredcrowd -srgb -y dave\backgrounds\festival\scaredcrowd\bimpe.png
+rename ..\dds\dave\backgrounds\festival\scaredcrowd\bimpe.DDS bimpe.dds
+mkdir ..\dds\dave\backgrounds\festival\scaredcrowd
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredcrowd -srgb -y dave\backgrounds\festival\scaredcrowd\maldo.png
+rename ..\dds\dave\backgrounds\festival\scaredcrowd\maldo.DDS maldo.dds
+mkdir ..\dds\dave\backgrounds\festival\scaredcrowd
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredcrowd -srgb -y dave\backgrounds\festival\scaredcrowd\memes kids.png
+rename ..\dds\dave\backgrounds\festival\scaredcrowd\memes kids.DDS memes kids.dds
+mkdir ..\dds\dave\backgrounds\festival\scaredcrowd
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredcrowd -srgb -y dave\backgrounds\festival\scaredcrowd\muko.png
+rename ..\dds\dave\backgrounds\festival\scaredcrowd\muko.DDS muko.dds
+mkdir ..\dds\dave\backgrounds\festival\scaredcrowd
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredcrowd -srgb -y dave\backgrounds\festival\scaredcrowd\ruby man.png
+rename ..\dds\dave\backgrounds\festival\scaredcrowd\ruby man.DDS ruby man.dds
+mkdir ..\dds\dave\backgrounds\festival\scaredcrowd
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\festival\scaredcrowd -srgb -y dave\backgrounds\festival\scaredcrowd\tristan.png
+rename ..\dds\dave\backgrounds\festival\scaredcrowd\tristan.DDS tristan.dds
 mkdir ..\dds\dave\backgrounds
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds -srgb -y dave\backgrounds\gm_house5.png
 rename ..\dds\dave\backgrounds\gm_house5.DDS gm_house5.dds
+mkdir ..\dds\dave\backgrounds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds -srgb -y dave\backgrounds\inside_house.png
+rename ..\dds\dave\backgrounds\inside_house.DDS inside_house.dds
 mkdir ..\dds\dave\backgrounds\office
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\office -srgb -y dave\backgrounds\office\backFloor.png
-rename ..\dds\dave\backgrounds\office\backFloor.DDS backFloor.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\office -srgb -y dave\backgrounds\office\backfloor.png
+rename ..\dds\dave\backgrounds\office\backfloor.DDS backfloor.dds
 mkdir ..\dds\dave\backgrounds\office
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\office -srgb -y dave\backgrounds\office\door.png
 rename ..\dds\dave\backgrounds\office\door.DDS door.dds
@@ -225,11 +231,11 @@ mkdir ..\dds\dave\backgrounds\office
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\office -srgb -y dave\backgrounds\office\floor.png
 rename ..\dds\dave\backgrounds\office\floor.DDS floor.dds
 mkdir ..\dds\dave\backgrounds\office
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\office -srgb -y dave\backgrounds\office\frontWall.png
-rename ..\dds\dave\backgrounds\office\frontWall.DDS frontWall.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\office -srgb -y dave\backgrounds\office\frontwall.png
+rename ..\dds\dave\backgrounds\office\frontwall.DDS frontwall.dds
 mkdir ..\dds\dave\backgrounds
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds -srgb -y dave\backgrounds\rapBattle.png
-rename ..\dds\dave\backgrounds\rapBattle.DDS rapBattle.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds -srgb -y dave\backgrounds\rapbattle.png
+rename ..\dds\dave\backgrounds\rapbattle.DDS rapbattle.dds
 mkdir ..\dds\dave\backgrounds\shared
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\shared -srgb -y dave\backgrounds\shared\sky.png
 rename ..\dds\dave\backgrounds\shared\sky.DDS sky.dds
@@ -270,53 +276,53 @@ mkdir ..\dds\dave\backgrounds\void
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void -srgb -y dave\backgrounds\void\cheater.png
 rename ..\dds\dave\backgrounds\void\cheater.DDS cheater.dds
 mkdir ..\dds\dave\backgrounds\void\exbongo
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exbongo -srgb -y dave\backgrounds\void\exbongo\Circle.png
-rename ..\dds\dave\backgrounds\void\exbongo\Circle.DDS Circle.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exbongo -srgb -y dave\backgrounds\void\exbongo\circle.png
+rename ..\dds\dave\backgrounds\void\exbongo\circle.DDS circle.dds
 mkdir ..\dds\dave\backgrounds\void\exbongo
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exbongo -srgb -y dave\backgrounds\void\exbongo\Exbongo.png
-rename ..\dds\dave\backgrounds\void\exbongo\Exbongo.DDS Exbongo.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exbongo -srgb -y dave\backgrounds\void\exbongo\exbongo.png
+rename ..\dds\dave\backgrounds\void\exbongo\exbongo.DDS exbongo.dds
 mkdir ..\dds\dave\backgrounds\void\exbongo
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exbongo -srgb -y dave\backgrounds\void\exbongo\Place.png
-rename ..\dds\dave\backgrounds\void\exbongo\Place.DDS Place.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exbongo -srgb -y dave\backgrounds\void\exbongo\place.png
+rename ..\dds\dave\backgrounds\void\exbongo\place.DDS place.dds
 mkdir ..\dds\dave\backgrounds\void\exploit
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exploit -srgb -y dave\backgrounds\void\exploit\broken_expunged_chain.png
 rename ..\dds\dave\backgrounds\void\exploit\broken_expunged_chain.DDS broken_expunged_chain.dds
 mkdir ..\dds\dave\backgrounds\void\exploit
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exploit -srgb -y dave\backgrounds\void\exploit\cheater GLITCH.png
-rename ..\dds\dave\backgrounds\void\exploit\cheater GLITCH.DDS cheater GLITCH.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exploit -srgb -y dave\backgrounds\void\exploit\cheater glitch.png
+rename ..\dds\dave\backgrounds\void\exploit\cheater glitch.DDS cheater glitch.dds
 mkdir ..\dds\dave\backgrounds\void\exploit
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exploit -srgb -y dave\backgrounds\void\exploit\creepyRoom.png
-rename ..\dds\dave\backgrounds\void\exploit\creepyRoom.DDS creepyRoom.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exploit -srgb -y dave\backgrounds\void\exploit\creepyroom.png
+rename ..\dds\dave\backgrounds\void\exploit\creepyroom.DDS creepyroom.dds
 mkdir ..\dds\dave\backgrounds\void\exploit
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exploit -srgb -y dave\backgrounds\void\exploit\expunged_chains.png
 rename ..\dds\dave\backgrounds\void\exploit\expunged_chains.DDS expunged_chains.dds
 mkdir ..\dds\dave\backgrounds\void\exploit
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exploit -srgb -y dave\backgrounds\void\exploit\glitchyUnfairBG.png
-rename ..\dds\dave\backgrounds\void\exploit\glitchyUnfairBG.DDS glitchyUnfairBG.dds
-mkdir ..\dds\dave\backgrounds\void\exploit
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exploit -srgb -y dave\backgrounds\void\exploit\glitchy_cheating_2.png
 rename ..\dds\dave\backgrounds\void\exploit\glitchy_cheating_2.DDS glitchy_cheating_2.dds
+mkdir ..\dds\dave\backgrounds\void\exploit
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\exploit -srgb -y dave\backgrounds\void\exploit\glitchyunfairbg.png
+rename ..\dds\dave\backgrounds\void\exploit\glitchyunfairbg.DDS glitchyunfairbg.dds
 mkdir ..\dds\dave\backgrounds\void\interdimensions
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\interdimensions -srgb -y dave\backgrounds\void\interdimensions\2DinterdimensionVoid.png
-rename ..\dds\dave\backgrounds\void\interdimensions\2DinterdimensionVoid.DDS 2DinterdimensionVoid.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\interdimensions -srgb -y dave\backgrounds\void\interdimensions\2dinterdimensionvoid.png
+rename ..\dds\dave\backgrounds\void\interdimensions\2dinterdimensionvoid.DDS 2dinterdimensionvoid.dds
 mkdir ..\dds\dave\backgrounds\void\interdimensions
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\interdimensions -srgb -y dave\backgrounds\void\interdimensions\darkSpace.png
-rename ..\dds\dave\backgrounds\void\interdimensions\darkSpace.DDS darkSpace.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\interdimensions -srgb -y dave\backgrounds\void\interdimensions\darkspace.png
+rename ..\dds\dave\backgrounds\void\interdimensions\darkspace.DDS darkspace.dds
 mkdir ..\dds\dave\backgrounds\void\interdimensions
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\interdimensions -srgb -y dave\backgrounds\void\interdimensions\hexagon.png
 rename ..\dds\dave\backgrounds\void\interdimensions\hexagon.DDS hexagon.dds
 mkdir ..\dds\dave\backgrounds\void\interdimensions
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\interdimensions -srgb -y dave\backgrounds\void\interdimensions\interdimensionVoid.png
-rename ..\dds\dave\backgrounds\void\interdimensions\interdimensionVoid.DDS interdimensionVoid.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\interdimensions -srgb -y dave\backgrounds\void\interdimensions\interdimensionvoid.png
+rename ..\dds\dave\backgrounds\void\interdimensions\interdimensionvoid.DDS interdimensionvoid.dds
 mkdir ..\dds\dave\backgrounds\void\interdimensions\nimbi
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\interdimensions\nimbi -srgb -y dave\backgrounds\void\interdimensions\nimbi\nimbi.png
 rename ..\dds\dave\backgrounds\void\interdimensions\nimbi\nimbi.DDS nimbi.dds
 mkdir ..\dds\dave\backgrounds\void\interdimensions\nimbi
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\interdimensions\nimbi -srgb -y dave\backgrounds\void\interdimensions\nimbi\nimbiVoid.png
-rename ..\dds\dave\backgrounds\void\interdimensions\nimbi\nimbiVoid.DDS nimbiVoid.dds
-mkdir ..\dds\dave\backgrounds\void\interdimensions\nimbi
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\interdimensions\nimbi -srgb -y dave\backgrounds\void\interdimensions\nimbi\nimbi_land.png
 rename ..\dds\dave\backgrounds\void\interdimensions\nimbi\nimbi_land.DDS nimbi_land.dds
+mkdir ..\dds\dave\backgrounds\void\interdimensions\nimbi
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\interdimensions\nimbi -srgb -y dave\backgrounds\void\interdimensions\nimbi\nimbivoid.png
+rename ..\dds\dave\backgrounds\void\interdimensions\nimbi\nimbivoid.DDS nimbivoid.dds
 mkdir ..\dds\dave\backgrounds\void\interdimensions\nimbi
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\backgrounds\void\interdimensions\nimbi -srgb -y dave\backgrounds\void\interdimensions\nimbi\sign.png
 rename ..\dds\dave\backgrounds\void\interdimensions\nimbi\sign.DDS sign.dds
@@ -339,17 +345,17 @@ mkdir ..\dds\dave
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\badcorn.png
 rename ..\dds\dave\badcorn.DDS badcorn.dds
 mkdir ..\dds\dave\bambi
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\bambi -srgb -y dave\bambi\Angry_Bambi.png
-rename ..\dds\dave\bambi\Angry_Bambi.DDS Angry_Bambi.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\bambi -srgb -y dave\bambi\angry_bambi.png
+rename ..\dds\dave\bambi\angry_bambi.DDS angry_bambi.dds
 mkdir ..\dds\dave\bambi
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\bambi -srgb -y dave\bambi\Bambi_Death.png
-rename ..\dds\dave\bambi\Bambi_Death.DDS Bambi_Death.dds
-mkdir ..\dds\dave\bambi
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\bambi -srgb -y dave\bambi\bambiRemake.png
-rename ..\dds\dave\bambi\bambiRemake.DDS bambiRemake.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\bambi -srgb -y dave\bambi\bambi_death.png
+rename ..\dds\dave\bambi\bambi_death.DDS bambi_death.dds
 mkdir ..\dds\dave\bambi
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\bambi -srgb -y dave\bambi\bambimaddddd.png
 rename ..\dds\dave\bambi\bambimaddddd.DDS bambimaddddd.dds
+mkdir ..\dds\dave\bambi
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\bambi -srgb -y dave\bambi\bambiremake.png
+rename ..\dds\dave\bambi\bambiremake.DDS bambiremake.dds
 mkdir ..\dds\dave\bambi
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\bambi -srgb -y dave\bambi\fuckbi.png
 rename ..\dds\dave\bambi\fuckbi.DDS fuckbi.dds
@@ -372,23 +378,23 @@ mkdir ..\dds\dave\california
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\geor gea.png
 rename ..\dds\dave\california\geor gea.DDS geor gea.dds
 mkdir ..\dds\dave\california
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\georgiaGrass.png
-rename ..\dds\dave\california\georgiaGrass.DDS georgiaGrass.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\georgiagrass.png
+rename ..\dds\dave\california\georgiagrass.DDS georgiagrass.dds
 mkdir ..\dds\dave\california
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\georgiaLol.png
-rename ..\dds\dave\california\georgiaLol.DDS georgiaLol.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\georgialol.png
+rename ..\dds\dave\california\georgialol.DDS georgialol.dds
 mkdir ..\dds\dave\california
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\georgiaRails.png
-rename ..\dds\dave\california\georgiaRails.DDS georgiaRails.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\georgiarails.png
+rename ..\dds\dave\california\georgiarails.DDS georgiarails.dds
 mkdir ..\dds\dave\california
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\georgiaTrees1.png
-rename ..\dds\dave\california\georgiaTrees1.DDS georgiaTrees1.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\georgiatrees1.png
+rename ..\dds\dave\california\georgiatrees1.DDS georgiatrees1.dds
 mkdir ..\dds\dave\california
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\georgiaTrees2.png
-rename ..\dds\dave\california\georgiaTrees2.DDS georgiaTrees2.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\georgiatrees2.png
+rename ..\dds\dave\california\georgiatrees2.DDS georgiatrees2.dds
 mkdir ..\dds\dave\california
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\leavingCalifornia.png
-rename ..\dds\dave\california\leavingCalifornia.DDS leavingCalifornia.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\leavingcalifornia.png
+rename ..\dds\dave\california\leavingcalifornia.DDS leavingcalifornia.dds
 mkdir ..\dds\dave\california
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\moldygh.png
 rename ..\dds\dave\california\moldygh.DDS moldygh.dds
@@ -396,8 +402,11 @@ mkdir ..\dds\dave\california
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\train.png
 rename ..\dds\dave\california\train.DDS train.dds
 mkdir ..\dds\dave\california
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\welcomeToGeorgia.png
-rename ..\dds\dave\california\welcomeToGeorgia.DDS welcomeToGeorgia.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\california -srgb -y dave\california\welcometogeorgia.png
+rename ..\dds\dave\california\welcometogeorgia.DDS welcometogeorgia.dds
+mkdir ..\dds\dave
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\charSelect.png
+rename ..\dds\dave\charSelect.DDS charSelect.dds
 mkdir ..\dds\dave\characters
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\3d_bf.png
 rename ..\dds\dave\characters\3d_bf.DDS 3d_bf.dds
@@ -405,62 +414,44 @@ mkdir ..\dds\dave\characters
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\3d_gf.png
 rename ..\dds\dave\characters\3d_gf.DDS 3d_gf.dds
 mkdir ..\dds\dave\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\BOYFRIEND.png
-rename ..\dds\dave\characters\BOYFRIEND.DDS BOYFRIEND.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\baldiinroof.png
+rename ..\dds\dave\characters\baldiinroof.DDS baldiinroof.dds
 mkdir ..\dds\dave\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\BaldiInRoof.png
-rename ..\dds\dave\characters\BaldiInRoof.DDS BaldiInRoof.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\boyfriend.png
+rename ..\dds\dave\characters\boyfriend.DDS boyfriend.dds
 mkdir ..\dds\dave\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\Cool_BF.png
-rename ..\dds\dave\characters\Cool_BF.DDS Cool_BF.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\cool_bf.png
+rename ..\dds\dave\characters\cool_bf.DDS cool_bf.dds
 mkdir ..\dds\dave\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\Cool_GF.png
-rename ..\dds\dave\characters\Cool_GF.DDS Cool_GF.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\cool_gf.png
+rename ..\dds\dave\characters\cool_gf.DDS cool_gf.dds
 mkdir ..\dds\dave\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\DONT_GO_SNOOPING_WHERE_YOURE_NOT_SUPPOSED_TO.png
-rename ..\dds\dave\characters\DONT_GO_SNOOPING_WHERE_YOURE_NOT_SUPPOSED_TO.DDS DONT_GO_SNOOPING_WHERE_YOURE_NOT_SUPPOSED_TO.dds
-mkdir ..\dds\dave\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\GF_assets.png
-rename ..\dds\dave\characters\GF_assets.DDS GF_assets.dds
-mkdir ..\dds\dave\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\IM_GONNA_TORNADER_YOU_AWAY.png
-rename ..\dds\dave\characters\IM_GONNA_TORNADER_YOU_AWAY.DDS IM_GONNA_TORNADER_YOU_AWAY.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\dont_go_snooping_where_youre_not_supposed_to.png
+rename ..\dds\dave\characters\dont_go_snooping_where_youre_not_supposed_to.DDS dont_go_snooping_where_youre_not_supposed_to.dds
 mkdir ..\dds\dave\characters
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\exbungo.png
 rename ..\dds\dave\characters\exbungo.DDS exbungo.dds
 mkdir ..\dds\dave\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\noGF.png
-rename ..\dds\dave\characters\noGF.DDS noGF.dds
-mkdir ..\dds\dave\dave
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\SECRET SONG COVER.png
-rename ..\dds\dave\dave\SECRET SONG COVER.DDS SECRET SONG COVER.dds
-mkdir ..\dds\dave\dave
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\TRISTAN.png
-rename ..\dds\dave\dave\TRISTAN.DDS TRISTAN.dds
-mkdir ..\dds\dave\dave
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\TristanHairFlipped.png
-rename ..\dds\dave\dave\TristanHairFlipped.DDS TristanHairFlipped.dds
-mkdir ..\dds\dave\dave
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\Tristan_Dead.png
-rename ..\dds\dave\dave\Tristan_Dead.DDS Tristan_Dead.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\gf_assets.png
+rename ..\dds\dave\characters\gf_assets.DDS gf_assets.dds
+mkdir ..\dds\dave\characters
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\characters -srgb -y dave\characters\im_gonna_tornader_you_away.png
+rename ..\dds\dave\characters\im_gonna_tornader_you_away.DDS im_gonna_tornader_you_away.dds
 mkdir ..\dds\dave\dave\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\characters -srgb -y dave\dave\characters\Dave_3D.png
-rename ..\dds\dave\dave\characters\Dave_3D.DDS Dave_3D.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\characters -srgb -y dave\dave\characters\dave_3d.png
+rename ..\dds\dave\dave\characters\dave_3d.DDS dave_3d.dds
 mkdir ..\dds\dave\dave\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\characters -srgb -y dave\dave\characters\Dave_3D_Dead.png
-rename ..\dds\dave\dave\characters\Dave_3D_Dead.DDS Dave_3D_Dead.dds
-mkdir ..\dds\dave\dave\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\characters -srgb -y dave\dave\characters\Dave_Dead.png
-rename ..\dds\dave\dave\characters\Dave_Dead.DDS Dave_Dead.dds
-mkdir ..\dds\dave\dave\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\characters -srgb -y dave\dave\characters\Dave_insanity_lol.png
-rename ..\dds\dave\dave\characters\Dave_insanity_lol.DDS Dave_insanity_lol.dds
-mkdir ..\dds\dave\dave\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\characters -srgb -y dave\dave\characters\Tristan_Dead.png
-rename ..\dds\dave\dave\characters\Tristan_Dead.DDS Tristan_Dead.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\characters -srgb -y dave\dave\characters\dave_3d_dead.png
+rename ..\dds\dave\dave\characters\dave_3d_dead.DDS dave_3d_dead.dds
 mkdir ..\dds\dave\dave\characters
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\characters -srgb -y dave\dave\characters\dave_awesome.png
 rename ..\dds\dave\dave\characters\dave_awesome.DDS dave_awesome.dds
+mkdir ..\dds\dave\dave\characters
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\characters -srgb -y dave\dave\characters\dave_dead.png
+rename ..\dds\dave\dave\characters\dave_dead.DDS dave_dead.dds
+mkdir ..\dds\dave\dave\characters
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\characters -srgb -y dave\dave\characters\dave_insanity_lol.png
+rename ..\dds\dave\dave\characters\dave_insanity_lol.DDS dave_insanity_lol.dds
 mkdir ..\dds\dave\dave\characters
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\characters -srgb -y dave\dave\characters\dave_sheet.png
 rename ..\dds\dave\dave\characters\dave_sheet.DDS dave_sheet.dds
@@ -470,12 +461,15 @@ rename ..\dds\dave\dave\characters\davefriend.DDS davefriend.dds
 mkdir ..\dds\dave\dave\characters
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\characters -srgb -y dave\dave\characters\thecoolerdave.png
 rename ..\dds\dave\dave\characters\thecoolerdave.DDS thecoolerdave.dds
+mkdir ..\dds\dave\dave\characters
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\characters -srgb -y dave\dave\characters\tristan_dead.png
+rename ..\dds\dave\dave\characters\tristan_dead.DDS tristan_dead.dds
 mkdir ..\dds\dave\dave
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\e.png
 rename ..\dds\dave\dave\e.DDS e.dds
 mkdir ..\dds\dave\dave\endings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\endings -srgb -y dave\dave\endings\badEnding.png
-rename ..\dds\dave\dave\endings\badEnding.DDS badEnding.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\endings -srgb -y dave\dave\endings\badending.png
+rename ..\dds\dave\dave\endings\badending.DDS badending.dds
 mkdir ..\dds\dave\dave\endings
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\endings -srgb -y dave\dave\endings\bruh.png
 rename ..\dds\dave\dave\endings\bruh.DDS bruh.dds
@@ -483,29 +477,38 @@ mkdir ..\dds\dave\dave\endings
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\endings -srgb -y dave\dave\endings\cheater_lol.png
 rename ..\dds\dave\dave\endings\cheater_lol.DDS cheater_lol.dds
 mkdir ..\dds\dave\dave\endings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\endings -srgb -y dave\dave\endings\goodEnding.png
-rename ..\dds\dave\dave\endings\goodEnding.DDS goodEnding.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\endings -srgb -y dave\dave\endings\goodending.png
+rename ..\dds\dave\dave\endings\goodending.DDS goodending.dds
 mkdir ..\dds\dave\dave\endings
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\endings -srgb -y dave\dave\endings\rtxx_ending.png
 rename ..\dds\dave\dave\endings\rtxx_ending.DDS rtxx_ending.dds
 mkdir ..\dds\dave\dave\endings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\endings -srgb -y dave\dave\endings\unfunnyEnding.png
-rename ..\dds\dave\dave\endings\unfunnyEnding.DDS unfunnyEnding.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\endings -srgb -y dave\dave\endings\unfunnyending.png
+rename ..\dds\dave\dave\endings\unfunnyending.DDS unfunnyending.dds
 mkdir ..\dds\dave\dave\endings
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\endings -srgb -y dave\dave\endings\vomit_ending.png
 rename ..\dds\dave\dave\endings\vomit_ending.DDS vomit_ending.dds
 mkdir ..\dds\dave\dave
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\peejeadaDASKETCHYE.png
-rename ..\dds\dave\dave\peejeadaDASKETCHYE.DDS peejeadaDASKETCHYE.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\peejeadadasketchye.png
+rename ..\dds\dave\dave\peejeadadasketchye.DDS peejeadadasketchye.dds
 mkdir ..\dds\dave\dave
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\placeholderStory.png
-rename ..\dds\dave\dave\placeholderStory.DDS placeholderStory.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\placeholderstory.png
+rename ..\dds\dave\dave\placeholderstory.DDS placeholderstory.dds
 mkdir ..\dds\dave\dave\secret
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\secret -srgb -y dave\dave\secret\scary.png
 rename ..\dds\dave\dave\secret\scary.DDS scary.dds
 mkdir ..\dds\dave\dave\secret
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave\secret -srgb -y dave\dave\secret\youactuallythoughttherewasasecrethere.png
 rename ..\dds\dave\dave\secret\youactuallythoughttherewasasecrethere.DDS youactuallythoughttherewasasecrethere.dds
+mkdir ..\dds\dave\dave
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\secret song cover.png
+rename ..\dds\dave\dave\secret song cover.DDS secret song cover.dds
+mkdir ..\dds\dave\dave
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\tristan.png
+rename ..\dds\dave\dave\tristan.DDS tristan.dds
+mkdir ..\dds\dave\dave
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\tristan_dead.png
+rename ..\dds\dave\dave\tristan_dead.DDS tristan_dead.dds
 mkdir ..\dds\dave\dave
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\tristan_golden.png
 rename ..\dds\dave\dave\tristan_golden.DDS tristan_golden.dds
@@ -515,6 +518,9 @@ rename ..\dds\dave\dave\tristan_golden_death.DDS tristan_golden_death.dds
 mkdir ..\dds\dave\dave
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\tristan_golden_glowing.png
 rename ..\dds\dave\dave\tristan_golden_glowing.DDS tristan_golden_glowing.dds
+mkdir ..\dds\dave\dave
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dave -srgb -y dave\dave\tristanhairflipped.png
+rename ..\dds\dave\dave\tristanhairflipped.DDS tristanhairflipped.dds
 mkdir ..\dds\dave
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\dave_house.png
 rename ..\dds\dave\dave_house.DDS dave_house.dds
@@ -579,8 +585,8 @@ mkdir ..\dds\dave\dialogue\dave
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dialogue\dave -srgb -y dave\dialogue\dave\dave_phone.png
 rename ..\dds\dave\dialogue\dave\dave_phone.DDS dave_phone.dds
 mkdir ..\dds\dave\dialogue\dave
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dialogue\dave -srgb -y dave\dialogue\dave\dave_postMaze.png
-rename ..\dds\dave\dialogue\dave\dave_postMaze.DDS dave_postMaze.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dialogue\dave -srgb -y dave\dialogue\dave\dave_postmaze.png
+rename ..\dds\dave\dialogue\dave\dave_postmaze.DDS dave_postmaze.dds
 mkdir ..\dds\dave\dialogue\dave
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dialogue\dave -srgb -y dave\dialogue\dave\dave_scared.png
 rename ..\dds\dave\dialogue\dave\dave_scared.DDS dave_scared.dds
@@ -602,6 +608,9 @@ rename ..\dds\dave\dialogue\gf\gf_happy.DDS gf_happy.dds
 mkdir ..\dds\dave\dialogue\gf
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dialogue\gf -srgb -y dave\dialogue\gf\gf_what.png
 rename ..\dds\dave\dialogue\gf\gf_what.DDS gf_what.dds
+mkdir ..\dds\dave\dialogue\joker
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dialogue\joker -srgb -y dave\dialogue\joker\joker_happy.png
+rename ..\dds\dave\dialogue\joker\joker_happy.DDS joker_happy.dds
 mkdir ..\dds\dave\dialogue\tristan
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\dialogue\tristan -srgb -y dave\dialogue\tristan\tristan_content.png
 rename ..\dds\dave\dialogue\tristan\tristan_content.DDS tristan_content.dds
@@ -618,17 +627,17 @@ mkdir ..\dds\dave
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\dumbstatic.png
 rename ..\dds\dave\dumbstatic.DDS dumbstatic.dds
 mkdir ..\dds\dave\expunged
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\expunged -srgb -y dave\expunged\Bambi_3D_Death.png
-rename ..\dds\dave\expunged\Bambi_3D_Death.DDS Bambi_3D_Death.dds
-mkdir ..\dds\dave\expunged
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\expunged -srgb -y dave\expunged\Cheating.png
-rename ..\dds\dave\expunged\Cheating.DDS Cheating.dds
-mkdir ..\dds\dave\expunged
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\expunged -srgb -y dave\expunged\ExpungedFinal.png
-rename ..\dds\dave\expunged\ExpungedFinal.DDS ExpungedFinal.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\expunged -srgb -y dave\expunged\bambi_3d_death.png
+rename ..\dds\dave\expunged\bambi_3d_death.DDS bambi_3d_death.dds
 mkdir ..\dds\dave\expunged
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\expunged -srgb -y dave\expunged\bangus.png
 rename ..\dds\dave\expunged\bangus.DDS bangus.dds
+mkdir ..\dds\dave\expunged
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\expunged -srgb -y dave\expunged\cheating.png
+rename ..\dds\dave\expunged\cheating.DDS cheating.dds
+mkdir ..\dds\dave\expunged
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\expunged -srgb -y dave\expunged\expungedfinal.png
+rename ..\dds\dave\expunged\expungedfinal.DDS expungedfinal.dds
 mkdir ..\dds\dave\expunged
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\expunged -srgb -y dave\expunged\unfair_bambi.png
 rename ..\dds\dave\expunged\unfair_bambi.DDS unfair_bambi.dds
@@ -659,33 +668,33 @@ rename ..\dds\dave\festival\tristan_festival.DDS tristan_festival.dds
 mkdir ..\dds\dave\festival
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\festival -srgb -y dave\festival\tristan_festival_playable.png
 rename ..\dds\dave\festival\tristan_festival_playable.DDS tristan_festival_playable.dds
-mkdir ..\dds\dave\fiveNights
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fiveNights -srgb -y dave\fiveNights\btn_doorClosed.png
-rename ..\dds\dave\fiveNights\btn_doorClosed.DDS btn_doorClosed.dds
-mkdir ..\dds\dave\fiveNights
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fiveNights -srgb -y dave\fiveNights\btn_doorOpen.png
-rename ..\dds\dave\fiveNights\btn_doorOpen.DDS btn_doorOpen.dds
-mkdir ..\dds\dave\fiveNights
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fiveNights -srgb -y dave\fiveNights\dave_fnaf.png
-rename ..\dds\dave\fiveNights\dave_fnaf.DDS dave_fnaf.dds
-mkdir ..\dds\dave\fiveNights
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fiveNights -srgb -y dave\fiveNights\deathStatic.png
-rename ..\dds\dave\fiveNights\deathStatic.DDS deathStatic.dds
-mkdir ..\dds\dave\fiveNights
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fiveNights -srgb -y dave\fiveNights\nofriend.png
-rename ..\dds\dave\fiveNights\nofriend.DDS nofriend.dds
-mkdir ..\dds\dave\fiveNights
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fiveNights -srgb -y dave\fiveNights\nofriendJumpscare.png
-rename ..\dds\dave\fiveNights\nofriendJumpscare.DDS nofriendJumpscare.dds
-mkdir ..\dds\dave\fiveNights
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fiveNights -srgb -y dave\fiveNights\nofriend_Dead.png
-rename ..\dds\dave\fiveNights\nofriend_Dead.DDS nofriend_Dead.dds
-mkdir ..\dds\dave\fiveNights
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fiveNights -srgb -y dave\fiveNights\powerMeter.png
-rename ..\dds\dave\fiveNights\powerMeter.DDS powerMeter.dds
-mkdir ..\dds\dave\fiveNights
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fiveNights -srgb -y dave\fiveNights\powerMeter_2.png
-rename ..\dds\dave\fiveNights\powerMeter_2.DDS powerMeter_2.dds
+mkdir ..\dds\dave\fivenights
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fivenights -srgb -y dave\fivenights\btn_doorclosed.png
+rename ..\dds\dave\fivenights\btn_doorclosed.DDS btn_doorclosed.dds
+mkdir ..\dds\dave\fivenights
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fivenights -srgb -y dave\fivenights\btn_dooropen.png
+rename ..\dds\dave\fivenights\btn_dooropen.DDS btn_dooropen.dds
+mkdir ..\dds\dave\fivenights
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fivenights -srgb -y dave\fivenights\dave_fnaf.png
+rename ..\dds\dave\fivenights\dave_fnaf.DDS dave_fnaf.dds
+mkdir ..\dds\dave\fivenights
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fivenights -srgb -y dave\fivenights\deathstatic.png
+rename ..\dds\dave\fivenights\deathstatic.DDS deathstatic.dds
+mkdir ..\dds\dave\fivenights
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fivenights -srgb -y dave\fivenights\nofriend.png
+rename ..\dds\dave\fivenights\nofriend.DDS nofriend.dds
+mkdir ..\dds\dave\fivenights
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fivenights -srgb -y dave\fivenights\nofriend_dead.png
+rename ..\dds\dave\fivenights\nofriend_dead.DDS nofriend_dead.dds
+mkdir ..\dds\dave\fivenights
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fivenights -srgb -y dave\fivenights\nofriendjumpscare.png
+rename ..\dds\dave\fivenights\nofriendjumpscare.DDS nofriendjumpscare.dds
+mkdir ..\dds\dave\fivenights
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fivenights -srgb -y dave\fivenights\powermeter.png
+rename ..\dds\dave\fivenights\powermeter.DDS powermeter.dds
+mkdir ..\dds\dave\fivenights
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\fivenights -srgb -y dave\fivenights\powermeter_2.png
+rename ..\dds\dave\fivenights\powermeter_2.DDS powermeter_2.dds
 mkdir ..\dds\dave\funny
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\funny -srgb -y dave\funny\0.png
 rename ..\dds\dave\funny\0.DDS 0.dds
@@ -708,8 +717,11 @@ mkdir ..\dds\dave\funny
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\funny -srgb -y dave\funny\99.png
 rename ..\dds\dave\funny\99.DDS 99.dds
 mkdir ..\dds\dave
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\healthBar.png
-rename ..\dds\dave\healthBar.DDS healthBar.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\glitch.png
+rename ..\dds\dave\glitch.DDS glitch.dds
+mkdir ..\dds\dave
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\healthbar.png
+rename ..\dds\dave\healthbar.DDS healthbar.dds
 mkdir ..\dds\dave\icons
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\icons -srgb -y dave\icons\baldi.png
 rename ..\dds\dave\icons\baldi.DDS baldi.dds
@@ -798,6 +810,9 @@ mkdir ..\dds\dave\icons
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\icons -srgb -y dave\icons\exbungo-pixel.png
 rename ..\dds\dave\icons\exbungo-pixel.DDS exbungo-pixel.dds
 mkdir ..\dds\dave\icons
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\icons -srgb -y dave\icons\exclusive-bf-pixel.png
+rename ..\dds\dave\icons\exclusive-bf-pixel.DDS exclusive-bf-pixel.dds
+mkdir ..\dds\dave\icons
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\icons -srgb -y dave\icons\expunged-pixel.png
 rename ..\dds\dave\icons\expunged-pixel.DDS expunged-pixel.dds
 mkdir ..\dds\dave\icons
@@ -858,11 +873,8 @@ mkdir ..\dds\dave\jerald
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\jerald -srgb -y dave\jerald\jerald.png
 rename ..\dds\dave\jerald\jerald.DDS jerald.dds
 mkdir ..\dds\dave\joke
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\joke -srgb -y dave\joke\AMOG.png
-rename ..\dds\dave\joke\AMOG.DDS AMOG.dds
-mkdir ..\dds\dave\joke
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\joke -srgb -y dave\joke\Sem_timtmmulo.png
-rename ..\dds\dave\joke\Sem_timtmmulo.DDS Sem_timtmmulo.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\joke -srgb -y dave\joke\amog.png
+rename ..\dds\dave\joke\amog.DDS amog.dds
 mkdir ..\dds\dave\joke
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\joke -srgb -y dave\joke\bambi-joke-mad.png
 rename ..\dds\dave\joke\bambi-joke-mad.DDS bambi-joke-mad.dds
@@ -873,26 +885,20 @@ mkdir ..\dds\dave\joke
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\joke -srgb -y dave\joke\cutscene.png
 rename ..\dds\dave\joke\cutscene.DDS cutscene.dds
 mkdir ..\dds\dave\joke
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\joke -srgb -y dave\joke\iminthegame.png
+rename ..\dds\dave\joke\iminthegame.DDS iminthegame.dds
+mkdir ..\dds\dave\joke
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\joke -srgb -y dave\joke\puppy_princess.png
 rename ..\dds\dave\joke\puppy_princess.DDS puppy_princess.dds
 mkdir ..\dds\dave\joke
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\joke -srgb -y dave\joke\secret mod leak.png
 rename ..\dds\dave\joke\secret mod leak.DDS secret mod leak.dds
+mkdir ..\dds\dave\joke
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\joke -srgb -y dave\joke\sem_timtmmulo.png
+rename ..\dds\dave\joke\sem_timtmmulo.DDS sem_timtmmulo.dds
 mkdir ..\dds\dave\math
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math -srgb -y dave\math\Baldi_MathGame_Sheet.png
-rename ..\dds\dave\math\Baldi_MathGame_Sheet.DDS Baldi_MathGame_Sheet.dds
-mkdir ..\dds\dave\math
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math -srgb -y dave\math\Check.png
-rename ..\dds\dave\math\Check.DDS Check.dds
-mkdir ..\dds\dave\math
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math -srgb -y dave\math\CursorSprite.png
-rename ..\dds\dave\math\CursorSprite.DDS CursorSprite.dds
-mkdir ..\dds\dave\math
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math -srgb -y dave\math\X.png
-rename ..\dds\dave\math\X.DDS X.dds
-mkdir ..\dds\dave\math
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math -srgb -y dave\math\YCTP.png
-rename ..\dds\dave\math\YCTP.DDS YCTP.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math -srgb -y dave\math\baldi_mathgame_sheet.png
+rename ..\dds\dave\math\baldi_mathgame_sheet.DDS baldi_mathgame_sheet.dds
 mkdir ..\dds\dave\math\buttons
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math\buttons -srgb -y dave\math\buttons\-.png
 rename ..\dds\dave\math\buttons\-.DDS -.dds
@@ -960,53 +966,65 @@ mkdir ..\dds\dave\math\buttons
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math\buttons -srgb -y dave\math\buttons\9_select.png
 rename ..\dds\dave\math\buttons\9_select.DDS 9_select.dds
 mkdir ..\dds\dave\math\buttons
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math\buttons -srgb -y dave\math\buttons\C.png
-rename ..\dds\dave\math\buttons\C.DDS C.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math\buttons -srgb -y dave\math\buttons\c.png
+rename ..\dds\dave\math\buttons\c.DDS c.dds
 mkdir ..\dds\dave\math\buttons
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math\buttons -srgb -y dave\math\buttons\C_select.png
-rename ..\dds\dave\math\buttons\C_select.DDS C_select.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math\buttons -srgb -y dave\math\buttons\c_select.png
+rename ..\dds\dave\math\buttons\c_select.DDS c_select.dds
 mkdir ..\dds\dave\math\buttons
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math\buttons -srgb -y dave\math\buttons\OK.png
-rename ..\dds\dave\math\buttons\OK.DDS OK.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math\buttons -srgb -y dave\math\buttons\ok.png
+rename ..\dds\dave\math\buttons\ok.DDS ok.dds
 mkdir ..\dds\dave\math\buttons
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math\buttons -srgb -y dave\math\buttons\OK_select.png
-rename ..\dds\dave\math\buttons\OK_select.DDS OK_select.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math\buttons -srgb -y dave\math\buttons\ok_select.png
+rename ..\dds\dave\math\buttons\ok_select.DDS ok_select.dds
+mkdir ..\dds\dave\math
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math -srgb -y dave\math\check.png
+rename ..\dds\dave\math\check.DDS check.dds
+mkdir ..\dds\dave\math
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math -srgb -y dave\math\cursorsprite.png
+rename ..\dds\dave\math\cursorsprite.DDS cursorsprite.dds
+mkdir ..\dds\dave\math
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math -srgb -y dave\math\x.png
+rename ..\dds\dave\math\x.DDS x.dds
+mkdir ..\dds\dave\math
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\math -srgb -y dave\math\yctp.png
+rename ..\dds\dave\math\yctp.DDS yctp.dds
 mkdir ..\dds\dave\notes
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\NOTEGH_assets.png
-rename ..\dds\dave\notes\NOTEGH_assets.DDS NOTEGH_assets.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\note_assets.png
+rename ..\dds\dave\notes\note_assets.DDS note_assets.dds
 mkdir ..\dds\dave\notes
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\NOTE_assets.png
-rename ..\dds\dave\notes\NOTE_assets.DDS NOTE_assets.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\note_assets_3d.png
+rename ..\dds\dave\notes\note_assets_3d.DDS note_assets_3d.dds
 mkdir ..\dds\dave\notes
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\NOTE_assets_3D.png
-rename ..\dds\dave\notes\NOTE_assets_3D.DDS NOTE_assets_3D.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\note_assets_shape.png
+rename ..\dds\dave\notes\note_assets_shape.DDS note_assets_shape.dds
 mkdir ..\dds\dave\notes
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\NOTE_assets_Shape.png
-rename ..\dds\dave\notes\NOTE_assets_Shape.DDS NOTE_assets_Shape.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\note_gh.png
+rename ..\dds\dave\notes\note_gh.DDS note_gh.dds
 mkdir ..\dds\dave\notes
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\NOTE_gh.png
-rename ..\dds\dave\notes\NOTE_gh.DDS NOTE_gh.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\note_phone.png
+rename ..\dds\dave\notes\note_phone.DDS note_phone.dds
 mkdir ..\dds\dave\notes
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\NOTE_phone.png
-rename ..\dds\dave\notes\NOTE_phone.DDS NOTE_phone.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\note_phonealt.png
+rename ..\dds\dave\notes\note_phonealt.DDS note_phonealt.dds
 mkdir ..\dds\dave\notes
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\NOTE_phoneAlt.png
-rename ..\dds\dave\notes\NOTE_phoneAlt.DDS NOTE_phoneAlt.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\note_recursed.png
+rename ..\dds\dave\notes\note_recursed.DDS note_recursed.dds
 mkdir ..\dds\dave\notes
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\NOTE_recursed.png
-rename ..\dds\dave\notes\NOTE_recursed.DDS NOTE_recursed.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\notegh_assets.png
+rename ..\dds\dave\notes\notegh_assets.DDS notegh_assets.dds
 mkdir ..\dds\dave\notes
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\OMGtop10awesomehi.png
-rename ..\dds\dave\notes\OMGtop10awesomehi.DDS OMGtop10awesomehi.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\notes -srgb -y dave\notes\omgtop10awesomehi.png
+rename ..\dds\dave\notes\omgtop10awesomehi.DDS omgtop10awesomehi.dds
 mkdir ..\dds\dave\pauseAlt
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\pauseAlt -srgb -y dave\pauseAlt\daveLol.png
-rename ..\dds\dave\pauseAlt\daveLol.DDS daveLol.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\pauseAlt -srgb -y dave\pauseAlt\davelol.png
+rename ..\dds\dave\pauseAlt\davelol.DDS davelol.dds
 mkdir ..\dds\dave\pauseAlt
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\pauseAlt -srgb -y dave\pauseAlt\pauseBG.png
-rename ..\dds\dave\pauseAlt\pauseBG.DDS pauseBG.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\pauseAlt -srgb -y dave\pauseAlt\pausebg.png
+rename ..\dds\dave\pauseAlt\pausebg.DDS pausebg.dds
 mkdir ..\dds\dave\pauseAlt
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\pauseAlt -srgb -y dave\pauseAlt\pauseUI.png
-rename ..\dds\dave\pauseAlt\pauseUI.DDS pauseUI.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\pauseAlt -srgb -y dave\pauseAlt\pauseui.png
+rename ..\dds\dave\pauseAlt\pauseui.DDS pauseui.dds
 mkdir ..\dds\dave\playrobot
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\playrobot -srgb -y dave\playrobot\playbot.png
 rename ..\dds\dave\playrobot\playbot.DDS playbot.dds
@@ -1014,218 +1032,209 @@ mkdir ..\dds\dave\playrobot
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\playrobot -srgb -y dave\playrobot\playrobot_shadow.png
 rename ..\dds\dave\playrobot\playrobot_shadow.DDS playrobot_shadow.dds
 mkdir ..\dds\dave\recursed
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\Recursed_BF.png
-rename ..\dds\dave\recursed\Recursed_BF.DDS Recursed_BF.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\bambiscroll.png
+rename ..\dds\dave\recursed\bambiscroll.DDS bambiscroll.dds
+mkdir ..\dds\dave\recursed\characters
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed\characters -srgb -y dave\recursed\characters\bambi_recursed.png
+rename ..\dds\dave\recursed\characters\bambi_recursed.DDS bambi_recursed.dds
+mkdir ..\dds\dave\recursed\characters
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed\characters -srgb -y dave\recursed\characters\dave_3d_recursed.png
+rename ..\dds\dave\recursed\characters\dave_3d_recursed.DDS dave_3d_recursed.dds
+mkdir ..\dds\dave\recursed\characters
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed\characters -srgb -y dave\recursed\characters\dave_3d_recursed_dead.png
+rename ..\dds\dave\recursed\characters\dave_3d_recursed_dead.DDS dave_3d_recursed_dead.dds
+mkdir ..\dds\dave\recursed\characters
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed\characters -srgb -y dave\recursed\characters\dave_recursed.png
+rename ..\dds\dave\recursed\characters\dave_recursed.DDS dave_recursed.dds
+mkdir ..\dds\dave\recursed\characters
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed\characters -srgb -y dave\recursed\characters\stop_looking_at_the_files.png
+rename ..\dds\dave\recursed\characters\stop_looking_at_the_files.DDS stop_looking_at_the_files.dds
+mkdir ..\dds\dave\recursed\characters
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed\characters -srgb -y dave\recursed\characters\tristanrecursed.png
+rename ..\dds\dave\recursed\characters\tristanrecursed.DDS tristanrecursed.dds
 mkdir ..\dds\dave\recursed
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\Recurser.png
-rename ..\dds\dave\recursed\Recurser.DDS Recurser.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\darksky.png
+rename ..\dds\dave\recursed\darksky.DDS darksky.dds
 mkdir ..\dds\dave\recursed
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\bambiScroll.png
-rename ..\dds\dave\recursed\bambiScroll.DDS bambiScroll.dds
-mkdir ..\dds\dave\recursed\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed\characters -srgb -y dave\recursed\characters\Bambi_Recursed.png
-rename ..\dds\dave\recursed\characters\Bambi_Recursed.DDS Bambi_Recursed.dds
-mkdir ..\dds\dave\recursed\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed\characters -srgb -y dave\recursed\characters\Dave_3D_Recursed.png
-rename ..\dds\dave\recursed\characters\Dave_3D_Recursed.DDS Dave_3D_Recursed.dds
-mkdir ..\dds\dave\recursed\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed\characters -srgb -y dave\recursed\characters\Dave_3D_Recursed_Dead.png
-rename ..\dds\dave\recursed\characters\Dave_3D_Recursed_Dead.DDS Dave_3D_Recursed_Dead.dds
-mkdir ..\dds\dave\recursed\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed\characters -srgb -y dave\recursed\characters\Dave_Recursed.png
-rename ..\dds\dave\recursed\characters\Dave_Recursed.DDS Dave_Recursed.dds
-mkdir ..\dds\dave\recursed\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed\characters -srgb -y dave\recursed\characters\STOP_LOOKING_AT_THE_FILES.png
-rename ..\dds\dave\recursed\characters\STOP_LOOKING_AT_THE_FILES.DDS STOP_LOOKING_AT_THE_FILES.dds
-mkdir ..\dds\dave\recursed\characters
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed\characters -srgb -y dave\recursed\characters\TristanRecursed.png
-rename ..\dds\dave\recursed\characters\TristanRecursed.DDS TristanRecursed.dds
-mkdir ..\dds\dave\recursed
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\darkSky.png
-rename ..\dds\dave\recursed\darkSky.DDS darkSky.dds
-mkdir ..\dds\dave\recursed
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\daveScroll.png
-rename ..\dds\dave\recursed\daveScroll.DDS daveScroll.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\davescroll.png
+rename ..\dds\dave\recursed\davescroll.DDS davescroll.dds
 mkdir ..\dds\dave\recursed
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\gold_pieces_but_not_broken.png
 rename ..\dds\dave\recursed\gold_pieces_but_not_broken.DDS gold_pieces_but_not_broken.dds
 mkdir ..\dds\dave\recursed
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\noteIcon.png
-rename ..\dds\dave\recursed\noteIcon.DDS noteIcon.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\noteicon.png
+rename ..\dds\dave\recursed\noteicon.DDS noteicon.dds
 mkdir ..\dds\dave\recursed
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\recursedX.png
-rename ..\dds\dave\recursed\recursedX.DDS recursedX.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\recursed_bf.png
+rename ..\dds\dave\recursed\recursed_bf.DDS recursed_bf.dds
 mkdir ..\dds\dave\recursed
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\timerIcon.png
-rename ..\dds\dave\recursed\timerIcon.DDS timerIcon.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\recursedx.png
+rename ..\dds\dave\recursed\recursedx.DDS recursedx.dds
 mkdir ..\dds\dave\recursed
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\tristanScroll.png
-rename ..\dds\dave\recursed\tristanScroll.DDS tristanScroll.dds
-mkdir ..\dds\dave\songCreators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songCreators -srgb -y dave\songCreators\Aadsta.png
-rename ..\dds\dave\songCreators\Aadsta.DDS Aadsta.dds
-mkdir ..\dds\dave\songCreators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songCreators -srgb -y dave\songCreators\Alexander Cooper 19.png
-rename ..\dds\dave\songCreators\Alexander Cooper 19.DDS Alexander Cooper 19.dds
-mkdir ..\dds\dave\songCreators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songCreators -srgb -y dave\songCreators\ArchWk.png
-rename ..\dds\dave\songCreators\ArchWk.DDS ArchWk.dds
-mkdir ..\dds\dave\songCreators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songCreators -srgb -y dave\songCreators\DeadShadow & PixelGH.png
-rename ..\dds\dave\songCreators\DeadShadow & PixelGH.DDS DeadShadow & PixelGH.dds
-mkdir ..\dds\dave\songCreators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songCreators -srgb -y dave\songCreators\MoldyGH.png
-rename ..\dds\dave\songCreators\MoldyGH.DDS MoldyGH.dds
-mkdir ..\dds\dave\songCreators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songCreators -srgb -y dave\songCreators\Oxygen.png
-rename ..\dds\dave\songCreators\Oxygen.DDS Oxygen.dds
-mkdir ..\dds\dave\songCreators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songCreators -srgb -y dave\songCreators\Ruby.png
-rename ..\dds\dave\songCreators\Ruby.DDS Ruby.dds
-mkdir ..\dds\dave\songCreators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songCreators -srgb -y dave\songCreators\TH3R34LD34L.png
-rename ..\dds\dave\songCreators\TH3R34LD34L.DDS TH3R34LD34L.dds
-mkdir ..\dds\dave\songCreators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songCreators -srgb -y dave\songCreators\Top 10 Awesome.png
-rename ..\dds\dave\songCreators\Top 10 Awesome.DDS Top 10 Awesome.dds
-mkdir ..\dds\dave\songCreators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songCreators -srgb -y dave\songCreators\Your mom.png
-rename ..\dds\dave\songCreators\Your mom.DDS Your mom.dds
-mkdir ..\dds\dave\songCreators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songCreators -srgb -y dave\songCreators\none.png
-rename ..\dds\dave\songCreators\none.DDS none.dds
-mkdir ..\dds\dave\songCreators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songCreators -srgb -y dave\songCreators\sibottle.png
-rename ..\dds\dave\songCreators\sibottle.DDS sibottle.dds
-mkdir ..\dds\dave\songCreators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songCreators -srgb -y dave\songCreators\whoAreYou.png
-rename ..\dds\dave\songCreators\whoAreYou.DDS whoAreYou.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\3D-daveHeading.png
-rename ..\dds\dave\songHeadings\3D-daveHeading.DDS 3D-daveHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\bambiHeading.png
-rename ..\dds\dave\songHeadings\bambiHeading.DDS bambiHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\bevelHeading.png
-rename ..\dds\dave\songHeadings\bevelHeading.DDS bevelHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\botHeading.png
-rename ..\dds\dave\songHeadings\botHeading.DDS botHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\californiaHeading.png
-rename ..\dds\dave\songHeadings\californiaHeading.DDS californiaHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\cheatingHeading.png
-rename ..\dds\dave\songHeadings\cheatingHeading.DDS cheatingHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\daveHeading.png
-rename ..\dds\dave\songHeadings\daveHeading.DDS daveHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\expungedHeading.png
-rename ..\dds\dave\songHeadings\expungedHeading.DDS expungedHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\festivalHeading.png
-rename ..\dds\dave\songHeadings\festivalHeading.DDS festivalHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\fnafHeading.png
-rename ..\dds\dave\songHeadings\fnafHeading.DDS fnafHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\fnfengeading.png
-rename ..\dds\dave\songHeadings\fnfengeading.DDS fnfengeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\glitchHeading.png
-rename ..\dds\dave\songHeadings\glitchHeading.DDS glitchHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\interdimensionalHeading.png
-rename ..\dds\dave\songHeadings\interdimensionalHeading.DDS interdimensionalHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\kabungaHeading.png
-rename ..\dds\dave\songHeadings\kabungaHeading.DDS kabungaHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\recursedHeading.png
-rename ..\dds\dave\songHeadings\recursedHeading.DDS recursedHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\secretLeakHeading.png
-rename ..\dds\dave\songHeadings\secretLeakHeading.DDS secretLeakHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\somethingHeading.png
-rename ..\dds\dave\songHeadings\somethingHeading.DDS somethingHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\splitathonHeading.png
-rename ..\dds\dave\songHeadings\splitathonHeading.DDS splitathonHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\tristanHeading.png
-rename ..\dds\dave\songHeadings\tristanHeading.DDS tristanHeading.dds
-mkdir ..\dds\dave\songHeadings
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songHeadings -srgb -y dave\songHeadings\unfairHeading.png
-rename ..\dds\dave\songHeadings\unfairHeading.DDS unfairHeading.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\recurser.png
+rename ..\dds\dave\recursed\recurser.DDS recurser.dds
+mkdir ..\dds\dave\recursed
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\timericon.png
+rename ..\dds\dave\recursed\timericon.DDS timericon.dds
+mkdir ..\dds\dave\recursed
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\recursed -srgb -y dave\recursed\tristanscroll.png
+rename ..\dds\dave\recursed\tristanscroll.DDS tristanscroll.dds
+mkdir ..\dds\dave\songcreators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songcreators -srgb -y dave\songcreators\aadsta.png
+rename ..\dds\dave\songcreators\aadsta.DDS aadsta.dds
+mkdir ..\dds\dave\songcreators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songcreators -srgb -y dave\songcreators\alexander cooper 19.png
+rename ..\dds\dave\songcreators\alexander cooper 19.DDS alexander cooper 19.dds
+mkdir ..\dds\dave\songcreators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songcreators -srgb -y dave\songcreators\archwk.png
+rename ..\dds\dave\songcreators\archwk.DDS archwk.dds
+mkdir ..\dds\dave\songcreators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songcreators -srgb -y dave\songcreators\deadshadow & pixelgh.png
+rename ..\dds\dave\songcreators\deadshadow & pixelgh.DDS deadshadow & pixelgh.dds
+mkdir ..\dds\dave\songcreators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songcreators -srgb -y dave\songcreators\moldygh.png
+rename ..\dds\dave\songcreators\moldygh.DDS moldygh.dds
+mkdir ..\dds\dave\songcreators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songcreators -srgb -y dave\songcreators\none.png
+rename ..\dds\dave\songcreators\none.DDS none.dds
+mkdir ..\dds\dave\songcreators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songcreators -srgb -y dave\songcreators\oxygen.png
+rename ..\dds\dave\songcreators\oxygen.DDS oxygen.dds
+mkdir ..\dds\dave\songcreators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songcreators -srgb -y dave\songcreators\ruby.png
+rename ..\dds\dave\songcreators\ruby.DDS ruby.dds
+mkdir ..\dds\dave\songcreators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songcreators -srgb -y dave\songcreators\sibottle.png
+rename ..\dds\dave\songcreators\sibottle.DDS sibottle.dds
+mkdir ..\dds\dave\songcreators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songcreators -srgb -y dave\songcreators\th3r34ld34l.png
+rename ..\dds\dave\songcreators\th3r34ld34l.DDS th3r34ld34l.dds
+mkdir ..\dds\dave\songcreators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songcreators -srgb -y dave\songcreators\top 10 awesome.png
+rename ..\dds\dave\songcreators\top 10 awesome.DDS top 10 awesome.dds
+mkdir ..\dds\dave\songcreators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songcreators -srgb -y dave\songcreators\whoareyou.png
+rename ..\dds\dave\songcreators\whoareyou.DDS whoareyou.dds
+mkdir ..\dds\dave\songcreators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songcreators -srgb -y dave\songcreators\your mom.png
+rename ..\dds\dave\songcreators\your mom.DDS your mom.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\3d-daveheading.png
+rename ..\dds\dave\songheadings\3d-daveheading.DDS 3d-daveheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\bambiheading.png
+rename ..\dds\dave\songheadings\bambiheading.DDS bambiheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\bevelheading.png
+rename ..\dds\dave\songheadings\bevelheading.DDS bevelheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\botheading.png
+rename ..\dds\dave\songheadings\botheading.DDS botheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\californiaheading.png
+rename ..\dds\dave\songheadings\californiaheading.DDS californiaheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\cheatingheading.png
+rename ..\dds\dave\songheadings\cheatingheading.DDS cheatingheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\daveheading.png
+rename ..\dds\dave\songheadings\daveheading.DDS daveheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\expungedheading.png
+rename ..\dds\dave\songheadings\expungedheading.DDS expungedheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\festivalheading.png
+rename ..\dds\dave\songheadings\festivalheading.DDS festivalheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\fnafheading.png
+rename ..\dds\dave\songheadings\fnafheading.DDS fnafheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\fnfengeading.png
+rename ..\dds\dave\songheadings\fnfengeading.DDS fnfengeading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\glitchheading.png
+rename ..\dds\dave\songheadings\glitchheading.DDS glitchheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\interdimensionalheading.png
+rename ..\dds\dave\songheadings\interdimensionalheading.DDS interdimensionalheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\kabungaheading.png
+rename ..\dds\dave\songheadings\kabungaheading.DDS kabungaheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\recursedheading.png
+rename ..\dds\dave\songheadings\recursedheading.DDS recursedheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\secretleakheading.png
+rename ..\dds\dave\songheadings\secretleakheading.DDS secretleakheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\somethingheading.png
+rename ..\dds\dave\songheadings\somethingheading.DDS somethingheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\splitathonheading.png
+rename ..\dds\dave\songheadings\splitathonheading.DDS splitathonheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\tristanheading.png
+rename ..\dds\dave\songheadings\tristanheading.DDS tristanheading.dds
+mkdir ..\dds\dave\songheadings
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\songheadings -srgb -y dave\songheadings\unfairheading.png
+rename ..\dds\dave\songheadings\unfairheading.DDS unfairheading.dds
 mkdir ..\dds\dave\splitathon
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\splitathon -srgb -y dave\splitathon\Splitathon_Bambi.png
-rename ..\dds\dave\splitathon\Splitathon_Bambi.DDS Splitathon_Bambi.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\splitathon -srgb -y dave\splitathon\splitathon_bambi.png
+rename ..\dds\dave\splitathon\splitathon_bambi.DDS splitathon_bambi.dds
 mkdir ..\dds\dave\splitathon
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\splitathon -srgb -y dave\splitathon\Splitathon_Dave.png
-rename ..\dds\dave\splitathon\Splitathon_Dave.DDS Splitathon_Dave.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\splitathon -srgb -y dave\splitathon\splitathon_dave.png
+rename ..\dds\dave\splitathon\splitathon_dave.DDS splitathon_dave.dds
 mkdir ..\dds\dave
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\spotLight.png
-rename ..\dds\dave\spotLight.DDS spotLight.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\spotlight.png
+rename ..\dds\dave\spotlight.DDS spotlight.dds
 mkdir ..\dds\dave
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\timeBar.png
-rename ..\dds\dave\timeBar.DDS timeBar.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\timebar.png
+rename ..\dds\dave\timebar.DDS timebar.dds
 mkdir ..\dds\dave\title
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\ArrowLeft_Idle.png
-rename ..\dds\dave\title\ArrowLeft_Idle.DDS ArrowLeft_Idle.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\arrowleft_idle.png
+rename ..\dds\dave\title\arrowleft_idle.DDS arrowleft_idle.dds
 mkdir ..\dds\dave\title
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\ArrowLeft_Pressed.png
-rename ..\dds\dave\title\ArrowLeft_Pressed.DDS ArrowLeft_Pressed.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\arrowleft_pressed.png
+rename ..\dds\dave\title\arrowleft_pressed.DDS arrowleft_pressed.dds
 mkdir ..\dds\dave\title
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\ArrowRight_Idle.png
-rename ..\dds\dave\title\ArrowRight_Idle.DDS ArrowRight_Idle.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\arrowright_idle.png
+rename ..\dds\dave\title\arrowright_idle.DDS arrowright_idle.dds
 mkdir ..\dds\dave\title
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\ArrowRight_Pressed.png
-rename ..\dds\dave\title\ArrowRight_Pressed.DDS ArrowRight_Pressed.dds
-mkdir ..\dds\dave\title
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\CoolOverlay.png
-rename ..\dds\dave\title\CoolOverlay.DDS CoolOverlay.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\arrowright_pressed.png
+rename ..\dds\dave\title\arrowright_pressed.DDS arrowright_pressed.dds
 mkdir ..\dds\dave\title\backgrounds
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\Aadsta.png
-rename ..\dds\dave\title\backgrounds\Aadsta.DDS Aadsta.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\aadsta.png
+rename ..\dds\dave\title\backgrounds\aadsta.DDS aadsta.dds
 mkdir ..\dds\dave\title\backgrounds
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\ArtiztGmer.png
-rename ..\dds\dave\title\backgrounds\ArtiztGmer.DDS ArtiztGmer.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\artiztgmer.png
+rename ..\dds\dave\title\backgrounds\artiztgmer.DDS artiztgmer.dds
 mkdir ..\dds\dave\title\backgrounds
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\DeltaKastel.png
-rename ..\dds\dave\title\backgrounds\DeltaKastel.DDS DeltaKastel.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\deltakastel.png
+rename ..\dds\dave\title\backgrounds\deltakastel.DDS deltakastel.dds
 mkdir ..\dds\dave\title\backgrounds
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\DeltaKastel2.png
-rename ..\dds\dave\title\backgrounds\DeltaKastel2.DDS DeltaKastel2.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\deltakastel2.png
+rename ..\dds\dave\title\backgrounds\deltakastel2.DDS deltakastel2.dds
 mkdir ..\dds\dave\title\backgrounds
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\DeltaKastel3.png
-rename ..\dds\dave\title\backgrounds\DeltaKastel3.DDS DeltaKastel3.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\deltakastel3.png
+rename ..\dds\dave\title\backgrounds\deltakastel3.DDS deltakastel3.dds
 mkdir ..\dds\dave\title\backgrounds
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\DeltaKastel4.png
-rename ..\dds\dave\title\backgrounds\DeltaKastel4.DDS DeltaKastel4.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\deltakastel4.png
+rename ..\dds\dave\title\backgrounds\deltakastel4.DDS deltakastel4.dds
 mkdir ..\dds\dave\title\backgrounds
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\DeltaKastel5.png
-rename ..\dds\dave\title\backgrounds\DeltaKastel5.DDS DeltaKastel5.dds
-mkdir ..\dds\dave\title\backgrounds
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\Jukebox.png
-rename ..\dds\dave\title\backgrounds\Jukebox.DDS Jukebox.dds
-mkdir ..\dds\dave\title\backgrounds
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\Lancey.png
-rename ..\dds\dave\title\backgrounds\Lancey.DDS Lancey.dds
-mkdir ..\dds\dave\title\backgrounds
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\Onuko.png
-rename ..\dds\dave\title\backgrounds\Onuko.DDS Onuko.dds
-mkdir ..\dds\dave\title\backgrounds
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\SwagnotrllyTheMod.png
-rename ..\dds\dave\title\backgrounds\SwagnotrllyTheMod.DDS SwagnotrllyTheMod.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\deltakastel5.png
+rename ..\dds\dave\title\backgrounds\deltakastel5.DDS deltakastel5.dds
 mkdir ..\dds\dave\title\backgrounds
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\diamond man.png
 rename ..\dds\dave\title\backgrounds\diamond man.DDS diamond man.dds
 mkdir ..\dds\dave\title\backgrounds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\jukebox.png
+rename ..\dds\dave\title\backgrounds\jukebox.DDS jukebox.dds
+mkdir ..\dds\dave\title\backgrounds
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\kiazu.png
 rename ..\dds\dave\title\backgrounds\kiazu.DDS kiazu.dds
+mkdir ..\dds\dave\title\backgrounds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\lancey.png
+rename ..\dds\dave\title\backgrounds\lancey.DDS lancey.dds
 mkdir ..\dds\dave\title\backgrounds
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\mamakotomi.png
 rename ..\dds\dave\title\backgrounds\mamakotomi.DDS mamakotomi.dds
@@ -1266,6 +1275,9 @@ mkdir ..\dds\dave\title\backgrounds\nostalgia
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds\nostalgia -srgb -y dave\title\backgrounds\nostalgia\8.png
 rename ..\dds\dave\title\backgrounds\nostalgia\8.DDS 8.dds
 mkdir ..\dds\dave\title\backgrounds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\onuko.png
+rename ..\dds\dave\title\backgrounds\onuko.DDS onuko.dds
+mkdir ..\dds\dave\title\backgrounds
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\ps.png
 rename ..\dds\dave\title\backgrounds\ps.DDS ps.dds
 mkdir ..\dds\dave\title\backgrounds
@@ -1278,236 +1290,245 @@ mkdir ..\dds\dave\title\backgrounds
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\sk0rbias.png
 rename ..\dds\dave\title\backgrounds\sk0rbias.DDS sk0rbias.dds
 mkdir ..\dds\dave\title\backgrounds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\swagnotrllythemod.png
+rename ..\dds\dave\title\backgrounds\swagnotrllythemod.DDS swagnotrllythemod.dds
+mkdir ..\dds\dave\title\backgrounds
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\backgrounds -srgb -y dave\title\backgrounds\zombought.png
 rename ..\dds\dave\title\backgrounds\zombought.DDS zombought.dds
 mkdir ..\dds\dave\title
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\charSelectGuide.png
-rename ..\dds\dave\title\charSelectGuide.DDS charSelectGuide.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\charselectguide.png
+rename ..\dds\dave\title\charselectguide.DDS charselectguide.dds
 mkdir ..\dds\dave\title
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\checkeredBG.png
-rename ..\dds\dave\title\checkeredBG.DDS checkeredBG.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\ArturSef.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\ArturSef.DDS ArturSef.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\Cotiles.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\Cotiles.DDS Cotiles.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\Foxnap.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\Foxnap.DDS Foxnap.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\Gorbini.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\Gorbini.DDS Gorbini.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\Log Man.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\Log Man.DDS Log Man.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\Lordryan1999.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\Lordryan1999.DDS Lordryan1999.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\Mooncakeez.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\Mooncakeez.DDS Mooncakeez.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\Rendurse.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\Rendurse.DDS Rendurse.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\Silver Escaper.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\Silver Escaper.DDS Silver Escaper.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\TecheVent.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\TecheVent.DDS TecheVent.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\TrustVVorthy.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\TrustVVorthy.DDS TrustVVorthy.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\Vanquiler.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\Vanquiler.DDS Vanquiler.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\Villezen.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\Villezen.DDS Villezen.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\YourAverageMental.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\YourAverageMental.DDS YourAverageMental.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\ashtonyes.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\ashtonyes.DDS ashtonyes.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\bendygaming_1.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\bendygaming_1.DDS bendygaming_1.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\emiko.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\emiko.DDS emiko.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\letsy.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\letsy.DDS letsy.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\mantis.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\mantis.DDS mantis.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\nihilistt.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\nihilistt.DDS nihilistt.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\normal.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\normal.DDS normal.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\peejeada.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\peejeada.DDS peejeada.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\stev.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\stev.DDS stev.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\vex.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\vex.DDS vex.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\weednose.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\weednose.DDS weednose.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\wildy.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\wildy.DDS wildy.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\xml.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\xml.DDS xml.dds
-mkdir ..\dds\dave\title\credits\icons\Beta Testers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Beta Testers -srgb -y dave\title\credits\icons\Beta Testers\ztgds.png
-rename ..\dds\dave\title\credits\icons\Beta Testers\ztgds.DDS ztgds.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\Aadsta.png
-rename ..\dds\dave\title\credits\icons\Contributors\Aadsta.DDS Aadsta.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\Alexander Cooper 19.png
-rename ..\dds\dave\title\credits\icons\Contributors\Alexander Cooper 19.DDS Alexander Cooper 19.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\BombasticHype.png
-rename ..\dds\dave\title\credits\icons\Contributors\BombasticHype.DDS BombasticHype.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\Devianator.png
-rename ..\dds\dave\title\credits\icons\Contributors\Devianator.DDS Devianator.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\Jukebox.png
-rename ..\dds\dave\title\credits\icons\Contributors\Jukebox.DDS Jukebox.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\Lancey.png
-rename ..\dds\dave\title\credits\icons\Contributors\Lancey.DDS Lancey.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\Oxygen.png
-rename ..\dds\dave\title\credits\icons\Contributors\Oxygen.DDS Oxygen.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\Paraso.png
-rename ..\dds\dave\title\credits\icons\Contributors\Paraso.DDS Paraso.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\Project Tea.png
-rename ..\dds\dave\title\credits\icons\Contributors\Project Tea.DDS Project Tea.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\R34LD34L.png
-rename ..\dds\dave\title\credits\icons\Contributors\R34LD34L.DDS R34LD34L.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\Ruby.png
-rename ..\dds\dave\title\credits\icons\Contributors\Ruby.DDS Ruby.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\SAMMYPIGZY.png
-rename ..\dds\dave\title\credits\icons\Contributors\SAMMYPIGZY.DDS SAMMYPIGZY.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\Steph45.png
-rename ..\dds\dave\title\credits\icons\Contributors\Steph45.DDS Steph45.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\Top 10 Awesome.png
-rename ..\dds\dave\title\credits\icons\Contributors\Top 10 Awesome.DDS Top 10 Awesome.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\Your mom.png
-rename ..\dds\dave\title\credits\icons\Contributors\Your mom.DDS Your mom.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\YourAverageMental.png
-rename ..\dds\dave\title\credits\icons\Contributors\YourAverageMental.DDS YourAverageMental.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\chromasen.png
-rename ..\dds\dave\title\credits\icons\Contributors\chromasen.DDS chromasen.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\evdial.png
-rename ..\dds\dave\title\credits\icons\Contributors\evdial.DDS evdial.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\sibottle.png
-rename ..\dds\dave\title\credits\icons\Contributors\sibottle.DDS sibottle.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\sk0rbias.png
-rename ..\dds\dave\title\credits\icons\Contributors\sk0rbias.DDS sk0rbias.dds
-mkdir ..\dds\dave\title\credits\icons\Contributors
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Contributors -srgb -y dave\title\credits\icons\Contributors\wugalex.png
-rename ..\dds\dave\title\credits\icons\Contributors\wugalex.DDS wugalex.dds
-mkdir ..\dds\dave\title\credits\icons\Developers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Developers -srgb -y dave\title\credits\icons\Developers\Billy Bobbo.png
-rename ..\dds\dave\title\credits\icons\Developers\Billy Bobbo.DDS Billy Bobbo.dds
-mkdir ..\dds\dave\title\credits\icons\Developers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Developers -srgb -y dave\title\credits\icons\Developers\Erizur.png
-rename ..\dds\dave\title\credits\icons\Developers\Erizur.DDS Erizur.dds
-mkdir ..\dds\dave\title\credits\icons\Developers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Developers -srgb -y dave\title\credits\icons\Developers\MissingTextureMan101.png
-rename ..\dds\dave\title\credits\icons\Developers\MissingTextureMan101.DDS MissingTextureMan101.dds
-mkdir ..\dds\dave\title\credits\icons\Developers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Developers -srgb -y dave\title\credits\icons\Developers\MoldyGH.png
-rename ..\dds\dave\title\credits\icons\Developers\MoldyGH.DDS MoldyGH.dds
-mkdir ..\dds\dave\title\credits\icons\Developers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Developers -srgb -y dave\title\credits\icons\Developers\T5mpler.png
-rename ..\dds\dave\title\credits\icons\Developers\T5mpler.DDS T5mpler.dds
-mkdir ..\dds\dave\title\credits\icons\Developers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Developers -srgb -y dave\title\credits\icons\Developers\TheBuilderXD.png
-rename ..\dds\dave\title\credits\icons\Developers\TheBuilderXD.DDS TheBuilderXD.dds
-mkdir ..\dds\dave\title\credits\icons\Developers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Developers -srgb -y dave\title\credits\icons\Developers\Zmac.png
-rename ..\dds\dave\title\credits\icons\Developers\Zmac.DDS Zmac.dds
-mkdir ..\dds\dave\title\credits\icons\Developers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Developers -srgb -y dave\title\credits\icons\Developers\pointy.png
-rename ..\dds\dave\title\credits\icons\Developers\pointy.DDS pointy.dds
-mkdir ..\dds\dave\title\credits\icons\Developers
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Developers -srgb -y dave\title\credits\icons\Developers\rapparep lol.png
-rename ..\dds\dave\title\credits\icons\Developers\rapparep lol.DDS rapparep lol.dds
-mkdir ..\dds\dave\title\credits\icons\Special Thanks
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Special Thanks -srgb -y dave\title\credits\icons\Special Thanks\You!.png
-rename ..\dds\dave\title\credits\icons\Special Thanks\You!.DDS You!.dds
-mkdir ..\dds\dave\title\credits\icons\Translators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Translators -srgb -y dave\title\credits\icons\Translators\Aizakku.png
-rename ..\dds\dave\title\credits\icons\Translators\Aizakku.DDS Aizakku.dds
-mkdir ..\dds\dave\title\credits\icons\Translators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Translators -srgb -y dave\title\credits\icons\Translators\Soulegal.png
-rename ..\dds\dave\title\credits\icons\Translators\Soulegal.DDS Soulegal.dds
-mkdir ..\dds\dave\title\credits\icons\Translators
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\Translators -srgb -y dave\title\credits\icons\Translators\dani.png
-rename ..\dds\dave\title\credits\icons\Translators\dani.DDS dani.dds
-mkdir ..\dds\dave\title\credits\socialMedia
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialMedia -srgb -y dave\title\credits\socialMedia\discord.png
-rename ..\dds\dave\title\credits\socialMedia\discord.DDS discord.dds
-mkdir ..\dds\dave\title\credits\socialMedia
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialMedia -srgb -y dave\title\credits\socialMedia\gamebanana.png
-rename ..\dds\dave\title\credits\socialMedia\gamebanana.DDS gamebanana.dds
-mkdir ..\dds\dave\title\credits\socialMedia
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialMedia -srgb -y dave\title\credits\socialMedia\roblox.png
-rename ..\dds\dave\title\credits\socialMedia\roblox.DDS roblox.dds
-mkdir ..\dds\dave\title\credits\socialMedia
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialMedia -srgb -y dave\title\credits\socialMedia\soundcloud.png
-rename ..\dds\dave\title\credits\socialMedia\soundcloud.DDS soundcloud.dds
-mkdir ..\dds\dave\title\credits\socialMedia
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialMedia -srgb -y dave\title\credits\socialMedia\twitch.png
-rename ..\dds\dave\title\credits\socialMedia\twitch.DDS twitch.dds
-mkdir ..\dds\dave\title\credits\socialMedia
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialMedia -srgb -y dave\title\credits\socialMedia\twitter.png
-rename ..\dds\dave\title\credits\socialMedia\twitter.DDS twitter.dds
-mkdir ..\dds\dave\title\credits\socialMedia
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialMedia -srgb -y dave\title\credits\socialMedia\youtube.png
-rename ..\dds\dave\title\credits\socialMedia\youtube.DDS youtube.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\checkeredbg.png
+rename ..\dds\dave\title\checkeredbg.DDS checkeredbg.dds
+mkdir ..\dds\dave\title
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\cooloverlay.png
+rename ..\dds\dave\title\cooloverlay.DDS cooloverlay.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\artursef.png
+rename ..\dds\dave\title\credits\icons\beta testers\artursef.DDS artursef.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\ashtonyes.png
+rename ..\dds\dave\title\credits\icons\beta testers\ashtonyes.DDS ashtonyes.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\bendygaming_1.png
+rename ..\dds\dave\title\credits\icons\beta testers\bendygaming_1.DDS bendygaming_1.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\cotiles.png
+rename ..\dds\dave\title\credits\icons\beta testers\cotiles.DDS cotiles.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\foxnap.png
+rename ..\dds\dave\title\credits\icons\beta testers\foxnap.DDS foxnap.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\gorbini.png
+rename ..\dds\dave\title\credits\icons\beta testers\gorbini.DDS gorbini.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\letsy.png
+rename ..\dds\dave\title\credits\icons\beta testers\letsy.DDS letsy.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\log man.png
+rename ..\dds\dave\title\credits\icons\beta testers\log man.DDS log man.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\lordryan1999.png
+rename ..\dds\dave\title\credits\icons\beta testers\lordryan1999.DDS lordryan1999.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\mantis.png
+rename ..\dds\dave\title\credits\icons\beta testers\mantis.DDS mantis.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\miko.png
+rename ..\dds\dave\title\credits\icons\beta testers\miko.DDS miko.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\mooncakeez.png
+rename ..\dds\dave\title\credits\icons\beta testers\mooncakeez.DDS mooncakeez.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\nihilistt.png
+rename ..\dds\dave\title\credits\icons\beta testers\nihilistt.DDS nihilistt.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\normal.png
+rename ..\dds\dave\title\credits\icons\beta testers\normal.DDS normal.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\peejeada.png
+rename ..\dds\dave\title\credits\icons\beta testers\peejeada.DDS peejeada.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\rendurse.png
+rename ..\dds\dave\title\credits\icons\beta testers\rendurse.DDS rendurse.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\silver escaper.png
+rename ..\dds\dave\title\credits\icons\beta testers\silver escaper.DDS silver escaper.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\stev.png
+rename ..\dds\dave\title\credits\icons\beta testers\stev.DDS stev.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\techevent.png
+rename ..\dds\dave\title\credits\icons\beta testers\techevent.DDS techevent.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\trustvvorthy.png
+rename ..\dds\dave\title\credits\icons\beta testers\trustvvorthy.DDS trustvvorthy.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\vanquiler.png
+rename ..\dds\dave\title\credits\icons\beta testers\vanquiler.DDS vanquiler.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\vex.png
+rename ..\dds\dave\title\credits\icons\beta testers\vex.DDS vex.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\villezen.png
+rename ..\dds\dave\title\credits\icons\beta testers\villezen.DDS villezen.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\weednose.png
+rename ..\dds\dave\title\credits\icons\beta testers\weednose.DDS weednose.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\wildy.png
+rename ..\dds\dave\title\credits\icons\beta testers\wildy.DDS wildy.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\xml.png
+rename ..\dds\dave\title\credits\icons\beta testers\xml.DDS xml.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\youraveragemental.png
+rename ..\dds\dave\title\credits\icons\beta testers\youraveragemental.DDS youraveragemental.dds
+mkdir ..\dds\dave\title\credits\icons\beta testers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\beta testers -srgb -y dave\title\credits\icons\beta testers\ztgds.png
+rename ..\dds\dave\title\credits\icons\beta testers\ztgds.DDS ztgds.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\Cup.png
+rename ..\dds\dave\title\credits\icons\contributors\Cup.DDS Cup.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\ShiftyTM.png
+rename ..\dds\dave\title\credits\icons\contributors\ShiftyTM.DDS ShiftyTM.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\aadsta.png
+rename ..\dds\dave\title\credits\icons\contributors\aadsta.DDS aadsta.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\alexander cooper 19.png
+rename ..\dds\dave\title\credits\icons\contributors\alexander cooper 19.DDS alexander cooper 19.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\chromasen.png
+rename ..\dds\dave\title\credits\icons\contributors\chromasen.DDS chromasen.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\devianator.png
+rename ..\dds\dave\title\credits\icons\contributors\devianator.DDS devianator.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\evdial.png
+rename ..\dds\dave\title\credits\icons\contributors\evdial.DDS evdial.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\jukebox.png
+rename ..\dds\dave\title\credits\icons\contributors\jukebox.DDS jukebox.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\lancey.png
+rename ..\dds\dave\title\credits\icons\contributors\lancey.DDS lancey.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\oxygen.png
+rename ..\dds\dave\title\credits\icons\contributors\oxygen.DDS oxygen.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\paraso.png
+rename ..\dds\dave\title\credits\icons\contributors\paraso.DDS paraso.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\r34ld34l.png
+rename ..\dds\dave\title\credits\icons\contributors\r34ld34l.DDS r34ld34l.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\ruby.png
+rename ..\dds\dave\title\credits\icons\contributors\ruby.DDS ruby.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\sammypigzy.png
+rename ..\dds\dave\title\credits\icons\contributors\sammypigzy.DDS sammypigzy.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\sibottle.png
+rename ..\dds\dave\title\credits\icons\contributors\sibottle.DDS sibottle.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\sk0rbias.png
+rename ..\dds\dave\title\credits\icons\contributors\sk0rbias.DDS sk0rbias.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\sky.png
+rename ..\dds\dave\title\credits\icons\contributors\sky.DDS sky.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\steph45.png
+rename ..\dds\dave\title\credits\icons\contributors\steph45.DDS steph45.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\top 10 awesome.png
+rename ..\dds\dave\title\credits\icons\contributors\top 10 awesome.DDS top 10 awesome.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\wugalex.png
+rename ..\dds\dave\title\credits\icons\contributors\wugalex.DDS wugalex.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\your mom.png
+rename ..\dds\dave\title\credits\icons\contributors\your mom.DDS your mom.dds
+mkdir ..\dds\dave\title\credits\icons\contributors
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\contributors -srgb -y dave\title\credits\icons\contributors\youraveragemental.png
+rename ..\dds\dave\title\credits\icons\contributors\youraveragemental.DDS youraveragemental.dds
+mkdir ..\dds\dave\title\credits\icons\developers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\developers -srgb -y dave\title\credits\icons\developers\billy bobbo.png
+rename ..\dds\dave\title\credits\icons\developers\billy bobbo.DDS billy bobbo.dds
+mkdir ..\dds\dave\title\credits\icons\developers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\developers -srgb -y dave\title\credits\icons\developers\erizur.png
+rename ..\dds\dave\title\credits\icons\developers\erizur.DDS erizur.dds
+mkdir ..\dds\dave\title\credits\icons\developers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\developers -srgb -y dave\title\credits\icons\developers\missingtextureman101.png
+rename ..\dds\dave\title\credits\icons\developers\missingtextureman101.DDS missingtextureman101.dds
+mkdir ..\dds\dave\title\credits\icons\developers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\developers -srgb -y dave\title\credits\icons\developers\moldygh.png
+rename ..\dds\dave\title\credits\icons\developers\moldygh.DDS moldygh.dds
+mkdir ..\dds\dave\title\credits\icons\developers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\developers -srgb -y dave\title\credits\icons\developers\pointy.png
+rename ..\dds\dave\title\credits\icons\developers\pointy.DDS pointy.dds
+mkdir ..\dds\dave\title\credits\icons\developers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\developers -srgb -y dave\title\credits\icons\developers\rapparep lol.png
+rename ..\dds\dave\title\credits\icons\developers\rapparep lol.DDS rapparep lol.dds
+mkdir ..\dds\dave\title\credits\icons\developers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\developers -srgb -y dave\title\credits\icons\developers\t5mpler.png
+rename ..\dds\dave\title\credits\icons\developers\t5mpler.DDS t5mpler.dds
+mkdir ..\dds\dave\title\credits\icons\developers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\developers -srgb -y dave\title\credits\icons\developers\thebuilderxd.png
+rename ..\dds\dave\title\credits\icons\developers\thebuilderxd.DDS thebuilderxd.dds
+mkdir ..\dds\dave\title\credits\icons\developers
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\developers -srgb -y dave\title\credits\icons\developers\zmac.png
+rename ..\dds\dave\title\credits\icons\developers\zmac.DDS zmac.dds
+mkdir ..\dds\dave\title\credits\icons\special thanks
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\special thanks -srgb -y dave\title\credits\icons\special thanks\you.png
+rename ..\dds\dave\title\credits\icons\special thanks\you.DDS you.dds
+mkdir ..\dds\dave\title\credits\icons\translators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\translators -srgb -y dave\title\credits\icons\translators\aizakku.png
+rename ..\dds\dave\title\credits\icons\translators\aizakku.DDS aizakku.dds
+mkdir ..\dds\dave\title\credits\icons\translators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\translators -srgb -y dave\title\credits\icons\translators\dani.png
+rename ..\dds\dave\title\credits\icons\translators\dani.DDS dani.dds
+mkdir ..\dds\dave\title\credits\icons\translators
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\icons\translators -srgb -y dave\title\credits\icons\translators\soulegal.png
+rename ..\dds\dave\title\credits\icons\translators\soulegal.DDS soulegal.dds
+mkdir ..\dds\dave\title\credits\socialmedia
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialmedia -srgb -y dave\title\credits\socialmedia\discord.png
+rename ..\dds\dave\title\credits\socialmedia\discord.DDS discord.dds
+mkdir ..\dds\dave\title\credits\socialmedia
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialmedia -srgb -y dave\title\credits\socialmedia\gamebanana.png
+rename ..\dds\dave\title\credits\socialmedia\gamebanana.DDS gamebanana.dds
+mkdir ..\dds\dave\title\credits\socialmedia
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialmedia -srgb -y dave\title\credits\socialmedia\roblox.png
+rename ..\dds\dave\title\credits\socialmedia\roblox.DDS roblox.dds
+mkdir ..\dds\dave\title\credits\socialmedia
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialmedia -srgb -y dave\title\credits\socialmedia\soundcloud.png
+rename ..\dds\dave\title\credits\socialmedia\soundcloud.DDS soundcloud.dds
+mkdir ..\dds\dave\title\credits\socialmedia
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialmedia -srgb -y dave\title\credits\socialmedia\twitch.png
+rename ..\dds\dave\title\credits\socialmedia\twitch.DDS twitch.dds
+mkdir ..\dds\dave\title\credits\socialmedia
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialmedia -srgb -y dave\title\credits\socialmedia\twitter.png
+rename ..\dds\dave\title\credits\socialmedia\twitter.DDS twitter.dds
+mkdir ..\dds\dave\title\credits\socialmedia
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\socialmedia -srgb -y dave\title\credits\socialmedia\youtube.png
+rename ..\dds\dave\title\credits\socialmedia\youtube.DDS youtube.dds
 mkdir ..\dds\dave\title\credits\titles
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\titles -srgb -y dave\title\credits\titles\Beta Testers.png
-rename ..\dds\dave\title\credits\titles\Beta Testers.DDS Beta Testers.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\titles -srgb -y dave\title\credits\titles\beta testers.png
+rename ..\dds\dave\title\credits\titles\beta testers.DDS beta testers.dds
 mkdir ..\dds\dave\title\credits\titles
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\titles -srgb -y dave\title\credits\titles\Contributors.png
-rename ..\dds\dave\title\credits\titles\Contributors.DDS Contributors.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\titles -srgb -y dave\title\credits\titles\contributors.png
+rename ..\dds\dave\title\credits\titles\contributors.DDS contributors.dds
 mkdir ..\dds\dave\title\credits\titles
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\titles -srgb -y dave\title\credits\titles\Developers.png
-rename ..\dds\dave\title\credits\titles\Developers.DDS Developers.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\titles -srgb -y dave\title\credits\titles\developers.png
+rename ..\dds\dave\title\credits\titles\developers.DDS developers.dds
 mkdir ..\dds\dave\title\credits\titles
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\titles -srgb -y dave\title\credits\titles\Special Thanks.png
-rename ..\dds\dave\title\credits\titles\Special Thanks.DDS Special Thanks.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\titles -srgb -y dave\title\credits\titles\special thanks.png
+rename ..\dds\dave\title\credits\titles\special thanks.DDS special thanks.dds
 mkdir ..\dds\dave\title\credits\titles
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\titles -srgb -y dave\title\credits\titles\Translators.png
-rename ..\dds\dave\title\credits\titles\Translators.DDS Translators.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\credits\titles -srgb -y dave\title\credits\titles\translators.png
+rename ..\dds\dave\title\credits\titles\translators.DDS translators.dds
 mkdir ..\dds\dave\title
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\flixel_intro.png
 rename ..\dds\dave\title\flixel_intro.DDS flixel_intro.dds
@@ -1518,35 +1539,35 @@ mkdir ..\dds\dave\title
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\fnfengine.png
 rename ..\dds\dave\title\fnfengine.DDS fnfengine.dds
 mkdir ..\dds\dave\title
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\gfDanceTitle.png
-rename ..\dds\dave\title\gfDanceTitle.DDS gfDanceTitle.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\gfdancetitle.png
+rename ..\dds\dave\title\gfdancetitle.DDS gfdancetitle.dds
 mkdir ..\dds\dave\title
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\gridTemplate.png
-rename ..\dds\dave\title\gridTemplate.DDS gridTemplate.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\gridtemplate.png
+rename ..\dds\dave\title\gridtemplate.DDS gridtemplate.dds
 mkdir ..\dds\dave\title
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\healthBar-3D.png
-rename ..\dds\dave\title\healthBar-3D.DDS healthBar-3D.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\healthbar-3d.png
+rename ..\dds\dave\title\healthbar-3d.DDS healthbar-3d.dds
 mkdir ..\dds\dave\title
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\healthBar.png
-rename ..\dds\dave\title\healthBar.DDS healthBar.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\healthbar.png
+rename ..\dds\dave\title\healthbar.DDS healthbar.dds
 mkdir ..\dds\dave\title
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\logo.png
 rename ..\dds\dave\title\logo.DDS logo.dds
 mkdir ..\dds\dave\title
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\logoBumpin.png
-rename ..\dds\dave\title\logoBumpin.DDS logoBumpin.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\logobumpin.png
+rename ..\dds\dave\title\logobumpin.DDS logobumpin.dds
 mkdir ..\dds\dave\title
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\logoBumpinExpunged.png
-rename ..\dds\dave\title\logoBumpinExpunged.DDS logoBumpinExpunged.dds
-mkdir ..\dds\dave\title\mainMenu
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\mainMenu -srgb -y dave\title\mainMenu\Select_Thing.png
-rename ..\dds\dave\title\mainMenu\Select_Thing.DDS Select_Thing.dds
-mkdir ..\dds\dave\title\mainMenu
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\mainMenu -srgb -y dave\title\mainMenu\eye.png
-rename ..\dds\dave\title\mainMenu\eye.DDS eye.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\logobumpinexpunged.png
+rename ..\dds\dave\title\logobumpinexpunged.DDS logobumpinexpunged.dds
 mkdir ..\dds\dave\title
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\main_menu_icons.png
 rename ..\dds\dave\title\main_menu_icons.DDS main_menu_icons.dds
+mkdir ..\dds\dave\title\mainmenu
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\mainmenu -srgb -y dave\title\mainmenu\eye.png
+rename ..\dds\dave\title\mainmenu\eye.DDS eye.dds
+mkdir ..\dds\dave\title\mainmenu
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\mainmenu -srgb -y dave\title\mainmenu\select_thing.png
+rename ..\dds\dave\title\mainmenu\select_thing.DDS select_thing.dds
 mkdir ..\dds\dave\title
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\menu_big_icons.png
 rename ..\dds\dave\title\menu_big_icons.DDS menu_big_icons.dds
@@ -1589,78 +1610,75 @@ rename ..\dds\dave\title\storymenu\weekquestionmark.DDS weekquestionmark.dds
 mkdir ..\dds\dave\title
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title -srgb -y dave\title\transition.png
 rename ..\dds\dave\title\transition.DDS transition.dds
-mkdir ..\dds\dave\title\weekBanners
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekBanners -srgb -y dave\title\weekBanners\DaveHouse.png
-rename ..\dds\dave\title\weekBanners\DaveHouse.DDS DaveHouse.dds
-mkdir ..\dds\dave\title\weekBanners
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekBanners -srgb -y dave\title\weekBanners\bamboi.png
-rename ..\dds\dave\title\weekBanners\bamboi.DDS bamboi.dds
-mkdir ..\dds\dave\title\weekBanners
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekBanners -srgb -y dave\title\weekBanners\festival.png
-rename ..\dds\dave\title\weekBanners\festival.DDS festival.dds
-mkdir ..\dds\dave\title\weekBanners
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekBanners -srgb -y dave\title\weekBanners\masterweek.png
-rename ..\dds\dave\title\weekBanners\masterweek.DDS masterweek.dds
-mkdir ..\dds\dave\title\weekBanners
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekBanners -srgb -y dave\title\weekBanners\masterweekquestion.png
-rename ..\dds\dave\title\weekBanners\masterweekquestion.DDS masterweekquestion.dds
-mkdir ..\dds\dave\title\weekBanners
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekBanners -srgb -y dave\title\weekBanners\splitathon.png
-rename ..\dds\dave\title\weekBanners\splitathon.DDS splitathon.dds
-mkdir ..\dds\dave\title\weekBanners
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekBanners -srgb -y dave\title\weekBanners\warmup.png
-rename ..\dds\dave\title\weekBanners\warmup.DDS warmup.dds
+mkdir ..\dds\dave\title\weekbanners
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekbanners -srgb -y dave\title\weekbanners\bamboi.png
+rename ..\dds\dave\title\weekbanners\bamboi.DDS bamboi.dds
+mkdir ..\dds\dave\title\weekbanners
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekbanners -srgb -y dave\title\weekbanners\davehouse.png
+rename ..\dds\dave\title\weekbanners\davehouse.DDS davehouse.dds
+mkdir ..\dds\dave\title\weekbanners
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekbanners -srgb -y dave\title\weekbanners\festival.png
+rename ..\dds\dave\title\weekbanners\festival.DDS festival.dds
+mkdir ..\dds\dave\title\weekbanners
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekbanners -srgb -y dave\title\weekbanners\masterweek.png
+rename ..\dds\dave\title\weekbanners\masterweek.DDS masterweek.dds
+mkdir ..\dds\dave\title\weekbanners
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekbanners -srgb -y dave\title\weekbanners\masterweekquestion.png
+rename ..\dds\dave\title\weekbanners\masterweekquestion.DDS masterweekquestion.dds
+mkdir ..\dds\dave\title\weekbanners
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekbanners -srgb -y dave\title\weekbanners\splitathon.png
+rename ..\dds\dave\title\weekbanners\splitathon.DDS splitathon.dds
+mkdir ..\dds\dave\title\weekbanners
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\title\weekbanners -srgb -y dave\title\weekbanners\warmup.png
+rename ..\dds\dave\title\weekbanners\warmup.DDS warmup.dds
 mkdir ..\dds\dave
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\titleEnter.png
-rename ..\dds\dave\titleEnter.DDS titleEnter.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\bad.png
-rename ..\dds\dave\ui\3D\bad.DDS bad.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\combo.png
-rename ..\dds\dave\ui\3D\combo.DDS combo.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\good.png
-rename ..\dds\dave\ui\3D\good.DDS good.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\num0.png
-rename ..\dds\dave\ui\3D\num0.DDS num0.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\num1.png
-rename ..\dds\dave\ui\3D\num1.DDS num1.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\num2.png
-rename ..\dds\dave\ui\3D\num2.DDS num2.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\num3.png
-rename ..\dds\dave\ui\3D\num3.DDS num3.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\num4.png
-rename ..\dds\dave\ui\3D\num4.DDS num4.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\num5.png
-rename ..\dds\dave\ui\3D\num5.DDS num5.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\num6.png
-rename ..\dds\dave\ui\3D\num6.DDS num6.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\num7.png
-rename ..\dds\dave\ui\3D\num7.DDS num7.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\num8.png
-rename ..\dds\dave\ui\3D\num8.DDS num8.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\num9.png
-rename ..\dds\dave\ui\3D\num9.DDS num9.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\shit.png
-rename ..\dds\dave\ui\3D\shit.DDS shit.dds
-mkdir ..\dds\dave\ui\3D
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3D -srgb -y dave\ui\3D\sick.png
-rename ..\dds\dave\ui\3D\sick.DDS sick.dds
-mkdir ..\dds\dave\ui
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui -srgb -y dave\ui\HELLthBar.png
-rename ..\dds\dave\ui\HELLthBar.DDS HELLthBar.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\titleenter.png
+rename ..\dds\dave\titleenter.DDS titleenter.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\bad.png
+rename ..\dds\dave\ui\3d\bad.DDS bad.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\combo.png
+rename ..\dds\dave\ui\3d\combo.DDS combo.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\good.png
+rename ..\dds\dave\ui\3d\good.DDS good.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\num0.png
+rename ..\dds\dave\ui\3d\num0.DDS num0.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\num1.png
+rename ..\dds\dave\ui\3d\num1.DDS num1.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\num2.png
+rename ..\dds\dave\ui\3d\num2.DDS num2.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\num3.png
+rename ..\dds\dave\ui\3d\num3.DDS num3.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\num4.png
+rename ..\dds\dave\ui\3d\num4.DDS num4.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\num5.png
+rename ..\dds\dave\ui\3d\num5.DDS num5.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\num6.png
+rename ..\dds\dave\ui\3d\num6.DDS num6.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\num7.png
+rename ..\dds\dave\ui\3d\num7.DDS num7.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\num8.png
+rename ..\dds\dave\ui\3d\num8.DDS num8.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\num9.png
+rename ..\dds\dave\ui\3d\num9.DDS num9.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\shit.png
+rename ..\dds\dave\ui\3d\shit.DDS shit.dds
+mkdir ..\dds\dave\ui\3d
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\3d -srgb -y dave\ui\3d\sick.png
+rename ..\dds\dave\ui\3d\sick.DDS sick.dds
 mkdir ..\dds\dave\ui
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui -srgb -y dave\ui\backspace.png
 rename ..\dds\dave\ui\backspace.DDS backspace.dds
@@ -1671,8 +1689,11 @@ mkdir ..\dds\dave\ui
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui -srgb -y dave\ui\combo.png
 rename ..\dds\dave\ui\combo.DDS combo.dds
 mkdir ..\dds\dave\ui
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui -srgb -y dave\ui\doorWarning.png
-rename ..\dds\dave\ui\doorWarning.DDS doorWarning.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui -srgb -y dave\ui\doorwarning.png
+rename ..\dds\dave\ui\doorwarning.DDS doorwarning.dds
+mkdir ..\dds\dave\ui\glitch
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui\glitch -srgb -y dave\ui\glitch\glitchSwitch.png
+rename ..\dds\dave\ui\glitch\glitchSwitch.DDS glitchSwitch.dds
 mkdir ..\dds\dave\ui
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui -srgb -y dave\ui\go.png
 rename ..\dds\dave\ui\go.DDS go.dds
@@ -1688,6 +1709,9 @@ rename ..\dds\dave\ui\good.DDS good.dds
 mkdir ..\dds\dave\ui
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui -srgb -y dave\ui\grafix.png
 rename ..\dds\dave\ui\grafix.DDS grafix.dds
+mkdir ..\dds\dave\ui
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui -srgb -y dave\ui\hellthbar.png
+rename ..\dds\dave\ui\hellthbar.DDS hellthbar.dds
 mkdir ..\dds\dave\ui
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui -srgb -y dave\ui\lose.png
 rename ..\dds\dave\ui\lose.DDS lose.dds
@@ -1743,8 +1767,8 @@ mkdir ..\dds\dave\ui
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui -srgb -y dave\ui\set1.png
 rename ..\dds\dave\ui\set1.DDS set1.dds
 mkdir ..\dds\dave\ui
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui -srgb -y dave\ui\shapeNoteWarning.png
-rename ..\dds\dave\ui\shapeNoteWarning.DDS shapeNoteWarning.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui -srgb -y dave\ui\shapenotewarning.png
+rename ..\dds\dave\ui\shapenotewarning.DDS shapenotewarning.dds
 mkdir ..\dds\dave\ui
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\ui -srgb -y dave\ui\shit.png
 rename ..\dds\dave\ui\shit.DDS shit.dds
@@ -1767,17 +1791,35 @@ mkdir ..\dds\dave
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave -srgb -y dave\vignette.png
 rename ..\dds\dave\vignette.DDS vignette.dds
 mkdir ..\dds\dave\weeb
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\weeb -srgb -y dave\weeb\bfPixel.png
-rename ..\dds\dave\weeb\bfPixel.DDS bfPixel.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\weeb -srgb -y dave\weeb\bfpixel.png
+rename ..\dds\dave\weeb\bfpixel.DDS bfpixel.dds
 mkdir ..\dds\dave\weeb
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\weeb -srgb -y dave\weeb\bfPixelsDEAD.png
-rename ..\dds\dave\weeb\bfPixelsDEAD.DDS bfPixelsDEAD.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\weeb -srgb -y dave\weeb\bfpixelsdead.png
+rename ..\dds\dave\weeb\bfpixelsdead.DDS bfpixelsdead.dds
 mkdir ..\dds\dave\weeb
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\weeb -srgb -y dave\weeb\gfPixel.png
-rename ..\dds\dave\weeb\gfPixel.DDS gfPixel.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\dave\weeb -srgb -y dave\weeb\gfpixel.png
+rename ..\dds\dave\weeb\gfpixel.DDS gfpixel.dds
+mkdir ..\dds\images\png
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\images\png -srgb -y images\png\davecutscene.png
+rename ..\dds\images\png\davecutscene.DDS davecutscene.dds
+mkdir ..\dds\images\png
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\images\png -srgb -y images\png\gf_assets.png
+rename ..\dds\images\png\gf_assets.DDS gf_assets.dds
+mkdir ..\dds\mazeCutscene
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\mazeCutscene -srgb -y mazeCutscene\layer1.png
+rename ..\dds\mazeCutscene\layer1.DDS layer1.dds
+mkdir ..\dds\mazeCutscene
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\mazeCutscene -srgb -y mazeCutscene\layer2.png
+rename ..\dds\mazeCutscene\layer2.DDS layer2.dds
+mkdir ..\dds\mazeCutscene
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\mazeCutscene -srgb -y mazeCutscene\layer3.png
+rename ..\dds\mazeCutscene\layer3.DDS layer3.dds
+mkdir ..\dds\mazeCutscene
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\mazeCutscene -srgb -y mazeCutscene\layer4.png
+rename ..\dds\mazeCutscene\layer4.DDS layer4.dds
 mkdir ..\dds\menu
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu -srgb -y menu\FNF_main_menu_assets.png
-rename ..\dds\menu\FNF_main_menu_assets.DDS FNF_main_menu_assets.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu -srgb -y menu\fnf_main_menu_assets.png
+rename ..\dds\menu\fnf_main_menu_assets.DDS fnf_main_menu_assets.dds
 mkdir ..\dds\menu
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu -srgb -y menu\girlfriend-title.png
 rename ..\dds\menu\girlfriend-title.DDS girlfriend-title.dds
@@ -1785,14 +1827,14 @@ mkdir ..\dds\menu
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu -srgb -y menu\logo.png
 rename ..\dds\menu\logo.DDS logo.dds
 mkdir ..\dds\menu
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu -srgb -y menu\menuBG.png
-rename ..\dds\menu\menuBG.DDS menuBG.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu -srgb -y menu\menubg.png
+rename ..\dds\menu\menubg.DDS menubg.dds
 mkdir ..\dds\menu\storymenu
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu\storymenu -srgb -y menu\storymenu\campaign_menu_UI_assets.png
-rename ..\dds\menu\storymenu\campaign_menu_UI_assets.DDS campaign_menu_UI_assets.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu\storymenu -srgb -y menu\storymenu\campaign_menu_ui_assets.png
+rename ..\dds\menu\storymenu\campaign_menu_ui_assets.DDS campaign_menu_ui_assets.dds
 mkdir ..\dds\menu\storymenu
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu\storymenu -srgb -y menu\storymenu\campaign_menu_UI_characters.png
-rename ..\dds\menu\storymenu\campaign_menu_UI_characters.DDS campaign_menu_UI_characters.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu\storymenu -srgb -y menu\storymenu\campaign_menu_ui_characters.png
+rename ..\dds\menu\storymenu\campaign_menu_ui_characters.DDS campaign_menu_ui_characters.dds
 mkdir ..\dds\menu\storymenu
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu\storymenu -srgb -y menu\storymenu\week0.png
 rename ..\dds\menu\storymenu\week0.DDS week0.dds
@@ -1815,14 +1857,158 @@ mkdir ..\dds\menu\storymenu
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu\storymenu -srgb -y menu\storymenu\week6.png
 rename ..\dds\menu\storymenu\week6.DDS week6.dds
 mkdir ..\dds\menu\storymenu
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu\storymenu -srgb -y menu\storymenu\weekMenu.png
-rename ..\dds\menu\storymenu\weekMenu.DDS weekMenu.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu\storymenu -srgb -y menu\storymenu\weekmenu.png
+rename ..\dds\menu\storymenu\weekmenu.DDS weekmenu.dds
 mkdir ..\dds\menu
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu -srgb -y menu\title-bg.png
 rename ..\dds\menu\title-bg.DDS title-bg.dds
 mkdir ..\dds\menu
-%texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu -srgb -y menu\titleEnter.png
-rename ..\dds\menu\titleEnter.DDS titleEnter.dds
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\menu -srgb -y menu\titleenter.png
+rename ..\dds\menu\titleenter.DDS titleenter.dds
+mkdir ..\dds\muko\cameras\buttons
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\buttons -srgb -y muko\cameras\buttons\cam_01.png
+rename ..\dds\muko\cameras\buttons\cam_01.DDS cam_01.dds
+mkdir ..\dds\muko\cameras\buttons
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\buttons -srgb -y muko\cameras\buttons\cam_02.png
+rename ..\dds\muko\cameras\buttons\cam_02.DDS cam_02.dds
+mkdir ..\dds\muko\cameras\buttons
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\buttons -srgb -y muko\cameras\buttons\cam_03.png
+rename ..\dds\muko\cameras\buttons\cam_03.DDS cam_03.dds
+mkdir ..\dds\muko\cameras\buttons
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\buttons -srgb -y muko\cameras\buttons\cam_04.png
+rename ..\dds\muko\cameras\buttons\cam_04.DDS cam_04.dds
+mkdir ..\dds\muko\cameras\buttons
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\buttons -srgb -y muko\cameras\buttons\cam_05.png
+rename ..\dds\muko\cameras\buttons\cam_05.DDS cam_05.dds
+mkdir ..\dds\muko\cameras\characters\dave
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\characters\dave -srgb -y muko\cameras\characters\dave\dave_bar.png
+rename ..\dds\muko\cameras\characters\dave\dave_bar.DDS dave_bar.dds
+mkdir ..\dds\muko\cameras\characters\dave
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\characters\dave -srgb -y muko\cameras\characters\dave\diner_dave.png
+rename ..\dds\muko\cameras\characters\dave\diner_dave.DDS diner_dave.dds
+mkdir ..\dds\muko\cameras\characters\dave
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\characters\dave -srgb -y muko\cameras\characters\dave\stage_just_dave.png
+rename ..\dds\muko\cameras\characters\dave\stage_just_dave.DDS stage_just_dave.dds
+mkdir ..\dds\muko\cameras\characters\mix
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\characters\mix -srgb -y muko\cameras\characters\mix\diner_mix.png
+rename ..\dds\muko\cameras\characters\mix\diner_mix.DDS diner_mix.dds
+mkdir ..\dds\muko\cameras\characters\mix
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\characters\mix -srgb -y muko\cameras\characters\mix\kitchen_mix.png
+rename ..\dds\muko\cameras\characters\mix\kitchen_mix.DDS kitchen_mix.dds
+mkdir ..\dds\muko\cameras\characters\muko
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\characters\muko -srgb -y muko\cameras\characters\muko\diner_just_muko.png
+rename ..\dds\muko\cameras\characters\muko\diner_just_muko.DDS diner_just_muko.dds
+mkdir ..\dds\muko\cameras\characters\muko
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\characters\muko -srgb -y muko\cameras\characters\muko\muko_bar.png
+rename ..\dds\muko\cameras\characters\muko\muko_bar.DDS muko_bar.dds
+mkdir ..\dds\muko\cameras\characters\scott
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\characters\scott -srgb -y muko\cameras\characters\scott\lounge_travis_only.png
+rename ..\dds\muko\cameras\characters\scott\lounge_travis_only.DDS lounge_travis_only.dds
+mkdir ..\dds\muko\cameras\characters\scott
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\characters\scott -srgb -y muko\cameras\characters\scott\scott_generic.png
+rename ..\dds\muko\cameras\characters\scott\scott_generic.DDS scott_generic.dds
+mkdir ..\dds\muko\cameras\characters\tiktok
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras\characters\tiktok -srgb -y muko\cameras\characters\tiktok\kitchen_tiktok.png
+rename ..\dds\muko\cameras\characters\tiktok\kitchen_tiktok.DDS kitchen_tiktok.dds
+mkdir ..\dds\muko\cameras
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras -srgb -y muko\cameras\diner.png
+rename ..\dds\muko\cameras\diner.DDS diner.dds
+mkdir ..\dds\muko\cameras
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras -srgb -y muko\cameras\hall.png
+rename ..\dds\muko\cameras\hall.DDS hall.dds
+mkdir ..\dds\muko\cameras
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras -srgb -y muko\cameras\kitchen.png
+rename ..\dds\muko\cameras\kitchen.DDS kitchen.dds
+mkdir ..\dds\muko\cameras
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras -srgb -y muko\cameras\lounge.png
+rename ..\dds\muko\cameras\lounge.DDS lounge.dds
+mkdir ..\dds\muko\cameras
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras -srgb -y muko\cameras\map.png
+rename ..\dds\muko\cameras\map.DDS map.dds
+mkdir ..\dds\muko\cameras
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\cameras -srgb -y muko\cameras\stage_empty.png
+rename ..\dds\muko\cameras\stage_empty.DDS stage_empty.dds
+mkdir ..\dds\muko\jumpscares
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\jumpscares -srgb -y muko\jumpscares\dave.png
+rename ..\dds\muko\jumpscares\dave.DDS dave.dds
+mkdir ..\dds\muko\jumpscares
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\jumpscares -srgb -y muko\jumpscares\mix.png
+rename ..\dds\muko\jumpscares\mix.DDS mix.dds
+mkdir ..\dds\muko\jumpscares
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\jumpscares -srgb -y muko\jumpscares\muko.png
+rename ..\dds\muko\jumpscares\muko.DDS muko.dds
+mkdir ..\dds\muko\jumpscares
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\jumpscares -srgb -y muko\jumpscares\scott.png
+rename ..\dds\muko\jumpscares\scott.DDS scott.dds
+mkdir ..\dds\muko\jumpscares
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\jumpscares -srgb -y muko\jumpscares\tiktok.png
+rename ..\dds\muko\jumpscares\tiktok.DDS tiktok.dds
+mkdir ..\dds\muko\office
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\office -srgb -y muko\office\canera_thing.png
+rename ..\dds\muko\office\canera_thing.DDS canera_thing.dds
+mkdir ..\dds\muko\office
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\office -srgb -y muko\office\close_door.png
+rename ..\dds\muko\office\close_door.DDS close_door.dds
+mkdir ..\dds\muko\office
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\office -srgb -y muko\office\cursor.png
+rename ..\dds\muko\office\cursor.DDS cursor.dds
+mkdir ..\dds\muko\office
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\office -srgb -y muko\office\office.png
+rename ..\dds\muko\office\office.DDS office.dds
+mkdir ..\dds\muko\office
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\office -srgb -y muko\office\open_door.png
+rename ..\dds\muko\office\open_door.DDS open_door.dds
+mkdir ..\dds\muko\office
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\office -srgb -y muko\office\tiktok.png
+rename ..\dds\muko\office\tiktok.DDS tiktok.dds
+mkdir ..\dds\muko\office
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\office -srgb -y muko\office\tiktok_bright.png
+rename ..\dds\muko\office\tiktok_bright.DDS tiktok_bright.dds
+mkdir ..\dds\muko\office
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\office -srgb -y muko\office\tiktoksong.png
+rename ..\dds\muko\office\tiktoksong.DDS tiktoksong.dds
+mkdir ..\dds\muko\office
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\office -srgb -y muko\office\usage.png
+rename ..\dds\muko\office\usage.DDS usage.dds
+mkdir ..\dds\muko\screens
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\screens -srgb -y muko\screens\6am.png
+rename ..\dds\muko\screens\6am.DDS 6am.dds
+mkdir ..\dds\muko\screens
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\screens -srgb -y muko\screens\allmax.png
+rename ..\dds\muko\screens\allmax.DDS allmax.dds
+mkdir ..\dds\muko\screens
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\screens -srgb -y muko\screens\final.png
+rename ..\dds\muko\screens\final.DDS final.dds
+mkdir ..\dds\muko\shared
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\shared -srgb -y muko\shared\camera.png
+rename ..\dds\muko\shared\camera.DDS camera.dds
+mkdir ..\dds\muko\shared
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\shared -srgb -y muko\shared\camera2.png
+rename ..\dds\muko\shared\camera2.DDS camera2.dds
+mkdir ..\dds\muko\shared
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\shared -srgb -y muko\shared\muko_anger.png
+rename ..\dds\muko\shared\muko_anger.DDS muko_anger.dds
+mkdir ..\dds\muko\shared
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\shared -srgb -y muko\shared\muko_scary.png
+rename ..\dds\muko\shared\muko_scary.DDS muko_scary.dds
+mkdir ..\dds\muko\title
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\title -srgb -y muko\title\canera_thing.png
+rename ..\dds\muko\title\canera_thing.DDS canera_thing.dds
+mkdir ..\dds\muko\title
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\title -srgb -y muko\title\canera_thing2.png
+rename ..\dds\muko\title\canera_thing2.DDS canera_thing2.dds
+mkdir ..\dds\muko\title
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\title -srgb -y muko\title\logo.png
+rename ..\dds\muko\title\logo.DDS logo.dds
+mkdir ..\dds\muko\title
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\title -srgb -y muko\title\start.png
+rename ..\dds\muko\title\start.DDS start.dds
+mkdir ..\dds\muko\title
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\muko\title -srgb -y muko\title\start_hit.png
+rename ..\dds\muko\title\start_hit.DDS start_hit.dds
+mkdir ..\dds\switch
+%texconv% -f DXT5 -m 1 -nologo -o ..\dds\switch -srgb -y switch\portraits.png
+rename ..\dds\switch\portraits.DDS portraits.dds
 mkdir ..\dds\week1
 %texconv% -f DXT5 -m 1 -nologo -o ..\dds\week1 -srgb -y week1\curtains.png
 rename ..\dds\week1\curtains.DDS curtains.dds

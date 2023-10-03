@@ -1,11 +1,3 @@
-
-
-local leftFunc, rightFunc, confirmFunc, backFunc, drawFunc
-
-local menuState
-
-local menuNum = 1
-
 local weekNum = 1
 local songNum, songAppend
 local songDifficulty = 2
@@ -13,47 +5,175 @@ local songDifficulty = 2
 local titleBG
 local selectSound
 local confirmSound
-local catStrings = {'dave', 'joke', 'extras', 'terminal'}
-local sprites = {}
-local function newSprite(image, x, y)
-	local spr = graphics.newImage(paths.image(image))
-	spr.x = x or 0
-	spr.y = y or 0
-	return spr
-end
-local function add(spr)
-	table.insert(sprites, spr)
-end
+local catStrings
 
-
-local inRealFreeplay = false
+local inRealFreeplay
 local cats = {}
 local catIndex = 1
-local function changeCat(how)
-	catIndex = catIndex + how
-	if catIndex > #catStrings then catIndex = 1
-	elseif catIndex <= 0 then catIndex = #catStrings
-	end
-end
+
 local songs = {}
 local songIndex = 1
-local songOffset = {value = 0}
 local icons = {}
 local leaving = false
 local targetColor = {0, 0, 0}
 local colors = {}
 local noCat = false
 local curScore, targetScore
+
+local lastCat
+
+local targetX, targetY
+
+
+--recursed
+local timeSincePress
+local lastTimeSincePress
+
+local pressSpeed
+local pressSpeeds = {}
+local pressUnlockNumber
+local lastKey
+local stringKey
+
+local canMove
+
+local recursedScale
+local recursedPrints
+
+local redsky, glitchshader
+
+local freeplayScale
+
+local function resetPresses()
+	table.clear(pressSpeeds)
+	pressUnlockNumber = love.math.random(20,40)
+	timeSincePress = 0
+	lastTimeSincePress = 0
+end
+local function changeCat(how)
+	catIndex = catIndex + how
+	if catIndex > #catStrings then catIndex = 1
+	elseif catIndex <= 0 then catIndex = #catStrings
+	end
+end
+local shakeAmount, shakeTime
 local function changeSong(how)
 	songIndex = songIndex + how
 	if songIndex > #songs then songIndex = 1
 	elseif songIndex <= 0 then songIndex = #songs
 	end
 	targetScore = save.highscores[songs[songIndex][1]:lower()] or 0
+
+	local key = how > 0 and 'up' or 'down'
+	if lastKey ~= key then
+		lastKey = key
+		resetPresses()
+	else
+		pressSpeed = timeSincePress - lastTimeSincePress
+		lastTimeSincePress = timeSincePress
+		timeSincePress = 0
+		table.insert(pressSpeeds, math.abs(pressSpeed))
+		local shakeCheck = #pressSpeeds % 5
+		if shakeCheck == 0 and #pressSpeeds > 0 and not save.save.found_recursed then
+			shakeAmount = 3 * (#pressSpeeds / 5)
+			shakeTime = 0.2
+			paths.sounds 'recursed/thud':stop()
+			paths.sounds 'recursed/thud':play()
+		end
+	end
 end
-local lastCat
+local function recurserUnlock()
+	save.save.found_recursed = true
+	save.writeSave()
+	canMove = false
+
+	love.audio.stop()
+	paths.sound 'recursed/rumble':play()
+	local boom = paths.sound 'recursed/boom'
+	shakeAmount = 15
+	shakeTime = 3
+	Timer.after(3, function()
+		overlayColor.alpha = 1
+		Timer.tween(1, overlayColor, {alpha = 0})
+		titleBG.color = {44, 44, 44}
+		paths.sound 'recursed/rumble':stop()
+		paths.sound 'recursed/ambience':play()
+		boom:play()
+		for i,v in pairs(icons) do
+			v.angle = 0
+			Timer.tween(4, v, {x = love.math.random(-S_HALF_WIDTH, S_HALF_WIDTH), y = love.math.random(-500, 100), angle = love.math.random(-360, 360)}, 'out-cubic')
+		end
+		local bigString = {}
+		recursedPrints = {}
+		for i,v in ipairs(songs) do
+			local hi = 0
+			v[1]:gsub(".", function(c)
+				if c ~= '-' then
+					hi = hi + 1
+					table.insert(recursedPrints, {
+						x = -500 + (75*i) + targetX + (72*hi),
+						y = -100 + (-165*i) + targetY,
+						angle = 0,
+						print = c
+					})
+				end
+			end)
+		end
+
+		for i,v in pairs(recursedPrints) do
+			v.angle = 0
+			Timer.tween(4, v, {x = love.math.random(-S_HALF_WIDTH, S_HALF_WIDTH), y = love.math.random(-500, 100), angle = love.math.random(-360, 360)}, 'out-cubic')
+		end
+		
+		local hi = {1}
+		Timer.tween(4, hi, {0}, 'out-cubic', {during = function()
+			recursedScale = hi[1]
+		end, after = function()
+			shakeAmount = 5
+			shakeTime = 3
+			paths.sound 'recursed/ambience':stop()
+			paths.sound 'recursed/rumble':play()
+			paths.sound 'recursed/piecedTogether':play()
+			for i,v in pairs(icons) do
+				Timer.tween(1, v, {x = 0, y = 0, angle = 0}, 'out-back')
+			end
+			for i,v in pairs(recursedPrints) do
+				Timer.tween(1, v, {x = 0, y = 0, angle = 0}, 'out-back')
+			end
+			Timer.tween(3, overlayColor, {alpha = 1}, nil, function()
+				overlayColor = {0,0,0,alpha = 1}
+				paths.sound 'recursed/recurser_laugh':play()
+				Timer.after(paths.sound 'recursed/recurser_laugh':getDuration 'seconds', function()
+					funkin.curSong = 'recursed'
+					switchState(stage)
+				end)
+			end)
+		end})
+	end)
+end
 return {
 	enter = function(self, previous)
+		freeplayScale = 0
+		recursedScale = 1
+		canMove = true
+		shakeAmount, shakeTime = 0,0
+		recursedCooldown, recursedCount = 0, 0
+		inRealFreeplay = false
+		table.clear(icons)
+		table.clear(cats)
+		table.clear(songs)
+		resetPresses()
+		if not save.save.found_terminal then 
+			catStrings = {'dave', 'joke', 'extras'}
+		else 
+			catStrings = {'dave', 'joke', 'extras', 'terminal'}
+		end
+		if awaitingExploitation then            
+			redsky = graphics.newImage(paths.image('dave/backgrounds/void/redsky'))
+            glitchshader = shaders:GLITCH()
+			catStrings = {'uhoh'}
+		end
+		targetX, targetY = 75 * 25, 165 * 25
         selectSound = paths.sound('menu/select')
         confirmSound = paths.sound('menu/confirm')
 		targetColor = nil
@@ -62,19 +182,21 @@ return {
 		noCat = false
 		curScore = 42353
 
-		titleBG = newSprite(funkin.randomBG())
+		titleBG = graphics.newImage(paths.image(funkin.randomBG()))
 		titleBG.color = {73, 101, 255}
-		add(titleBG)
 		
 		for _,cat in ipairs(catStrings) do
-			local spr = newSprite('dave/title/packs/'..cat)
-			add(spr)
+			local spr = graphics.newImage(paths.image('dave/title/packs/'..cat))
+			spr.alpha = 1
 			table.insert(cats, spr)
 		end
 
 	end,
 
 	update = function(self, dt)
+		if shakeTime > 0 then
+			shakeTime = shakeTime - dt
+		end
 		if drawTransition or leaving then return end
 		if not inRealFreeplay then
 			if controls.pressed.left and not noCat then
@@ -85,38 +207,53 @@ return {
 				switchState(menuSelect)
 			elseif controls.pressed.confirm and not noCat then
 				noCat = true
-				audio.playSound(confirmSound)
+				love.audio.play(confirmSound)
 				Timer.after(0.1, function()
 					cats[catIndex].alpha = 1
-					songOffset.value = 720
-					Timer.tween(1, songOffset, {value = 0}, 'out-expo')
-					Timer.tween(1, cats[catIndex], {alpha = 0, y = -720}, 'out-expo', function()
+					Timer.tween(0.25, cats[catIndex], {alpha = 0, y = -720}, 'out-expo', function()
 						inRealFreeplay = true
 						if catIndex ~= lastCat then songIndex = 1 end
 						for _,cat in pairs(cats) do
 							cat.dontdraw = true
 						end
+						freeplayScale = 0
+						local _scale = {0}
+						Timer.after(0.1, function()
+							Timer.tween(0.5, _scale, {1}, 'in-out-expo', {during = function()
+								freeplayScale = _scale[1]
+							end})
+						end)
 						
 						--print('idiots', funkin.freeplayList.extras, funkin.freeplayList.extras[1], funkin.freeplayList.extras[2], funkin.freeplayList.extras[2].songs[1][1])
 						for k,cat in pairs(funkin.freeplayList) do
 							print('hiii')
-							if k == catStrings[catIndex] then
+							local docat = k == catStrings[catIndex]
+							if k == 'terminal' and not save.save.found_terminal then
+								--print 'its the terminal song!!! and terminal not found oops!'
+								docat = catIndex == 2
+							end
+							if docat then
 								print('found a guy')
 								for _,week in pairs(cat) do
 									for _,song in ipairs(week.songs) do
-										song[3] = _G.colors[song[3] or week.color] or (song[3] or week.color)
-										table.insert(songs, song)
-										local icon = graphics.newSprite(
-											paths.image("dave/icons/"..song[2]),
-											{{x = 0, y = 0, width = 150, height = 150}, {x = 0, y = 0, width = 150, height = 150}}, 
-											{idle = {start = 1, stop = 2, speed = 0, offsetX = 0, offsetY = 0}},
-											"idle",
-											false
-										)
-										if song[2]:endsWith '-pixel' then icon.image:setFilter(getAA(false)) end
-										icons[song[1]] = icon
-										colors[song[1]:lower()] = {hex2rgb(song[3])}
-										print('adding song', song[1])
+										--song[4] = nil
+										if not song[4] or save.save[song[4]] then
+											song[3] = _G.colors[song[3] or week.color] or (song[3] or week.color)
+											table.insert(songs, song)
+											local icon = graphics.newSprite(
+												paths.image("dave/icons/"..song[2]),
+												{{x = 0, y = 0, width = 150, height = 150}, {x = 0, y = 0, width = 150, height = 150}}, 
+												{idle = {start = 1, stop = 2, speed = 0, offsetX = 0, offsetY = 0}},
+												"idle",
+												false,
+												{smartOffsets = true}
+											)
+											icon.y = -25
+											if song[2]:endsWith '-pixel' then icon.image:setFilter(getAA(false)) end
+											icons[song[1]] = icon
+											colors[song[1]:lower()] = {hex2rgb(song[3])}
+											print('adding song', song[1])
+										end
 									end
 								end
 							end
@@ -126,19 +263,28 @@ return {
 				end)
 			end
 			for i,cat in ipairs(cats) do
-				local targetX = -(1280 * (-i + catIndex))
+				local targetX = -(GAMESIZE.width * (-i + catIndex))
 				cat.x = math.lerp(cat.x, targetX, dt * 15)
 			end
-		else
+		elseif canMove then
+			timeSincePress = timeSincePress + dt
+			if timeSincePress > 2 and #pressSpeeds > 0 then
+				resetPresses()
+			end
+			if #pressSpeeds > pressUnlockNumber and not save.save.found_recursed then
+				local canPass = true
+				for k,v in pairs(pressSpeeds) do
+					if v >= 0.5 then canPass = false end
+				end
+				if canPass then recurserUnlock()
+				else resetPresses()
+				end
+			end
+			targetX = math.lerp(targetX, -75 * songIndex, dt * 15)
+			targetY = math.lerp(targetY, -165 * songIndex, dt * 15)
 			for i,song in ipairs(songs) do
-				local icon = icons[song[1]]
-				local targetx = -(60 * (-i + songIndex)) + ((#song[1]/2) * 64) - 500 + 60 * 1.25
-				local targety = -(100 * (-i + songIndex)) - 100 + 50 + songOffset.value
-				icon.x = math.lerp(icon.x, targetx, dt * 15)
-				icon.y = math.lerp(icon.y, targety, dt * 15)
 				if i == songIndex then
 					if colors[song[1]:lower()] then
-						--print('my color isss', colors[song[1]:lower()], table.concat(colors[song[1]:lower()]))
 						for i=1,3 do
 							titleBG.color[i] = lerp(titleBG.color[i], colors[song[1]:lower()][i], dt * 15)
 						end
@@ -155,8 +301,14 @@ return {
 				love.audio.stop();
 				storyMode = false
 				curWeek = nil
-				funkin.curSong = songs[songIndex][1]
-				switchState(stage)
+				if songs[songIndex][1]:lower() == 'enter-terminal' then
+					switchState(terminalState)
+				else
+					charOverride = nil
+					scoreMultiplier = {1, 1, 1, 1}
+					funkin.curSong = songs[songIndex][1]:lower()
+					switchState((controls.down['button:y'] or love.keyboard.isDown'lshift' or funkin.curSong == 'five-nights') and stage or charSelect)
+				end
 			end
 			curScore = math.floor(lerp(curScore, targetScore, 0.4))
 		end
@@ -165,57 +317,76 @@ return {
 	draw = function(self)
 		if leaving then return end
 		love.graphics.push()
-			love.graphics.translate(graphics.getWidth() / 2, graphics.getHeight() / 2)
-
-
-			love.graphics.push()
-
-			for _,spr in pairs(sprites) do
-				if not spr.dontdraw then
-					if spr.color or spr.alpha then
-						if not spr.color then spr.color = {} end
-						love.graphics.setColor(rgb255(spr.color[1], spr.color[2], spr.color[3], spr.color[4] or spr.alpha))
-						colorized = spr.color
-					else
-						love.graphics.setColor(1, 1, 1, 1)
-					end
-					spr:draw()
-				end
+		love.graphics.translate(graphics.getWidth() / 2, graphics.getHeight() / 2)
+		if shakeTime > 0 then
+			love.graphics.translate(love.math.random(-shakeAmount, shakeAmount), love.math.random(-shakeAmount, shakeAmount))
+		end
+		if awaitingExploitation then
+            love.graphics.setShader(glitchshader)
+            redsky:draw()
+            love.graphics.setShader()
+            love.graphics.setColor(0,0,0,0.4)
+            love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, GAMESIZE.width, GAMESIZE.height)
+            love.graphics.setColor(1,1,1)
+        else
+			love.graphics.setColor(rgb255(unpack(titleBG.color)))
+			titleBG:draw()
+		end
+		for i,v in pairs(cats) do
+			if not v.dontdraw and v.alpha > 0 then
+				love.graphics.setColor(1,1,1,v.alpha)
+				v:draw()
 			end
-			if not inRealFreeplay then
-				for i,cat in ipairs(cats) do
-					--print(catStrings[i], catStrings, i)
-					printfOutline(lm.string['freeplay_'..catStrings[i]] or lm.string.freeplay_extra, cat.x - 128, cat.y - 300, nil, {size = 72, depth = 0.05})
+		end
+		if not inRealFreeplay then
+			for i,cat in ipairs(cats) do
+				--print(catStrings[i], catStrings, i)
+				printfOutline(awaitingExploitation and 'uh oh' or (lm.string['freeplay_'..catStrings[i]] or lm.string.freeplay_extra), cat.x - 128, cat.y - 300, nil, {size = 72, depth = 0.05})
+			end
+		else
+			love.graphics.push()
+			love.graphics.translate(-500 * recursedScale, -100 * recursedScale * freeplayScale)
+			love.graphics.translate(targetX * recursedScale, targetY * recursedScale * freeplayScale)
+			fonts('comic', 72)
+			for i,song in ipairs(songs) do
+				love.graphics.translate(75 * recursedScale, 165 * recursedScale * freeplayScale)
+				local icon = icons[song[1]]
+				local nodash = song[1]:gsub('-', ' ')
+				local alpha = (i == songIndex) and 1 or 0.5
+				love.graphics.setColor(1, 1, 1, alpha)
+				if icon.angle then
+					icon.orientation = icon.angle * DEGREE_TO_RADIAN
+				else
+					icon.x = curFont:getWidth(song[1])
 				end
-			else
-				for i,song in ipairs(songs) do
-					local icon = icons[song[1]]
-					local nodash = song[1]:gsub('-', ' ')
-					local alpha = (i == songIndex) and 1 or 0.5
-					love.graphics.setColor(1, 1, 1, alpha)
-					icon:draw()
-					printfOutline(nodash, icon.x - (((#song[1]/2) * 64)) - 60, icon.y - 50, nil, {size = 64, depth = 0.05, alpha = alpha})
-					love.graphics.setColor(1, 1, 1, 1)
+				--if i == 1 then icon.x = icon.x + 75 end
+				icon:draw()
+				if recursedScale == 1 then
+					printfOutline(nodash, 0, 0, nil, {size = 64, depth = 0.05, alpha = alpha})
 				end
-				fonts('comic', 32)
-				love.graphics.setColor(0, 0, 0, 0.6)
-				local str = lm.string.freeplay_personalBest..curScore
-				local strWidth = (#str * 32) / 2 * 1.25
-				love.graphics.rectangle('fill', (1280/2)-strWidth-6, -(720/2), strWidth + 6, 66)
-				love.graphics.setColor(1, 1, 1)
-				love.graphics.printf(str, (1280/2)-strWidth, (-720/2), 9999999)
+				love.graphics.setColor(1, 1, 1, 1)
+			end
+			if recursedPrints then
+				for i,v in pairs(recursedPrints) do
+					love.graphics.push()
+					printfOutline(v.print, v.x, v.y, nil, {angle = v.angle})
+					love.graphics.pop()
+				end
 			end
 			love.graphics.pop()
+			fonts('comic', 32)
+			love.graphics.setColor(0, 0, 0, 0.6)
+			local str = lm.string.freeplay_personalBest..curScore..'\n'..(save.highscoreChars[songs[songIndex][1]:lower()] or 'bf')
+			local strWidth = curFont:getWidth(str)
+			love.graphics.rectangle('fill', (S_HALF_WIDTH)-strWidth-6, -(S_HALF_HEIGHT), strWidth + 6, 66)
+			love.graphics.setColor(1, 1, 1)
+			love.graphics.printf(str, (S_HALF_WIDTH)-strWidth, (-S_HALF_HEIGHT), 9999999)
+		end
 		love.graphics.pop()
 	end,
 
 	leave = function(self)
 		lastCat = catIndex
-		inRealFreeplay = false
-		table.clear(icons)
-		table.clear(cats)
-		table.clear(songs)
-		table.clear(sprites)
 		Timer.clear()
 	end
 }

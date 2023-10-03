@@ -113,9 +113,9 @@
 	],
 	"no_antialiasing": false,
 	"image": "dave/fiveNights/dave_fnaf",
-	"position": [
+	"positionOffset": [
 		0,
-		0
+		170
 	],
 	"healthicon": "dave",
 	"flip_x": true,
@@ -125,10 +125,15 @@
 		255
 	],
 	"camera_position": [
-		20,
-		90
+		-150,
+		200
+	],
+	"pcamera_position": [
+		-300,
+		200
 	],
 	"sing_duration": 4,
 	"scale": 1,
+	"playerOffset": [390, 197],
 	"deadChar": "dave-death"
 }

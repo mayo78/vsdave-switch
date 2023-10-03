@@ -1,12 +1,9 @@
---helper functions that shorten stupidly long functions
-local l = {};
-local cache = {}
+--ram stuff
+local l = {}
 local imageCache = {}
 local audioCache = {}
 local dumpExclude = {
 	['music/menu/menu'] = true,
-	['sounds/menu/select'] = true,
-	['sounds/menu/confirm'] = true,
 	['images/blank'] = true,
 	['dave/title/transition'] = true,
 }
@@ -17,15 +14,13 @@ function l.week(week)
 end
 
 function l.image(key)
-	--print('getting this', key)
-	--print('this is the thing', cache[key], imageCache[key])
 	key = key:lower()
-	if cache[key] then
-		return cache[key]
-	else 
-		cache[key] = love.graphics.newImage(graphics.imagePath(key))
-		imageCache[key] = cache[key]
-		return cache[key]
+	if imageCache[key] then
+		return imageCache[key]
+	else
+		--print('need to make a  new guy!', key)
+		imageCache[key] = love.graphics.newImage(graphics.imagePath(key))
+		return imageCache[key]
 	end
 end
 
@@ -40,7 +35,7 @@ function l.json(key)
 		print('json not found' .. key) 
 		return nil
 	end
-	return json, (key..'.json'):lower()
+	return table.copy(json), (key..'.json'):lower()
 end
 
 l.read = love.filesystem.read
@@ -77,6 +72,7 @@ function l.inst(song)
 end
 
 function l.voices(song)
+	if terminalModChart == CharacterFunnyEffect.Tristan then return l.music('songs/'..song:lower()..'/Voices-Tristan', 'stream') end
 	return l.music('songs/'..song:lower()..'/Voices', 'stream')
 end
 
@@ -94,7 +90,8 @@ function l.clearCache(only)
 				i:release()
 				i = nil
 				imageCache[k] = nil
-				cache[k] = nil
+			--else
+			--	print('not douing', k)
 			end
 		end
 	end
@@ -104,7 +101,8 @@ function l.clearCache(only)
 				i:release()
 				i = nil
 				audioCache[k] = nil
-				cache[k] = nil
+			--else
+			--	print('not doing', k)
 			end
 		end
 	end

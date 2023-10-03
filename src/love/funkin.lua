@@ -16,7 +16,19 @@ f.freeplayList = {
 	dave = {},
 	joke = {f:getWeek 'week5', f:getWeek 'extrajoke'},
 	extras = {f:getWeek 'extra'},
-	terminal = {f:getWeek 'console'}
+	terminal = {f:getWeek 'console'},
+	uhoh = {{
+		songs = {
+			{
+				'exploitation',
+				'expunged-pixel'
+			}
+		},
+		color = 'other',
+		storyColor = '4965FF',
+		banner = 'DaveHouse',
+		name = "Dave's fun rapping battle!"
+	}}
 }
 for i=0,5 do
 	local week = f:getWeek('week'..i)

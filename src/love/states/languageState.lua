@@ -11,6 +11,7 @@ local langColors = {
 local curColor, targetColor
 return {
     enter = function()
+        stop = false
         love.audio.stop()
         gridguy = paths.image('dave/title/checkeredBG')
 		gridguy:setWrap('repeat','repeat')

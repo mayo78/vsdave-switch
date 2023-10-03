@@ -32,3 +32,6 @@ tools/funkin-xna/*
 src/love/images/png/characters/*
 src/love/characters/exclusive-bf.json
 src/love/images/png/dave/icons/exclusive-bf-pixel.png
+# more testing 
+src/love/music/songs/splitathon-2/
+src/love/data/charts/splitathon-2.json

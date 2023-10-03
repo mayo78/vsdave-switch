@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="portraits.png">
+	<!-- Created with Adobe Animate version 22.0.1.105 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="bambi-3d0000" x="182" y="3" width="134" height="134"/>
+	<SubTexture name="bambi-new0000" x="140" y="277" width="134" height="134"/>
+	<SubTexture name="bf0000" x="182" y="140" width="134" height="134"/>
+	<SubTexture name="bf-3d0000" x="319" y="3" width="134" height="134"/>
+	<SubTexture name="dave0000" x="3" y="182" width="134" height="134"/>
+	<SubTexture name="dave-angey0000" x="319" y="140" width="134" height="134"/>
+	<SubTexture name="tristan0000" x="277" y="277" width="134" height="134"/>
+	<SubTexture name="tristan-golden0000" x="3" y="3" width="176" height="176"/>
+</TextureAtlas>

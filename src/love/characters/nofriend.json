@@ -60,7 +60,31 @@
 				468,
 				-20
 			],
-			"indices": [],
+			"indices": [
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23
+			],
 			"fps": 24,
 			"anim": "attack",
 			"loop": false,
@@ -113,9 +137,9 @@
 	],
 	"no_antialiasing": true,
 	"image": "dave/fiveNights/nofriend",
-	"position": [
+	"positionOffset": [
 		0,
-		0
+		75
 	],
 	"healthicon": "nofriend",
 	"flip_x": false,
@@ -125,7 +149,7 @@
 		134
 	],
 	"camera_position": [
-		20,
+		250,
 		90
 	],
 	"sing_duration": 4,

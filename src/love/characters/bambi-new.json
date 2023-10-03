@@ -1,119 +1,165 @@
 {
 	"animations": [
 		{
-			"loop": false,
 			"offsets": [
-				70,
-				6
+				73,
+				3
 			],
-			"anim": "singLEFT",
+			"loop": false,
 			"fps": 24,
-			"name": "left",
-			"indices": []
+			"anim": "singLEFT",
+			"indices": [],
+			"name": "left"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				0,
 				0
 			],
-			"anim": "idle",
+			"loop": false,
 			"fps": 24,
-			"name": "idle",
-			"indices": []
+			"anim": "idle",
+			"indices": [],
+			"name": "idle"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				55,
 				36
 			],
+			"loop": false,
+			"fps": 24,
 			"anim": "singUP",
-			"fps": 24,
-			"name": "up",
-			"indices": []
+			"indices": [],
+			"name": "up"
 		},
 		{
-			"loop": false,
 			"offsets": [
-				-16,
-				8
+				-14,
+				6
 			],
-			"anim": "singRIGHT",
+			"loop": false,
 			"fps": 24,
-			"name": "right",
-			"indices": []
+			"anim": "singRIGHT",
+			"indices": [],
+			"name": "right"
 		},
 		{
-			"loop": false,
 			"offsets": [
 				22,
-				-28
+				-32
 			],
-			"anim": "singDOWN",
+			"loop": false,
 			"fps": 24,
-			"name": "down",
+			"anim": "singDOWN",
+			"indices": [],
+			"name": "down"
+		},
+		{
+			"loop": false,
+			"offsets": [
+				97,
+				80
+			],
+			"anim": "singSmash",
+			"fps": 24,
+			"name": "phone",
 			"indices": []
 		},
 		{
-			"offsets": [
-				98,
-				81
-			],
 			"loop": false,
-			"fps": 24,
-			"anim": "singSmash",
-			"indices": [],
-			"name": "phone"
-		},
-		{
 			"offsets": [
-				-5,
+				1,
 				8
 			],
-			"loop": false,
-			"fps": 24,
 			"anim": "hey",
-			"indices": [],
-			"name": "look"
+			"fps": 24,
+			"name": "look",
+			"indices": []
 		},
 		{
+			"loop": false,
 			"offsets": [
 				24,
 				4
 			],
-			"loop": false,
-			"fps": 24,
 			"anim": "singLEFT-alt",
-			"indices": [],
-			"name": "al"
+			"fps": 24,
+			"name": "al",
+			"indices": []
 		},
 		{
+			"loop": false,
 			"offsets": [
-				-20,
+				20,
 				10
 			],
-			"loop": false,
-			"fps": 24,
 			"anim": "singRIGHT-alt",
-			"indices": [],
-			"name": "ar"
+			"fps": 24,
+			"name": "ar",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				37,
+				23
+			],
+			"anim": "singThrow",
+			"fps": 24,
+			"name": "thr",
+			"indices": []
 		},
 		{
 			"offsets": [
-				37, 23
+				70,
+				15
 			],
-			"loop": false,
-			"fps": 24,
-			"anim": "throw",
 			"indices": [],
-			"name": "thr"
+			"fps": 24,
+			"anim": "singLEFTmiss",
+			"loop": false,
+			"name": "miss l"
+		},
+		{
+			"offsets": [
+				40,
+				0
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singDOWNmiss",
+			"loop": false,
+			"name": "miss d"
+		},
+		{
+			"offsets": [
+				70,
+				30
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singUPmiss",
+			"loop": false,
+			"name": "miss u"
+		},
+		{
+			"offsets": [
+				10,
+				10
+			],
+			"indices": [],
+			"fps": 24,
+			"anim": "singRIGHTmiss",
+			"loop": false,
+			"name": "miss r"
 		}
 	],
 	"no_antialiasing": false,
 	"image": "dave/bambi/bambiRemake",
 	"position": [
-		37, 90
+		37,
+		90
 	],
 	"healthicon": "bambi",
 	"flip_x": false,
@@ -124,8 +170,14 @@
 	],
 	"camera_position": [
 		0,
+		-100
+	],
+	"pcamera_position": [
+		-50,
 		0
 	],
 	"sing_duration": 4,
-	"scale": 1
+	"scale": 1,
+	"playerOffset": [394, -24],
+	"positionOffset": [-37, -90]
 }

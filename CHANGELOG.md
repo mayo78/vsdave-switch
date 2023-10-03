@@ -1,4 +1,4 @@
-# v0.1.1 (wip)
+# v0.1.1
 note: this version uses a new version of love.elf, so donwload it from the new source as listed in the thing :)
 ### Gameplay
 - Controls can be bounded now to any button
@@ -14,3 +14,34 @@ note: this version uses a new version of love.elf, so donwload it from the new s
 - OST and Credits menus (+ end credits)
 ### Other
 - Added a thing where the game checks online the current verison, not sure if this works so i'll jsut wait til i release the next version of this! hahahahahahahhahahahahahah
+
+# v0.1.2
+this fixed one crash oops
+
+# v1.0.0
+### Gameplay
+- Character dances are 100% on beat now
+- You can now exit the game at any time by holding start and select at the same time
+- Adjusted input system
+- Offsets finally cross compatible with flixel fnf engines
+- Some states no longer do anything while transitioning out
+- Saves are now jsons and more easibly editable
+### Porting
+- The console (pressing 7 is now replaced by holding all the shoulders and triggers and pressing select)
+- Five Night's at Muko's (the whole game, inside this port, do the 7 thing on kabunga im not lying)\
+- Icon bop that is kinda
+- Recursed
+- Character select screen
+- Terminal usable on switch
+- More accurate stages
+- Better game over
+- Cleaner loading text
+- Terminal secrets
+- Bonus songs
+- Exploitation
+- Unlockable week 5
+- Better Dave cutscene
+## Other
+- You can exit the error screen if it ever occurs now
+- Compressed audio files down
+- Converted the remaining pngs to dds files (pngs are still there since they can vbe opened in more things)

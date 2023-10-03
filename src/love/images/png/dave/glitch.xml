@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="glitch.png">
+	<!-- Created with Adobe Animate version 21.0.6.41649 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="glitch0000" x="0" y="0" width="960" height="540"/>
+	<SubTexture name="glitch0001" x="965" y="0" width="960" height="540"/>
+	<SubTexture name="glitch0002" x="1930" y="0" width="960" height="540"/>
+	<SubTexture name="glitch0003" x="2895" y="0" width="960" height="540"/>
+	<SubTexture name="glitch0004" x="0" y="545" width="960" height="540"/>
+	<SubTexture name="glitch0005" x="965" y="545" width="960" height="540"/>
+	<SubTexture name="glitch0006" x="1930" y="545" width="960" height="540"/>
+	<SubTexture name="glitch0007" x="2895" y="545" width="960" height="540"/>
+	<SubTexture name="glitch0008" x="0" y="1090" width="960" height="540"/>
+	<SubTexture name="glitch0009" x="965" y="1090" width="960" height="540"/>
+	<SubTexture name="glitch0010" x="1930" y="1090" width="960" height="540"/>
+	<SubTexture name="glitch0011" x="2895" y="1090" width="960" height="540"/>
+	<SubTexture name="glitch0012" x="0" y="1635" width="960" height="540"/>
+	<SubTexture name="glitch0013" x="965" y="1635" width="960" height="540"/>
+	<SubTexture name="glitch0014" x="1930" y="1635" width="960" height="540"/>
+	<SubTexture name="glitch0015" x="2895" y="1635" width="960" height="540"/>
+	<SubTexture name="glitch0016" x="0" y="2180" width="960" height="540"/>
+	<SubTexture name="glitch0017" x="965" y="2180" width="960" height="540"/>
+	<SubTexture name="glitch0018" x="1930" y="2180" width="960" height="540"/>
+	<SubTexture name="glitch0019" x="2895" y="2180" width="960" height="540"/>
+	<SubTexture name="glitch0020" x="0" y="2725" width="960" height="540"/>
+	<SubTexture name="glitch0021" x="965" y="2725" width="960" height="540"/>
+	<SubTexture name="glitch0022" x="1930" y="2725" width="960" height="540"/>
+	<SubTexture name="glitch0023" x="0" y="0" width="960" height="540"/>
+	<SubTexture name="glitch0024" x="2895" y="2725" width="960" height="540"/>
+	<SubTexture name="glitch0025" x="0" y="0" width="960" height="540"/>
+	<SubTexture name="glitch0026" x="0" y="3270" width="960" height="540"/>
+	<SubTexture name="glitch0027" x="0" y="0" width="960" height="540"/>
+	<SubTexture name="glitch0028" x="0" y="0" width="960" height="540"/>
+</TextureAtlas>

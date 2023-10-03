@@ -111,17 +111,6 @@
 			"indices": []
 		},
 		{
-			"loop": false,
-			"offsets": [
-				14,
-				18
-			],
-			"anim": "hurt",
-			"fps": 24,
-			"name": "BF hit",
-			"indices": []
-		},
-		{
 			"loop": true,
 			"offsets": [
 				-4,
@@ -130,39 +119,6 @@
 			"anim": "scared",
 			"fps": 24,
 			"name": "BF idle shaking",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				-10,
-				-16
-			],
-			"anim": "dodge",
-			"fps": 24,
-			"name": "boyfriend dodge",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				294,
-				267
-			],
-			"anim": "attack",
-			"fps": 24,
-			"name": "boyfriend attack",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				-40,
-				-40
-			],
-			"anim": "pre-attack",
-			"fps": 24,
-			"name": "bf pre attack",
 			"indices": []
 		}
 	],

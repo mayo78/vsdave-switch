@@ -18,13 +18,7 @@ end
 
 local curSelected = 1
 
-local optionShit = {		
-    'story mode', 
-    'freeplay', 
-    'credits',
-    'ost',
-    'options'
-}
+local optionShit
 
 local states
 
@@ -32,7 +26,6 @@ local logoBl
 
 local lilMenuGuy
 
-local awaitingExploitation
 local curOptText
 local curOptDesc
 
@@ -61,9 +54,12 @@ local function change(how)
     if curSelected <= 0 then curSelected = #optionShit
     elseif curSelected > #optionShit then curSelected = 1
     end
-    for i,icon in pairs(icons) do icon:animate((i == curSelected) and 'select' or 'idle', true) end
+    for i,icon in pairs(icons) do icon:animate((i == curSelected) and 'select' or 'idle') end
     bigIcons:animate(optionShit[curSelected], false)
-    if how ~= 0 then audio.playSound(selectSound) end
+    if how ~= 0 then
+        selectSound:stop()
+        selectSound:play()
+    end
 end
 
 beenInTitle = false
@@ -77,26 +73,45 @@ end
 
 local reset
 
+local redsky, glitchshader
+
 return {
 	enter = function(self, previous)
-        reset = {
-            open = false,
-            selected = false,
-            resetAll = function(self)
-                local settingsBackup, saveBackup, highscoreBackup = settings:save(), save:writeSave()
-                if not love.filesystem.getInfo 'savebackups' then love.filesystem.createDirectory 'savebackups' end
-                local folder = table.concat({time.year, time.month, time.hour, time.min, time.sec}, '-')
-                love.filesystem.createDirectory ('savebackups/'..folder)
-                love.filesystem.write('savebackups/'..folder..'/settings.txt', settingsBackup)
-                love.filesystem.write('savebackups/'..folder..'/save.txt', saveBackup)
-                love.filesystem.write('savebackups/'..folder..'/highscores.txt', highscoreBackup)
-                love.filesystem.remove 'settings.txt'
-                love.filesystem.remove 'save.txt.'
-                love.filesystem.remove 'highscores.txt'
-                settings:reset()
-                save:reset()
-            end
-        }
+        print('awaitgg', awaitingExploitation)
+        canMove = true
+		table.clear(sprites)
+        if awaitingExploitation then
+            optionShit = {'freeplay', 'options'}
+
+            redsky = graphics.newImage(paths.image('dave/backgrounds/void/redsky'))
+            glitchshader = shaders:GLITCH()
+        else
+            optionShit = {		
+                'story mode', 
+                'freeplay', 
+                'credits',
+                'ost',
+                'options'
+            }
+        end
+        --reset = {
+        --    open = false,
+        --    selected = false,
+        --    resetAll = function(self)
+        --        local settingsBackup, saveBackup, highscoreBackup = settings:save(), save:writeSave()
+        --        if not love.filesystem.getInfo 'savebackups' then love.filesystem.createDirectory 'savebackups' end
+        --        local folder = table.concat({time.year, time.month, time.hour, time.min, time.sec}, '-')
+        --        love.filesystem.createDirectory ('savebackups/'..folder)
+        --        love.filesystem.write('savebackups/'..folder..'/settings.txt', settingsBackup)
+        --        love.filesystem.write('savebackups/'..folder..'/save.txt', saveBackup)
+        --        love.filesystem.write('savebackups/'..folder..'/highscores.txt', highscoreBackup)
+        --        love.filesystem.remove 'settings.txt'
+        --        love.filesystem.remove 'save.txt.'
+        --        love.filesystem.remove 'highscores.txt'
+        --        settings:reset()
+        --        save:reset()
+        --    end
+        --}
         selectSound = paths.sound('menu/select')
         confirmSound = paths.sound('menu/confirm')
         states = {
@@ -109,13 +124,11 @@ return {
 		menuButton = 1
 		songNum = 0
         
-        bg = newSprite(funkin:randomBG())
+        bg = graphics.newImage(paths.image(funkin:randomBG()))
         bg.color = {253, 232, 113}
-        add(bg)
 
         magenta = graphics.newImage(bg:getImage())
         magenta.color = {253, 113, 155, 0}
-        add(magenta)
 
         selectUi = newSprite('dave/title/mainMenu/Select_Thing')
         add(selectUi)
@@ -123,16 +136,16 @@ return {
         local anims = {}
         icons = {}
         for i,o in ipairs(optionShit) do
-            table.insert(anims, {anim = o, name = (o == 'freeplay' and 'freeplay0') or o})
+            table.insert(anims, {anim = o, name = (o == 'freeplay' and (awaitingExploitation and 'freeplay glitch' or 'freeplay0')) or o})
             local spr = graphics:newAnimatedSprite('dave/title/main_menu_icons', {
                 {anim = 'idle', name = o..' basic', fps = 12, loops = true},
                 {anim = 'select', name = o..' white', loops = true}
             }, 'idle')
-            spr.x = fromTopLeft(1280 * 1.6).x
+            spr.x = fromTopLeft(GAMESIZE.width * 1.6).x
             spr.sizeX = 128/204
             spr.sizeY = spr.sizeX
-            spr.y = 130 + 64
-            local targetX = fromTopLeft((1280 / 2) - 450 + ((i-1) * 160)).x
+            spr.y = 130
+            local targetX = fromTopLeft((S_HALF_WIDTH) - 450 + ((i-1) * 160)).x
             if not beenInTitle then
                 Timer.tween(1 + (i * 0.25), spr, {x = targetX}, 'in-out-expo')
             else
@@ -141,10 +154,10 @@ return {
             add(spr)
             table.insert(icons, spr)
         end
-        bigIcons = graphics:newAnimatedSprite('dave/title/menu_big_icons', anims, 'story mode')
+        bigIcons = graphics:newAnimatedSprite('dave/title/menu_big_icons', anims, 'story mode', false, nil, {center=true})
         bigIcons:animate('story mode', false)
         bigIcons.image:setFilter('nearest', 'nearest')
-        bigIcons.y = -720/2 + 352/2
+        bigIcons.y = -S_HALF_HEIGHT + 352/2
         add(bigIcons)
         
 		cam.sizeX, cam.sizeY = 0.9, 0.9
@@ -162,7 +175,7 @@ return {
         --crashmygame:now()
 		if canMove then
             --if input:pressed("back") then
-			--	audio.playSound(selectSound)
+			--	love.audio.play(selectSound)
 
 			--	switchState(titleMenu)
 			--end
@@ -172,7 +185,7 @@ return {
                 change(1)
             end
             if controls.pressed.confirm then
-                audio.playSound(confirmSound)
+                love.audio.play(confirmSound)
                 canMove = false
                 flickerLoop()
                 Timer.after(1.5, function()
@@ -191,6 +204,23 @@ return {
 		love.graphics.push()
         love.graphics.translate(graphics.getWidth() / 2, graphics.getHeight() / 2)
 
+        if awaitingExploitation then
+            love.graphics.setShader(glitchshader)
+            redsky:draw()
+            love.graphics.setShader()
+            love.graphics.setColor(0,0,0,0.4)
+            love.graphics.rectangle('fill', -S_HALF_WIDTH, -S_HALF_HEIGHT, GAMESIZE.width, GAMESIZE.height)
+            love.graphics.setColor(1,1,1)
+        else
+            love.graphics.setColor(rgb255(unpack(bg.color)))
+            bg:draw()
+            if magenta.color[4] > 0 then
+                love.graphics.setColor(rgb255(unpack(magenta.color)))
+                magenta:draw()
+            end
+            love.graphics.setColor(1,1,1)
+        end
+        
         local colorized = false
         for _,spr in pairs(sprites) do
             if spr.color then
@@ -202,14 +232,17 @@ return {
             spr:draw()
         end
         local aaa = (optionShit[curSelected] == 'story mode') and 'story' or optionShit[curSelected]
+        if awaitingExploitation and optionShit[curSelected] == 'freeplay' then
+            aaa = 'freeplay_glitch'
+        end
         --print(lm.string['main_'..aaa], 'main_'..aaa)
         fonts('comic', 64)
         local main = lm.string['main_'..aaa]
-        printfOutline(main, -((#main/2) * (64/2)), fromTopLeft(0, 720/2 + 28).y, 9999)
+        printfOutline(main, -curFont:getWidth(main)/2, fromTopLeft(0, S_HALF_HEIGHT + 28).y, 9999)
         fonts('comic', 24)
         local desc = lm.string['desc_'..aaa]
-        printfOutline(desc, -((#desc/2) * (24/2)), fromTopLeft(0, 720 - 58).y, 9999)
-        printfOutline('Version '..tostring(version), -1280/2, -720/2 + 16) --..'\nHold start and select to reset data.'
+        printfOutline(desc, -curFont:getWidth(desc)/2, fromTopLeft(0, 720 - 58).y, 9999)
+        printfOutline('Version '..tostring(version)..'\nMod version: v3', -S_HALF_WIDTH, -S_HALF_HEIGHT + 16) --..'\nHold start and select to reset data.'
         
 
         love.graphics.push()
@@ -219,9 +252,6 @@ return {
 	end,
 
 	leave = function(self)
-        canMove = true
-        table.clear(icons)
-		table.clear(sprites)
 		Timer.clear()
 	end
 }

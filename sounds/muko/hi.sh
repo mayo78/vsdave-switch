@@ -1,0 +1,1 @@
+for i in *.wav; do ffmpeg -i "$i" -qscale 0 "$(basename "$i" .wav)".ogg  ; done

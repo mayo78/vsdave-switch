@@ -43,6 +43,10 @@ local lovesize = {
             ls = sx
             lx, ly = 0, (height - lh * ls) / 2
         end
+        lovesize.aspectRatio = width/height
+        lovesize.aspectScale = (16/9)/(lovesize.aspectRatio)
+        lovesize.reverseAspectScale = 1/lovesize.aspectScale
+        lovesize.reverseLS = 1/ls
     end,
     -- Transforms the x,y coordinates to the game world position
     pos = function(x, y)

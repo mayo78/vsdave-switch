@@ -34,7 +34,10 @@ return {
 				break;
 			end
 		end
-		if not pathStr then error('Image ['..path..'] not found! Checked paths: ['..table.concat(checks, ',')..']') end
+		if not pathStr then 
+			print('Image ['..path..'] not found! Checked paths: ['..table.concat(checks, ',')..']') 
+			return 'images/unknown.png'
+		end
 		return pathStr
 	end,
 	setImageType = function(type)
@@ -83,41 +86,60 @@ return {
 					y = math.floor(y)
 				end
 
-				love.graphics.draw(
-					image,
-					self.x,
-					self.y,
-					self.orientation,
-					self.sizeX,
-					self.sizeY,
-					math.floor(width / 2) + self.offsetX,
-					math.floor(height / 2) + self.offsetY,
-					self.shearX,
-					self.shearY
-				)
+				local nwidth, nheight = options.full and width or math.floor(width/2), options.full and height or math.floor(height/2)
+
+				if options.quad then
+					love.graphics.draw(
+						image,
+						options.quad,
+						self.x,
+						self.y,
+						self.orientation,
+						self.sizeX,
+						self.sizeY,
+						options.full and 0 or nwidth,
+						options.fulll and 0 or nheight,
+						self.shearX,
+						self.shearY
+					)
+				else
+					love.graphics.draw(
+						image,
+						self.x,
+						self.y,
+						self.orientation,
+						self.sizeX,
+						self.sizeY,
+						options.full and 0 or nwidth,
+						options.full and 0 or nheight,
+						self.shearX,
+						self.shearY
+					)
+				end
 			end
 		}
 
 		object:setImage(imageData)
 
-		options = optionsTable
+		options = optionsTable or {}
 
 		return object
 	end,
 	
-	newAnimatedSprite = function(self, imagePth, animations, defaultAnim, loops, manualimage)
+	newAnimatedSprite = function(self, imagePth, animations, defaultAnim, loops, manualimage, options)
 		--get xml and make it compatible with the graphics module
+		--if options then print('my autio cent eris ', options.autoCenter, manualimage) end
 		local xml = paths.xml(imagePth)
 		local anims = {}
 		local loopers = {}
+		options = options or {}
 		for k,v in pairs(animations) do
 			--print('FROM '..imagePth, k, v)
 			local last
 			if not v.offsets then v.offsets = {0, 0} end
 			if not v.name then error('no name in anim!') end
-			local anim = {speed = v.fps or 24, offsetX = v.offsets[1], offsetY = v.offsets[2], flixelOffset = true, frames = {}, loops = v.loops or v.loop}
+			local anim = {speed = v.fps or 24, offsetX = v.offsets[1], offsetY = v.offsets[2], frames = {}, loops = v.loops or v.loop}
 			--print('anim:'..v.anim, 'loop:'..tostring(anim.loops))
-			loopers[v.anim] = anim.loops
 			for i,c in pairs(xml) do
 				--for k,v in pairs(c) do print(k, v) end
 				if c.name:lower():startsWith(v.name:lower()) then
@@ -125,22 +147,24 @@ return {
 					table.insert(anim.frames, i)
 				end
 			end
+			table.insert(anim.frames, anim.frames[#anim.frames]) --what the hell
 			--table.remove(anim.frames, #anim.frames)
 			
 			if v.indices and #v.indices > 0 then
 				anim.indices = v.indices
 			end
 			if #anim.frames == 0 then
-				print '--------------------ERROR IMBOUND!!------------------------'
-				for k,v in pairs(anim.frames) do print(k,v) end
 				print('couldnt find this guy.. '..v.name..', '..v.anim)
+			else
+				anims[v.anim] = anim
 			end
-			anims[v.anim] = anim
 		end
-		return self.newSprite(manualimage or paths.image(imagePth), xml, anims, defaultAnim, anims[defaultAnim] and anims[defaultAnim].loops or false, {loopers = loopers}), anims, xml
+		options.loopers = loopers
+		return self.newSprite(manualimage or paths.image(imagePth), xml, anims, defaultAnim, anims[defaultAnim] and anims[defaultAnim].loops or false, options), anims, xml
 	end,
 
 	newSprite = function(imageData, frameData, animData, animName, loopAnim, optionsTable)
+		optionsTable = optionsTable or {}
 		local sheet, sheetWidth, sheetHeight
 
 		local frames = {}
@@ -152,8 +176,7 @@ return {
 			stop = nil,
 			speed = nil,
 			offsetX = nil,
-			offsetY = nil,
-			flixelOffset = nil --makes offsets subtract instead of add like in an flxsprite
+			offsetY = nil
 		}
 
 		local isAnimated
@@ -169,6 +192,8 @@ return {
 		local drawData
 
 		local loopAnims = optionsTable and optionsTable.loopers or {}
+
+		local tempCallback
 
 		local object = {
 			x = 0,
@@ -191,15 +216,19 @@ return {
 				return self
 			end,
 
+			setGraphicSize = function(self, w, h)
+				self.sizeX, self.sizeY = w / self.width, h / self.height
+			end,
+
 			getSheet = function(self)
 				return sheet
 			end,
 
-			animate = function(self, animName, loopAnim)
+			animate = function(self, animName, _tempCallback)
+				tempCallback = _tempCallback
 				self.curAnim = animName
 				--print('playing this animation!', animName, loopAnim)
 				calledAnimCallback = false
-				isLooped = loopAnim
 				isAnimated = true
 				if anim.name == animName then
 					--print('gonna loop cause its the same!')
@@ -214,26 +243,27 @@ return {
 					end
 					return self
 				end
-				anim.name = animName
 				if not anims[animName] then
 					print('anim not found '..animName)
 					return
 				end
+				anim.name = animName
 
 				anim.start = anims[animName].start
 				anim.stop = anims[animName].stop
 				anim.speed = anims[animName].speed
 				anim.offsetX = anims[animName].offsetX
 				anim.offsetY = anims[animName].offsetY
+
+				
+				isLooped = anims[animName].loops
 				--if self.debug then
 				--	print('OFFSETS:', anim.offsetX, anim.offsetY)
 				--end
-				anim.flixelOffset = anims[animName].flixelOffset
 				anim.indices = anims[animName].indices
 				if anim.indices then anim.indices.index = 1 end
 				anim.frames = anims[animName].frames
 				if anim.frames then anim.frames.index = 1 end
-				if loopAnims[anim.name] then isLooped = loopAnims[anim.name] end
 				--if self.debug then print('MY LOOP IS THIS: ', isLooped) end
 
 				local data
@@ -319,13 +349,20 @@ return {
 							calledAnimCallback = true
 							self.onAnimComplete(anim.name)
 						end
+						if tempCallback then
+							tempCallback()
+						end
 					end
 				end
 			end,
 			getFrame = function(self)
 				return frame
 			end,
-			draw = function(self)
+			setCentered = function(self, what)
+				optionsTable.center = what
+			end,
+			draw = function(self, centerRotate)
+				local negativeX, negativeY = self.sizeX < 0, self.sizeY < 0
 				if isAnimated then
 					if anim.indices then
 						pastLength = anim.indices.index > #anim.indices
@@ -347,19 +384,7 @@ return {
 					error 'this one... is akward..'
 				end
 				local flooredFrame = math.floor(frame)
-				--if not frameData[flooredFrame] then
-				--	--pastLength = true
-				--	print('uhhhh', flooredFrame, anim.name, #frameData, frameData[flooredFrame+1])
-				--	--print ('FUCK IT WE BALL', anim.name, anim.start, anim.stop)
-				--end
-
-				--if frame == 1 and pastLength then 
-				--	frame = 0 
-				--	pastLength = false
-				--end
-
-				--local stop = anim.indices and anim.indices[#anim.indices] or anim.stop
-				local framey = frameData[flooredFrame]
+				
 				local x = self.x
 				local y = self.y
 				if options and options.floored then
@@ -370,44 +395,42 @@ return {
 					local width, height
 
 
-
-					if not framey.frameWidth or framey.frameWidth == 0 then
-						width = math.floor(frameData[flooredFrame].width / 2)
-					else
-						width = math.floor(frameData[flooredFrame].frameWidth / 2) + frameData[flooredFrame].frameX
-					end
-					if not framey.frameHeight or framey.frameHeight == 0 then
-						height = math.floor(frameData[flooredFrame].height / 2)
-					else
-						height = math.floor(frameData[flooredFrame].frameHeight / 2) + frameData[flooredFrame].frameY
-					end
+					local framey = frameData[flooredFrame]
 
 					drawData = {
 						sheet = sheet,
 						frame = frames[flooredFrame],
-						width = width + self.offsetX,
-						height = height + self.offsetY,
-						x = 0,
-						y = 0
+						width = framey.frameWidth or framey.width,
+						height = framey.frameHeight or framey.height,
+						x = (framey.frameX or 0),
+						y = (framey.frameY or 0),
 					}
-				end		
+					if optionsTable and optionsTable.center then
+						drawData.x = drawData.x + drawData.width/2
+						drawData.y = drawData.y + drawData.height/2
+						drawData.width = math.floor(drawData.width/2)
+						drawData.height = math.floor(drawData.height/2)
+					end
+				end
+				if negativeX then x = -x end
+				if negativeY then y = -y end
 				
 				if drawData then
-					love.graphics.translate(-(anim.offsetX or 0), -(anim.offsetY or 0)/2) --i dont know if this is better than the previous system
+					if negativeX or negativeY then love.graphics.scale(negativeX and -1 or 1, negativeY and -1 or 1) end
 					love.graphics.draw(
 						drawData.sheet,
 						drawData.frame,
-						x + drawData.x,
-						y + drawData.y,
+						x - drawData.x - anim.offsetX - (self.offsetX or 0) + (optionsTable.center and drawData.width or 0),
+						y - drawData.y - anim.offsetY - (self.offsetY or 0) + (optionsTable.center and drawData.height or 0),
 						self.orientation,
-						self.sizeX,
-						self.sizeY,
-						drawData.width,
-						drawData.height,
+						math.abs(self.sizeX),
+						math.abs(self.sizeY),
+						optionsTable.center and drawData.width or 0, --WHAT THE FUCK IS WRONG WITH THE FUNKIN REWRITTEN DEV
+						optionsTable.center and drawData.height or 0,
 						self.shearX,
 						self.shearY
 					)
-					love.graphics.translate((anim.offsetX or 0), (anim.offsetY or 0)/2)
+					if negativeX or negativeY then love.graphics.scale(negativeX and -1 or 1, negativeY and -1 or 1) end
 				end
 			end,
 			setPosition = function(self, x, y)
@@ -434,7 +457,7 @@ return {
 			)
 		end
 
-		object:animate(animName, loopAnim)
+		object:animate(animName)
 
 		--print('new obj with a width of', object.width)
 

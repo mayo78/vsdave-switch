@@ -80,9 +80,8 @@
 	],
 	"no_antialiasing": false,
 	"image": "dave/california/moldygh",
-	"position": [
-		0,
-		0
+	"positionOffset": [
+		-30, -125
 	],
 	"healthicon": "moldy",
 	"flip_x": false,
@@ -92,8 +91,7 @@
 		130
 	],
 	"camera_position": [
-		20,
-		90
+		-30, -125
 	],
 	"sing_duration": 4,
 	"scale": 1

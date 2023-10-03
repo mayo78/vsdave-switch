@@ -6,9 +6,9 @@ Blocked, MoldyGH, bambiHeading, bambi, false
 Corn-Theft, MoldyGH, bambiHeading, bambi, false
 Maze, MoldyGH, bambiHeading, bambi, false
 Splitathon, MoldyGH, splitathonHeading, 
-Shredder, MoldyGH, bambiHeading, bambi, false
+Shredder, MoldyGH, festivalHeading, bambi, false
 Greetings, MoldyGH, tristanHeading, 
-Interdimensional, MoldyGH, 3D-daveHeading, dave, false
+Interdimensional, MoldyGH, interdimensionalHeading, dave, false
 Rano, MoldyGH, daveHeading, dave, true
 Supernovae, ArchWK, bevelHeading, bambi, false
 Glitch, glitch, bevelHeading, bambi, false
@@ -18,3 +18,14 @@ Cheating, MoldyGH, cheatingHeading, dave, false
 Unfairness, MoldyGH, unfairHeading, dave, false
 Test, MoldyGH, tristanHeading, bambi
 Kabunga, MoldyGH, kabungaHeading, 
+Recursed, Aadsta, recursedHeading, 
+Bonus-Song, MoldyGH, daveHeading, dave, true
+Roofs, sibottle, secretleakheading, 
+Escape-from-california, MoldyGH, californiaHeading, 
+Adventure, MoldyGH, tristanHeading, 
+Five-nights, MoldyGH, fnafHeading, 
+overdrive, Top 10 Awesome, fnfengeading, 
+mealie, Alexander Cooper 19, bambiHeading
+indignancy, MoldyGH, bambiHeading, 
+vs-dave-rap, Your mom, daveHeading, 
+vs-dave-rap-two, Your mom, daveHeading, 

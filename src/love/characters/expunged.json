@@ -58,9 +58,9 @@
 	],
 	"no_antialiasing": true,
 	"image": "dave/expunged/ExpungedFinal",
-	"position": [
-		-350,
-		-100
+	"positionOffset": [
+		-100,
+		-200
 	],
 	"healthicon": "expunged-pixel",
 	"flip_x": false,
@@ -70,8 +70,8 @@
 		6
 	],
 	"camera_position": [
-		0,
-		0
+		200,
+		125
 	],
 	"sing_duration": 4,
 	"scale": 0.8

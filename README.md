@@ -14,11 +14,13 @@ VVVV some of this stuff is not relevent lol
 * Funkin' Crew (ninjamuffin99, PhantomArcade, kawaisprite, and evilsk8er), for making such an awesome game!
 
 
+to 'press 7' hold down all the triggers and press minus
+to exit the game at any time, hold down minus and plus
+
 hi
 
 TODOS:
-- finish porting extra songs
-- add playable characters
-- figure out a way to unlock 7 stuff
 - fix any bugs that come in
-- Fix offsets ONCE AND FOR ALL
+
+KNOWN ISSUES:
+- audio gets all messed up if you put the switch into sleep mode and turn it back on?? what the hell

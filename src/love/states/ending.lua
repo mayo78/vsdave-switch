@@ -15,7 +15,7 @@ return {
 	end,
 	draw = function(self)
 		love.graphics.push()
-		love.graphics.translate(1280/2, 720/2)
+		love.graphics.translate(S_HALF_WIDTH, S_HALF_HEIGHT)
 		endspr:draw()
 		love.graphics.pop()
 	end,

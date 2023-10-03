@@ -80,8 +80,9 @@
 	],
 	"no_antialiasing": false,
 	"image": "dave/dave/characters/Dave_insanity_lol",
-	"position": [
-		0, -170
+	"positionOffset": [
+		0,
+		170
 	],
 	"healthicon": "dave-annoyed",
 	"flip_x": false,
@@ -92,7 +93,7 @@
 	],
 	"camera_position": [
 		50,
-		25
+		200
 	],
 	"sing_duration": 4,
 	"scale": 1

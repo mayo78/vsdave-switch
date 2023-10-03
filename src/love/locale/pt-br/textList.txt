@@ -82,6 +82,8 @@ option_upscroll==Upscroll
 option_songPosition_on==Posição da Música On
 option_songPosition_off==Posição da Música Off
 
+option_eyesores==Efeitos
+
 option_eyesores_enabled==Efeitos Ativados
 option_eyesores_disabled==Efeitos Desativados
 
@@ -163,6 +165,7 @@ ctheft_sub4==Eu não ligo...
 ctheft_sub5==Você quer
 ctheft_sub6==Eu vou te bloquear
 ctheft_sub7==Eu nunca vou voltar.
+ctheft_sub8==Bya Baa!
 
 // Maze Subtitles //
 maze_sub1==Quer dizer...

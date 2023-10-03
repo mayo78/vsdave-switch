@@ -1,158 +1,114 @@
 {
 	"animations": [
 		{
+			"loop": false,
 			"offsets": [
-				-66,
+				74,
 				3
 			],
-			"loop": false,
-			"fps": 24,
 			"anim": "singLEFT",
-			"indices": [],
-			"name": "left"
+			"fps": 24,
+			"name": "left",
+			"indices": []
 		},
 		{
+			"loop": false,
 			"offsets": [
 				0,
 				0
 			],
-			"loop": false,
-			"fps": 24,
 			"anim": "idle",
-			"indices": [],
-			"name": "idle"
+			"fps": 24,
+			"name": "idle",
+			"indices": []
 		},
 		{
-			"offsets": [
-				-26,
-				40
-			],
 			"loop": false,
-			"fps": 24,
+			"offsets": [
+				53,
+				37
+			],
 			"anim": "singUP",
-			"indices": [],
-			"name": "up"
-		},
-		{
-			"offsets": [
-				65,
-				7
-			],
-			"loop": false,
 			"fps": 24,
-			"anim": "singRIGHT",
-			"indices": [],
-			"name": "right"
+			"name": "up",
+			"indices": []
 		},
 		{
+			"loop": false,
 			"offsets": [
-				-23,
+				-15,
+				6
+			],
+			"anim": "singRIGHT",
+			"fps": 24,
+			"name": "right",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				17,
 				-32
 			],
-			"loop": false,
-			"fps": 24,
 			"anim": "singDOWN",
-			"indices": [],
-			"name": "down"
+			"fps": 24,
+			"name": "down",
+			"indices": []
 		},
 		{
-			"loop": false,
 			"offsets": [
-				68,
+				94,
 				82
 			],
+			"loop": false,
+			"fps": 24,
 			"anim": "singSmash",
-			"fps": 24,
-			"name": "phone",
-			"indices": []
+			"indices": [],
+			"name": "phone"
 		},
 		{
-			"loop": false,
 			"offsets": [
-				-5,
-				8
-			],
-			"anim": "hey",
-			"fps": 24,
-			"name": "look",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				-26,
-				4
-			],
-			"anim": "singLEFT-alt",
-			"fps": 24,
-			"name": "al",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				99,
-				10
-			],
-			"anim": "singRIGHT-alt",
-			"fps": 24,
-			"name": "ar",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				568,
-				22
-			],
-			"anim": "singThrow",
-			"fps": 24,
-			"name": "thr",
-			"indices": []
-		},
-		{
-			"loop": false,
-			"offsets": [
-				-30,
+				70,
 				14
 			],
-			"anim": "singLEFTmiss",
+			"loop": false,
 			"fps": 24,
-			"name": "miss l",
+			"anim": "singLEFTmiss",
+			"indices": [],
+			"name": "miss l"
+		},
+		{
+			"loop": false,
+			"offsets": [
+				60,
+				40
+			],
+			"anim": "singUPmiss",
+			"fps": 24,
+			"name": "miss u",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"offsets": [
+				40,
+				0
+			],
+			"anim": "singDOWNmiss",
+			"fps": 24,
+			"name": "miss d",
 			"indices": []
 		},
 		{
 			"offsets": [
-				-30,
-				40
-			],
-			"loop": false,
-			"fps": 24,
-			"anim": "singUPmiss",
-			"indices": [],
-			"name": "miss u"
-		},
-		{
-			"offsets": [
-				63,
+				3,
 				15
 			],
-			"loop": false,
-			"fps": 24,
+			"indices": [],
+			"fps": 25,
 			"anim": "singRIGHTmiss",
-			"indices": [],
-			"name": "miss r"
-		},
-		{
-			"offsets": [
-				-30,
-				0
-			],
 			"loop": false,
-			"fps": 24,
-			"anim": "singDOWNmiss",
-			"indices": [],
-			"name": "miss d"
+			"name": "miss r"
 		}
 	],
 	"no_antialiasing": false,
@@ -169,9 +125,15 @@
 		55
 	],
 	"camera_position": [
-		20,
-		90
+		0,
+		-100
+	],
+	"pcamera_position": [
+		-50,
+		0
 	],
 	"sing_duration": 4,
-	"scale": 1
+	"scale": 1,
+	"playerOffset": [394, -24],
+	"positionOffset": [-37, -90]
 }

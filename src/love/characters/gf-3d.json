@@ -14,9 +14,9 @@
 	],
 	"no_antialiasing": true,
 	"image": "dave/characters/3D_gf",
-	"position": [
-		-50,
-		-120
+	"positionOffset": [
+		-25,
+		150
 	],
 	"healthicon": "gf",
 	"flip_x": false,

@@ -1,4 +1,4 @@
---you can compare versions that are like: 0.1.0 and do stuff like ver1 > ver2 :)
+--you can compare versions that are like: 0.1.0 :)
 local l = {}
 function l:fromString(str)
 	if str == '0.1-alpha.1' then --oops
@@ -11,6 +11,7 @@ end
 function l:new(...)
 	local ver = {raw = {...}}
 	local mt = {}
+	--errorData = errorData..'\nMade thingnwitht thse sguys'..table.concat({...}, ', ')
 	mt.__name = function()
 		return table.concat(ver.raw, '.')
 	end
@@ -37,8 +38,12 @@ function l:equalTo(a, b)
 end
 function l:greaterThan(a, b)
 	for i,v in ipairs(b.raw) do
+		--errorData = errorData..'\nchecking'..tostring(v)..tostring(a.raw[i])
 		if a.raw[i] > v then
+			print(a.raw[i], 'is greater than', v)
 			return true
+		elseif a.raw[i] ~= v then
+			return false
 		end
 	end
 end

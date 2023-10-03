@@ -27,7 +27,7 @@ THE SOFTWARE.
 transition = graphics.newImage(paths.image('dave/title/transition'))
 transition:getImage():setFilter('nearest', 'nearest')
 transition.x = -2146 + 2164/2
-transition.y = transition.y + 720/2
+transition.y = transition.y + S_HALF_HEIGHT
 
 local function __NULL__() end
 
@@ -64,37 +64,49 @@ function GS.switch(to, ...)
 	return change_state(0, to, ...)
 end
 initState = true
+local transitionTween
 function switchState(...)
-	print 'opening the stateeeee'
-	drawTransition = true
-	local function onComplete()
-		drawTransition = false 
-	end
-	if initState then
-		initState = false
-		transition.x = 1280/2
-		Timer.tween(0.5, transition, {x = 1280 + 2164/2}, nil, {after = onComplete, during = snapTransition})
-		status.setLoading(true)
+	if not mukoMode then
+		print 'opening the stateeeee'
+		drawTransition = true
+		if transitionTween then Timer.cancel(transitionTween) end
+		local function onComplete()
+			drawTransition = false 
+			transIn = false
+			transitionTween = nil
+		end
+		if initState then
+			initState = false
+			transition.x = S_HALF_WIDTH
+			transitionTween = Timer.tween(0.5, transition, {x = GAMESIZE.width + 2164/2}, nil, {after = onComplete, during = snapTransition})
+			GS.switch(...)
+			return
+		end
+		local hi = {...}
+		transition.x = -2146 + 2164/2
+		transOut = true
+		transitionTween = Timer.tween(0.5, transition, {x = S_HALF_WIDTH}, nil, {after = function()
+			transOut = false
+			transition.x = S_HALF_WIDTH
+			isLoading = true
+			transitionTween = Timer.after(0.000001, function() --make sure the screen is entirely covered
+				GS.preleave()
+				transIn = true
+				isLoading = false
+				paths.clearing = true --im going to do it
+				paths.clearCache()
+				shaders:clear()
+				if substate then closeSubstate() end
+				screenAngle, screenRadian = 0, 0
+				screenInfo = {x=0,y=0,scale=1}
+				GS.switch(unpack(hi)) 
+				transitionTween = Timer.tween(0.5, transition, {x = GAMESIZE.width + 2164/2}, nil, {after = onComplete, during = snapTransition})
+				paths.clearing = false
+			end)
+		end, during = snapTransition})
+	else
 		GS.switch(...)
-		status.setLoading(false)
-		return
 	end
-	local hi = {...}
-	transition.x = -2146 + 2164/2
-	Timer.tween(0.5, transition, {x = 1280/2}, nil, {after = function()
-		transition.x = 1280/2
-		Timer.after(0.000001, function() --make sure the screen is entirely covered
-			paths.clearing = true --im going to do it
-			status.setLoading(true)
-			paths.clearCache()
-			shaders:clear()
-			if substate then closeSubstate() end
-			GS.switch(unpack(hi)) 
-			Timer.tween(0.5, transition, {x = 1280 + 2164/2}, nil, {after = onComplete, during = snapTransition})
-			status.setLoading(false)
-			paths.clearing = false
-		end)
-	end, during = snapTransition})
 end
 
 function GS.push(to, ...)

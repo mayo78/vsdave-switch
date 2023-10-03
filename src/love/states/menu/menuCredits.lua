@@ -169,10 +169,10 @@ local peopleInCredits =
 	  new_Social('twitter', 'https://twitter.com/TH3_R34L_D34L')
    }),
    
-   new_Person("R34LD34L", CreditsType.Contributor,
-   {  
+--   new_Person("R34LD34L", CreditsType.Contributor,
+--   {  
 
-   }),
+--   }),
    
    new_Person("Devianator", CreditsType.Contributor,
    {
@@ -385,6 +385,7 @@ local logo, logoAlpha
 return {
 	enter = function(self, _, doScrolling)
 		scrolling = doScrolling or false
+		--scrolling = true
 		personIndex, socialIndex = 1, 1
 		coolY = {0, 0}
 		canMove = not scrolling
@@ -459,18 +460,30 @@ return {
 		end
 		if not scrolling then
 			coolY[2] = lerp(coolY[2], coolY[1], dt * 30)
+		else
+			if controls.down.confirm then
+				paths.music 'creditsTheme':setPitch(10)
+				for _=1,9 do
+					Timer.update(dt)
+				end
+			else
+				paths.music'creditsTheme':setPitch(1)
+			end
 		end
 	end,
 	draw = function(self)
 		local myAlpha = 1 - weirdAlpha[1]
 		love.graphics.push()
-		love.graphics.translate(1280/2, 720/2)
+		love.graphics.translate(S_HALF_WIDTH, S_HALF_HEIGHT)
 		if not scrolling then
 			graphics.setColor(0, 1, 0)
 		else
 			graphics.setColor(0.25, 0.25, 0.25)
 		end
+		--love.graphics.push()
+		--love.graphics.scale(lovesize.reverseAspectScale)
 		bg:draw()
+		--love.graphics.pop()
 		if not scrolling then
 			border:draw()
 		end
@@ -494,11 +507,11 @@ return {
 					CreditsImage[v.type]:draw()
 				end
 				fonts('comic', 64)
-				printfOutline(v.type, -((#v.type)/2 * 32), v.sprite.y, nil, {depth = 0.15, alpha = myAlpha, color = scrolling and {1, 0, 1} or {1, 1, 1}})
+				printfOutline(v.type, -curFont:getWidth(v.type)/2, v.sprite.y, nil, {depth = 0.15, alpha = myAlpha, color = scrolling and {1, 0, 1} or {1, 1, 1}})
 				fonts('comic', 32)
 				love.graphics.translate(0, 128) --x2
 			end
-			printfOutline(v.name, -((#v.name)/2 * 16), v.sprite.y, nil, {alpha = myAlpha, color =  ((i == personIndex and not scrolling) and {1, 1, 0} or nil)})
+			printfOutline(v.name, -curFont:getWidth(v.name)/2, v.sprite.y, nil, {alpha = myAlpha, color =  ((i == personIndex and not scrolling) and {1, 1, 0} or nil)})
 			graphics.setColor(1, 1, 1, myAlpha)
 			if not scrolling then
 				v.sprite:draw()
@@ -508,10 +521,10 @@ return {
 		love.graphics.push()
 		if inSocial then
 			graphics.setColor(0, 0, 0, weirdAlpha[1] * 0.5)
-			love.graphics.rectangle('fill', 0, 0, 1280, 720)
-			love.graphics.translate(1280/2, 0)
-			printfOutline(curPerson.name, -((#curPerson.name)/2 * 16), 64, nil, {alpha = weirdAlpha[1]})
-			printfOutline(curPerson.desc, -((#curPerson.desc)/2 * 16), 128, nil, {alpha = weirdAlpha[1]})
+			love.graphics.rectangle('fill', 0, 0, GAMESIZE.width, GAMESIZE.height)
+			love.graphics.translate(S_HALF_WIDTH, 0)
+			printfOutline(curPerson.name, -curFont:getWidth(curPerson.name)/2, 64, nil, {alpha = weirdAlpha[1]})
+			printfOutline(curPerson.desc, -curFont:getWidth(curPerson.desc)/2, 128, nil, {alpha = weirdAlpha[1]})
 			love.graphics.translate(0, 128)
 			for i,v in ipairs(curPerson.socials) do
 				love.graphics.translate(0, 128)
@@ -522,5 +535,6 @@ return {
 		love.graphics.pop()
 	end,
 	leave = function(self)
+		Timer.clear()
 	end
 }
