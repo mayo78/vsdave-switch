@@ -1160,10 +1160,13 @@ local stages = {
 							local txt = {
 								draw = function(self)
 									fonts('comic', 256)
-									printfOutline(c, self.x, self.y, nil, {angle = self.angle, alpha = self.alpha})
+									love.graphics.setColor(1,1,1,self.alpha)
+									love.graphics.print(c, self.x, self.y, self.orientation, 1, 1, curFont:getWidth(c)/2, curFont:getHeight()/2)
+									love.graphics.setColor(1,1,1)
 								end,
 								fixedUpdate = function(self, dt)
 									self.angle = self.angle + dt * angvel * 2
+									self.orientation = self.angle * DEGREE_TO_RADIAN
 									self.x, self.y = self.x + vel.x*dt, self.y + vel.y*dt
 								end,
 								x = love.math.random(-1280, 1280 * 2.5),
@@ -1186,11 +1189,17 @@ local stages = {
 		end
 		newAlphabet(daveSongs)
 
-		local function alphabetLoop() --hopefully not as laggy
+		--songLoaded = function()
+		--	local alphaupdatetime = crochet / 1000
+		--	local function alphabetLoop() --hopefully not as laggy
+		--		Timer.after(alphaupdatetime, alphabetLoop)
+		--	end
+		--	alphabetLoop()
+		--end
+		onStep = function()
 			for i,v in pairs(alphabets) do
-				v:fixedUpdate(2)
+				v:fixedUpdate(stepCrochet / 1000)
 			end
-			Timer.after(2, alphabetLoop)
 		end
 
 		girlfriend.x, girlfriend.y = 30, -90

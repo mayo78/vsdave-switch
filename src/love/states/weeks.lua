@@ -21,8 +21,10 @@ local inputList = {
 }
 
 local NOTE_Y
-gameEvents.screenResize:add(function(width, height)
-	NOTE_Y = GAMESIZE.height * 720/-350
+local UI_DOWN_Y
+gameEvents.screenResize:add(function()
+	NOTE_Y = GAMESIZE.height / (720/-350)
+	UI_DOWN_Y = GAMESIZE.height / (720/-470)
 end, true)
 
 ExploitationModchartType = {
@@ -391,11 +393,11 @@ return {
 		}
 		local healthImg = paths.image('dave/'..(healths[curSong:lower()] or 'healthBar'))
 		healthBarOverlay = graphics.newImage(healthImg)
-		healthBarOverlay.y = isDownscroll and -450 - 20 or 720 * (0.9 * 0.7) - 10
+		healthBarOverlay.y = isDownscroll and UI_DOWN_Y or GAMESIZE.height * (0.9 * 0.7) - 10
 		healthBarOverlay.sizeX = 1/0.7
 		healthBarOverlay.sizeY = 1/0.7
 		timeBarOverlay = graphics.newImage(paths.image('dave/timeBar'))
-		timeBarOverlay.y = isDownscroll and 720 * (0.9 * 0.7) - 10 or -450 - 20
+		timeBarOverlay.y = isDownscroll and GAMESIZE.height * (0.9 * 0.7) - 10 or UI_DOWN_Y
 		timeBarOverlay.sizeX = 1/0.7
 		timeBarOverlay.sizeY = 1/0.7
 
@@ -1130,6 +1132,10 @@ return {
 		--		end
 		--	end
 		--end
+		if songLoaded then 
+			songLoaded()
+			songLoaded = nil
+		end
 	end,
 
 	-- Gross countdown script
@@ -2344,7 +2350,7 @@ return {
 			love.graphics.rectangle('fill', 0, cinbarDown.y, GAMESIZE.width, 140)
 		--end
 		--if cinbarUp.y ~= -140 then
-			love.graphics.rectangle('fill', 0, cinbarUp.y, GAMESIZE.height, 140)
+			love.graphics.rectangle('fill', 0, cinbarUp.y, GAMESIZE.width, 140)
 		--end
 		love.graphics.pop()
 	end,

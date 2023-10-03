@@ -301,6 +301,7 @@ return function()
 		end,
 		touchpressed = function(self, id, mx, my, dx, dy, pressure) --has to be manually called!
 			mx, my = mx * lovesize.reverseLS, my * lovesize.reverseLS
+			print(mx, my)
 			local x,y = self.x,self.y
 			local lastKey
 			for i,v in pairs(layout) do

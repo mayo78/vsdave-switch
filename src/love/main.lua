@@ -321,7 +321,7 @@ function love.load()
 			if hudCanvas then hudCanvas:release() end
 			globalCanvas = love.graphics.newCanvas(SCREENSIZE.width, SCREENSIZE.height)
 			gameCanvas = love.graphics.newCanvas(SCREENSIZE.width, SCREENSIZE.height)
-			hudCanvas = love.graphics.newCanvas(SCEENSIZE.width, SCREENSIZE.height)
+			hudCanvas = love.graphics.newCanvas(SCREENSIZE.width, SCREENSIZE.height)
 		end, true)
 
 		controls = {pressed = {}, down = {}, released = {}}
@@ -462,6 +462,7 @@ function love.resize(width, height)
 	SCREENSIZE = {width = width * 1.5, height = height * 1.5}
 	GAMESIZE = {width = width, height = height}
 	gameEvents.screenResize:dispatch()
+	print 'yeah i did it!'
 end
 
 function love.keypressed(key)
@@ -478,7 +479,7 @@ end
 
 function love.touchpressed(...)
 	if isLoading then return end
-	Gamestate.touchpressed(id, x, y, dx, dy, pressure)
+	Gamestate.touchpressed(...)
 end
 
 function love.mousepressed(x, y, button, istouch, presses)

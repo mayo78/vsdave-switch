@@ -3,6 +3,8 @@ local keySounds
 local commands = {}
 local height, updateHeight, eyeMode
 
+local music
+
 
 local keyboard
 
@@ -260,6 +262,10 @@ makeCommand('exit', 'exit', function(...)
 end)
 return {
 	enter = function(self)
+		music = paths.music 'TheAmbience'
+		music:setLooping(true)
+		music:setVolume(0.7)
+		music:play()
 		keyboard = floatingKeyboard()
 		keyboard.x = 25
 		keyboard.y = GAMESIZE.height
@@ -372,6 +378,9 @@ return {
 		keyboard:draw()
 		love.graphics.pop()
 	end,
+	preleave = function()
+		music:stop()
+	end,
 	update = function(self, dt)
 		if transOut then return end
 		if expungedMode or eyeMode then
@@ -390,7 +399,7 @@ return {
 	end,
 	touchpressed = function(self, prev, ...)
 		if keyboard.active then
-			keyboard:touchpressed(...)
+			keyboard:touchpressed(_, ...) --wtf?
 		end
 	end,
 }

@@ -51,12 +51,21 @@ end)
 
 --[=[
 	
---]=] --remove the space here to easily uncomment it
+--]= ] --remove the space here to easily uncomment it
 local imgs = {}
 checkFolder('images/png', function(folder, file)
 	if file:endsWith '.png' then
-		folder = folder:gsub('images/png/', ''):gsub('/', '\\')
-		table.insert(imgs, (([[mkdir ..\dds\]]..folder..[[$NEWLINE%texconv% -f DXT5 -m 1 -nologo -o ..\dds\]]..folder..[[ -srgb -y ]]..(folder..'\\'..file).."\nrename ..\\dds\\"..(folder..'\\'..file:gsub('png', '')).."DDS "..(file:gsub('png', '')).."dds"):gsub('$NEWLINE', '\n')))
+		--folder = folder:gsub('images/png/', ''):gsub('/', '\\')
+		--uncomment one of two chunks, the first detects images with an uppercase letter in its name (which is bad for some reason??) and the second makes a script that converts every png file to a dds file
+		--[==[
+		--]== ]
+		file:gsub('.', function(c)
+			if c:lower() ~= c:upper() and c:upper() == c then
+				print(c:upper(), 'matches with', c, 'inside of', file)
+			end
+		end)
+		--]==]
+		--table.insert(imgs, (([[mkdir ..\dds\]]..folder..[[$NEWLINE%texconv% -f DXT5 -m 1 -nologo -o ..\dds\]]..folder..[[ -srgb -y ]]..(folder..'\\'..file).."\nrename ..\\dds\\"..(folder..'\\'..file:gsub('png', '')).."DDS "..(file:gsub('png', '')).."dds"):gsub('$NEWLINE', '\n')))
 	end
 end)
 love.filesystem.write('imagesoutput.txt', table.concat(imgs, '\n'))
